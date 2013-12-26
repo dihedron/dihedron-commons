@@ -31,7 +31,7 @@ public class EnvironmentValueProvider implements ValueProvider {
 	 * Returns the value of the given environment variable (if available), null 
 	 * otherwise.
 	 * 
-	 * @see it.bankitalia.sisi.dsvaa.variables.ValueProvider#onVariable(java.lang.String)
+	 * @see org.dihedron.commons.variables.ValueProvider#onVariable(java.lang.String)
 	 */
 	@Override
 	public String onVariable(String variable) {

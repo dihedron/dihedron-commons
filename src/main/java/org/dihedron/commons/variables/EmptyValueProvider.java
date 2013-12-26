@@ -31,7 +31,7 @@ public class EmptyValueProvider implements ValueProvider {
 	/**
 	 * Returns the empty string for all variables.
 	 * 
-	 * @see it.bankitalia.sisi.dsvaa.variables.ValueProvider#onVariable(java.lang.String)
+	 * @see org.dihedron.commons.variables.ValueProvider#onVariable(java.lang.String)
 	 */
 	@Override
 	public String onVariable(String variable) {

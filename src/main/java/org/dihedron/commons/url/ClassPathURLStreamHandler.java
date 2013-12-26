@@ -29,9 +29,7 @@ import org.slf4j.LoggerFactory;
 
 /** 
  * A {@link URLStreamHandler} that handles resources on the classpath.
- * 
- * @see
- *   http://stackoverflow.com/questions/861500/url-to-load-resources-from-the-classpath-in-java
+ * For details, see http://stackoverflow.com/questions/861500/url-to-load-resources-from-the-classpath-in-java
  */
 public class ClassPathURLStreamHandler extends URLStreamHandler {
 	

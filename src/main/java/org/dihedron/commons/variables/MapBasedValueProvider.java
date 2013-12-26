@@ -45,7 +45,7 @@ public class MapBasedValueProvider implements ValueProvider {
 	 * Returns the String representation of the value corresponding to the given 
 	 * key in the map (if available), null otherwise.
 	 * 
-	 * @see it.bankitalia.sisi.dsvaa.variables.ValueProvider#onVariable(java.lang.String)
+	 * @see org.dihedron.commons.variables.ValueProvider#onVariable(java.lang.String)
 	 */
 	@Override
 	public String onVariable(String variable) {
