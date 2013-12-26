@@ -33,7 +33,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The engine that takes care of executing the tasks asynchronously (in parallel), 
+ * waiting for their completion and optionally notifying observers of their 
+ * advancement.
+ * 
+ * @author Andrea Funto'
+ */
 public class TaskExecutor<T> {
 	
 	/**
@@ -52,14 +58,62 @@ public class TaskExecutor<T> {
 	private BlockingQueue<Integer> queue;
 	
 	/**
+	 * The list of tasks being executed.
+	 */
+	List<Task<T>> tasks = new ArrayList<Task<T>>();
+	
+	/**
+	 * The corresponding list of results.
+	 */
+	List<Future<T>> futures = new ArrayList<Future<T>>();
+	
+	/**
+	 * The (optional) list of task observers.
+	 */
+	List<TaskObserver<T>> observers = new ArrayList<TaskObserver<T>>();
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param executor
 	 *   the actual executor service.
+	 * @param observers
+	 *   an optional list of observers that will be notified of the several phases 
+	 *   in a task execution life cycle. 
 	 */
-	public TaskExecutor(ExecutorService executor) {
+	public TaskExecutor(ExecutorService executor, TaskObserver<T>... observers) {
 		this.executor = executor;
 		this.queue = new LinkedBlockingQueue<Integer>();
+		addObservers(observers);
+	}
+
+	/**
+	 * Adds task observers to the set of registered observers.
+	 *   
+	 * @param observers
+	 *   an list of observers that will be notified of the several phases in a 
+	 *   task execution life cycle. 
+	 * @return
+	 *   the object itself, to enable method chaining.
+	 */
+	public TaskExecutor<T> addObservers(TaskObserver<T>... observers) {
+		if(observers != null) {
+			for(TaskObserver<T> observer : observers) {
+				this.observers.add(observer);
+			}
+		}
+		return this;
+	}
+	
+	/**
+	 * Removes all registered observers.
+	 * 
+	 * @return
+	 *   the object itself, to enable method chaining.
+	 */
+	public TaskExecutor<T> clearObservers() {
+		this.observers.clear();
+		return this;
 	}
 	
 	/**
@@ -75,9 +129,17 @@ public class TaskExecutor<T> {
 		synchronized(queue) {
 			int i = 0;
 			for(Task<T> task : tasks) {
-				task.setId(i++);
-				task.setQueue(queue);
-				futures.add(executor.submit(task));
+				if(task !=  null) {
+					this.tasks.add(task);
+					TaskCallable<T> callable = new TaskCallable<T>(i++, queue, task);
+					for(TaskObserver<T> observer : observers) {
+						observer.onTaskStarting(task);
+					}
+					futures.add(executor.submit(callable));
+					for(TaskObserver<T> observer : observers) {
+						observer.onTaskStarted(task);
+					}
+				}
 			}
 		}		
 		return futures;
@@ -96,9 +158,17 @@ public class TaskExecutor<T> {
 		synchronized(queue) {
 			int i = 0;
 			for(Task<T> task : tasks) {
-				task.setId(i++);
-				task.setQueue(queue);
-				futures.add(executor.submit(task));
+				if(task != null) {
+					this.tasks.add(task);
+					TaskCallable<T> callable = new TaskCallable<T>(i++, queue, task);
+					for(TaskObserver<T> observer : observers) {
+						observer.onTaskStarting(task);
+					}
+					futures.add(executor.submit(callable));
+					for(TaskObserver<T> observer : observers) {
+						observer.onTaskStarted(task);
+					}
+				}
 			}
 		}		
 		return futures;
@@ -117,16 +187,16 @@ public class TaskExecutor<T> {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public List<T> waitForAll(List<Future<T>> futures, TaskObserver<T>... observers) throws InterruptedException, ExecutionException {
+	public List<T> waitForAll(List<Future<T>> futures) throws InterruptedException, ExecutionException {
 		Map<Integer, T> results = new HashMap<Integer, T>();
 		int count = futures.size();
 		while(count-- > 0) {
 			int id = queue.take();
-			logger.debug("task '{}' complete (count: {}, queue: {})", id, count, queue.size());
+			logger.trace("task '{}' complete (count: {}, queue: {})", id, count, queue.size());
 			T result = futures.get(id).get();
 			results.put(id, result);
 			for(TaskObserver<T> observer : observers) {
-				observer.onTaskComplete(result);
+				observer.onTaskComplete(tasks.get(id), result);
 			}
 		}
 		
@@ -158,7 +228,7 @@ public class TaskExecutor<T> {
 			logger.debug("task '{}' complete (count: {}, queue: {})", id, count, queue.size());
 			T result = futures.get(id).get();
 			for(TaskObserver<T> observer : observers) {
-				observer.onTaskComplete(result);
+				observer.onTaskComplete(tasks.get(id), result);
 			}
 			return result;
 		}

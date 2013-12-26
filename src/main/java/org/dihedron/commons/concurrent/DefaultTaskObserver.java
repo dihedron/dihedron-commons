@@ -20,29 +20,31 @@ package org.dihedron.commons.concurrent;
 
 
 /**
+ * A do-nothing implementation of the TaskObserver interface.
+ * 
  * @author Andrea Funto'
  */
-public class TestTask implements Task<String> {
+public class DefaultTaskObserver<T> implements TaskObserver<T> {
 
-	private int id;
-	
-	private long sleepTime;
-	
-	public TestTask(int id, long sleepTime) {
-		this.id = id;
-		this.sleepTime = sleepTime;
-	}
-	
 	/**
-	 * @see org.dihedron.concurrent.TaskCallable#execute()
+	 * @see org.dihedron.commons.concurrent.TaskObserver#onTaskStarting(org.dihedron.commons.concurrent.Task)
 	 */
 	@Override
-	public String execute() throws Exception {
-        Thread.sleep(sleepTime);
-        return "task " + id + " complete after having slept for " + sleepTime + " ms";
+	public void onTaskStarting(Task<T> task) {
 	}
-	
-	public String toString() {
-		return "task " + id + ": sleep for " + sleepTime + " ms";
+
+	/**
+	 * @see org.dihedron.commons.concurrent.TaskObserver#onTaskStarted(org.dihedron.commons.concurrent.Task)
+	 */
+	@Override
+	public void onTaskStarted(Task<T> task) {
 	}
+
+	/**
+	 * @see org.dihedron.commons.concurrent.TaskObserver#onTaskComplete(org.dihedron.commons.concurrent.Task, java.lang.Object)
+	 */
+	@Override
+	public void onTaskComplete(Task<T> task, T result) {
+	}
+
 }

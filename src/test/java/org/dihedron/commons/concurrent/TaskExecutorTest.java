@@ -77,12 +77,12 @@ public class TaskExecutorTest {
 				List<Task<String>> tasks = new ArrayList<Task<String>>();
 				
 				for (int i = 0; i < NUMBER_OF_TASKS; i++) {
-					tasks.add(new TestTask(random.nextInt(MAX_MS_TO_WAIT)));
+					tasks.add(new TestTask(i, random.nextInt(MAX_MS_TO_WAIT)));
 				}
 	
-				TaskExecutor<String> engine = new TaskExecutor<String>(executor);
+				TaskExecutor<String> engine = new TaskExecutor<String>(executor).addObservers(new TestObserver());
 				List<Future<String>> futures = engine.execute(tasks);
-				List<String> results = engine.waitForAll(futures, new TestObserver());
+				List<String> results = engine.waitForAll(futures);
 				
 			} catch (Exception e) {
 				logger.error("error...", e);

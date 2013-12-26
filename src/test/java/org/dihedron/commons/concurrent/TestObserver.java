@@ -30,12 +30,28 @@ public class TestObserver implements TaskObserver<String> {
 	 */
 	private final static Logger logger = LoggerFactory.getLogger(TestObserver.class);
 
+
 	/**
-	 * @see org.dihedron.concurrent.TaskObserver#onTaskComplete(java.lang.Object)
+	 * @see org.dihedron.commons.concurrent.TaskObserver#onTaskStarting(org.dihedron.commons.concurrent.Task)
 	 */
 	@Override
-	public void onTaskComplete(String result) {
-		logger.debug("result of task is '{}'", result);		
+	public void onTaskStarting(Task<String> task) {
+		logger.debug("task '{}' starting", task);
 	}
 
+	/**
+	 * @see org.dihedron.commons.concurrent.TaskObserver#onTaskStarted(org.dihedron.commons.concurrent.Task)
+	 */
+	@Override
+	public void onTaskStarted(Task<String> task) {
+		logger.debug("task '{}' started", task);			
+	}
+
+	/**
+	 * @see org.dihedron.commons.concurrent.TaskObserver#onTaskComplete(org.dihedron.commons.concurrent.Task, java.lang.Object)
+	 */
+	@Override
+	public void onTaskComplete(Task<String> task, String result) {
+		logger.debug("result of task '{}' is '{}'", task, result);	
+	}
 }

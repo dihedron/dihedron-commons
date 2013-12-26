@@ -16,89 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.dihedron.commons.concurrent;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public abstract class Task<T> implements Callable<T> {
+/**
+ * The interface all tasks must implement in order to be executed asynchronously.
+ * 
+ * @author Andrea Funto'
+ */
+public interface Task<T> {	
 	
 	/**
-	 * The constant representing an unidentified task;
-	 */
-	public final static int UNDEFINED_ID = -1;
-	
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = LoggerFactory.getLogger(Task.class);
-	
-	/**
-	 * The task identifier: it can be used to identify the task's future when
-	 * the execution is complete.
-	 */
-	private int id = UNDEFINED_ID;
-	
-	/**
-	 * The queue used to signal that the task is complete.
-	 */
-	private BlockingQueue<Integer> queue;
-			
-	/**
-	 * Sets the Task's id; it should be used only by the TaskExecutor, never by 
-	 * clients, lest the internal workings of the executor be broken or compromised.
-	 * 
-	 * @param id
-	 *   the unique id of the task.
-	 */
-	void setId(int id) {
-		this.id = id;
-	}
-	
-	/**
-	 * The queue used to notify when the task is complete.
-	 * 
-	 * @param queue
-	 *   the queue used to notify the task's completion.
-	 */
-	void setQueue(BlockingQueue<Integer> queue) {
-		this.queue = queue;
-	}
-	
-	/**
-	 * Actual thread's workhorse method; it implements a "code around" pattern, 
-	 * and delegates actual business logic to subclasses, while retaining the
-	 * logic necessary to signal completion to the caller.
-	 * 
-	 * @see java.util.concurrent.Callable#call()
-	 */
-	@Override
-	public T call() throws Exception {
-		logger.debug("task '{}' starting", id);		
-		try {
-			// do the real work 
-			return execute();
-		} catch(InterruptedException e) {
-			logger.error("thread interrupted while executing task '{}'", id);
-			throw e;
-		} finally {
-			// signal that the task is complete
-			logger.debug("task '{}' is complete (queue size: {})", id, queue.size());
-			queue.offer(id);			
-		}
-	}	
-	
-	/**
-	 * Actual business logic method; subclasses must implement this in order to 
-	 * be run in an ExecutorService thread.
+	 * The actual business logic method: the code in this method will be 
+	 * executed asynchronously in a thread pool. This object will be available 
+	 * to task observers.
 	 * 
 	 * @return
 	 *   a return value.
 	 * @throws Exception
 	 */
-	protected abstract T execute() throws Exception;
+	T execute() throws Exception;
 }
