@@ -17,6 +17,7 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 package org.dihedron.commons.streams;
 
 import java.io.BufferedReader;

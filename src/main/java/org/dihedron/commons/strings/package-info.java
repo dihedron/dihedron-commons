@@ -17,6 +17,7 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 /**
  * A package containing utility classes to manipulate strings.
  * 

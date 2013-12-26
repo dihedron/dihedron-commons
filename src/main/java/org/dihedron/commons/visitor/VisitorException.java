@@ -17,43 +17,53 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.dihedron.commons.variables;
+package org.dihedron.commons.visitor;
 
-import java.util.Map;
 
 /**
  * @author Andrea Funto'
  */
-public class MapBasedValueProvider implements ValueProvider {
+public class VisitorException extends Exception {
+	/**
+	 * Serial version id.
+	 */
+	private static final long serialVersionUID = -1461779889544856758L;
 
 	/**
-	 * The map of supported variables keys, along with their values.
-	 */
-	private Map<String, Object> variables;
-	
-	/**
 	 * Constructor.
-	 * 
-	 * @param variables
-	 *   the map of supported variables keys, along with their values.
 	 */
-	public MapBasedValueProvider(Map<String, Object> variables) {
-		this.variables = variables; 
+	public VisitorException() {
 	}
 
 	/**
-	 * Returns the String representation of the value corresponding to the given 
-	 * key in the map (if available), null otherwise.
-	 * 
-	 * @see it.bankitalia.sisi.dsvaa.variables.ValueProvider#onVariable(java.lang.String)
+	 * Constructor.
+	 *
+	 * @param message
+	 *   the exception message.
 	 */
-	@Override
-	public String onVariable(String variable) {
-		String value = null;
-		if(variables != null && variables.containsKey(variable)) {
-			Object val = variables.get(variable);
-			value = (val != null) ? val.toString() : null;
-		}
-		return value;
+	public VisitorException(String message) {
+		super(message);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param cause
+	 *   the exception cause.
+	 */
+	public VisitorException(Throwable cause) {
+		super(cause);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param message
+	 *   the exception message.
+	 * @param cause
+	 *   the exception cause.
+	 */
+	public VisitorException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

@@ -19,8 +19,11 @@
 
 
 /**
- * A package containing a set of utilities for variable replacement.
+ * The package containing all the classes needed to visit an object graph and
+ * return a set of properties, each with its OGNL path and the corresponding 
+ * value. The visit is simply performed by iterating over an object and retrieving
+ * its fields in a loop.
  * 
  * @author Andrea Funto'
  */
-package org.dihedron.commons.variables;
+package org.dihedron.commons.visitor;
