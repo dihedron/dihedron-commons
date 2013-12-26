@@ -57,7 +57,27 @@ public class StringsTest {
 		assertTrue(Strings.trim(" string ").equals("string"));
 		assertTrue(Strings.trim(null) == null);
 	}
-
+	
+	/**
+	 * Test method for {@link org.dihedron.utils.Strings#trimLeft(java.lang.String)}.
+	 */
+	@Test
+	public void testTrimLeft() {
+		assertTrue(Strings.trimLeft(" string ").equals("string "));
+		assertTrue(Strings.trimLeft("\t \tstring ").equals("string "));
+		assertTrue(Strings.trimLeft(null) == null);
+	}
+	
+	/**
+	 * Test method for {@link org.dihedron.utils.Strings#trimLeft(java.lang.String)}.
+	 */
+	@Test
+	public void testTrimRight() {
+		assertTrue(Strings.trimRight(" string \t").equals(" string"));
+		assertTrue(Strings.trimRight("\t \tstring\t\t  ").equals("\t \tstring"));
+		assertTrue(Strings.trimRight(null) == null);
+	}
+	
 	/**
 	 * Test method for {@link org.dihedron.utils.Strings#concatenate(java.lang.String[])}.
 	 */

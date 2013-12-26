@@ -590,23 +590,5 @@ public class Reflector {
 		return translated;
 	}
 	
-	/**
-	 * Returns whether the object under inspection is of a subclass of the given 
-	 * class.
-	 * 
-	 * @param clazz
-	 *   the class to check.
-	 * @return
-	 *   whether the object under inspection can be cast to the given class.
-	 */
-    public boolean isSubClassOf(Class<?> clazz) {
-        if(clazz == null) return false;
-        try {
-            object.getClass().asSubclass(clazz);
-            return true;
-        } catch(ClassCastException e) {
-            return false;
-        }
-    }
-	
+
 }

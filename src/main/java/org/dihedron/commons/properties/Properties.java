@@ -33,13 +33,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.dihedron.commons.strings.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class implements an alternative to the standard Properties in that you 
  * can specify a different key/value separator character sequence and you can 
- * read it from any source, including an input stream.
+ * read it from any source, including an input stream. Moreover, if the file
+ * containes one or more property keyed with the special character "@", the value
+ * is taken to be the name of a file, and it is loaded at the point where it is 
+ * encountered, possibly overriding the value of any variable defined so far
+ * by the including file.
  * 
  * @author Andrea Funto'
  */
@@ -191,7 +196,7 @@ public class Properties {
 	public void load(InputStream stream) throws IOException, PropertiesException {
 		load(stream, DEFAULT_SEPARATOR);
 	}
-	
+		
 	/**
 	 * Loads the properties from an input stream.
 	 * 
@@ -208,23 +213,50 @@ public class Properties {
 			in = new DataInputStream(stream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String line;
+			StringBuilder buffer = new StringBuilder();
 			while ((line = br.readLine()) != null)   {
-				line = line.trim();
-				logger.debug("read line: '" + line + "'");
-				if(!line.startsWith("#") && line.length() > 0) {	// skip comments					
-					int index = line.lastIndexOf(separator);
-					if(index != -1) {
-						String key = line.substring(0, index);
-						String value = line.substring(index + separator.length());
-						logger.debug("adding '" + key + "' => '" + value + "'");
-						this.put(key, value);
+//				logger.trace("read line: '{}'", line);
+				if(Strings.trimRight(line).startsWith("#")) {
+					// comment line, skip!
+					continue;
+				} else {					
+					// now check if multi-line property
+					if(line.endsWith("\\")) {
+						// middle line in multi-line, add and skip parsing
+//						logger.trace("in multiline...");
+						buffer.append(line.replaceFirst("\\\\$", ""));
+						continue;
+					} else {
+//						logger.trace("in ordinary, or at end of multiline...");
+						// ordinary line, or end of multi-line: add and parse
+						buffer.append(line);
 					}
 				}
+				line = buffer.toString().trim();
+				buffer.setLength(0);
+//				logger.trace("logical line: '{}'", line);
+				if(line.length() > 0) {
+					int index = line.lastIndexOf(separator);
+					if(index != -1) {
+						String key = line.substring(0, index).trim();
+						String value = line.substring(index + separator.length()).trim();
+						if(key.equals("@")) {
+							logger.debug("including and overriding values defined so far with file '{}'", value);
+							load(value, separator);
+						} else {
+							logger.debug("adding '{}' => '{}'", key, value);
+							this.put(key.trim(), value.trim());
+						}
+					}
+				}
+			}
+			if(buffer.length() > 0) {
+				logger.warn("multi-line property '{}' is not properly terminated", buffer);
 			}
 		} finally {
 			in.close();
  		}
-	}
+	}	
 	
 	/**
 	 * Merges the contents of another property set into this; if this object and 

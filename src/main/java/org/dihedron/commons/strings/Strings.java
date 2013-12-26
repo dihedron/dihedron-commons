@@ -96,6 +96,36 @@ public final class Strings {
 	}
 	
 	/**
+	 * Trims the given string from blank characters at the beginning.
+	 * 
+	 * @param string
+	 *   the string to be trimmed if not null.
+	 * @return
+	 *   the trimmed string, or null.
+	 */
+	public static String trimLeft(String string) {
+		if(string != null) {
+			return string.replaceAll("^\\s*", "");
+		}
+		return string;
+	}
+	
+	/**
+	 * Trims the given string from blank characters at the end.
+	 * 
+	 * @param string
+	 *   the string to be trimmed if not null.
+	 * @return
+	 *   the trimmed string, or null.
+	 */
+	public static String trimRight(String string) {
+		if(string != null) {
+			return string.replaceAll("\\s*$", "");
+		}
+		return string;
+	}	
+	
+	/**
 	 * Returns a safe concatenation of the input strings, or null if all strings 
 	 * are null.
 	 * 
