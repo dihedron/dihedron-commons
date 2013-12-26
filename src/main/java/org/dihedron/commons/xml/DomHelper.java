@@ -29,6 +29,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
+ * A class providing some utility methods to gain access in a more straightforward 
+ * way than the standard API would allow to specific nodes in a DOM tree.
+ * 
  * @author Andrea Funto'
  */
 public final class DomHelper {

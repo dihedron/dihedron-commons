@@ -167,14 +167,47 @@ public final class Strings {
 		return null;
 	}
 	
+	/**
+	 * Splits the input string using the default separator (',') to identify its
+	 * tokens; it will also trim the tokens. 
+	 *  
+	 * @param strings
+	 *   the string to split.
+	 * @return
+	 *   an array of tokens.
+	 */
 	public static String[] split(String strings) {
 		return split(strings, DEFAULT_SEPARATOR);
 	}
 	
+	/**
+	 * Splits the input string using the given separator to identify its tokens; 
+	 * it will also trim the tokens. 
+	 *  
+	 * @param strings
+	 *   the string to split.
+	 * @param separator
+	 *   the character sequence to use as a token separator.
+	 * @return
+	 *   an array of tokens.
+	 */
 	public static String[] split(String strings, String separator) {
 		return split(strings, separator, DEFAULT_TRIM);
 	}
 	
+	/**
+	 * Splits the input string using the given separator to identify its tokens; 
+	 * it will also trim the tokens, depending on the trim parameter. 
+	 *  
+	 * @param strings
+	 *   the string to split.
+	 * @param separator
+	 *   the character sequence to use as a token separator.
+	 * @param trim
+	 *   whether the tokens should be trimmed.
+	 * @return
+	 *   an array of tokens.
+	 */
 	public static String[] split(String strings, String separator, boolean trim) {
 		StringTokeniser tokeniser = new StringTokeniser(separator);
 		String [] tokens = tokeniser.tokenise(strings);

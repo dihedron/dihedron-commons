@@ -94,7 +94,7 @@ public class Regex {
 		this.regex = regex;
 		this.caseSensitive = caseSensitive;		
 		this.pattern = Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE));
-		logger.trace("checking regex /{}/, case {}", regex, (caseSensitive ? "sensitive" : "insensitive"));			 		
+		logger.trace("checking regular expression /{}/, case {}", regex, (caseSensitive ? "sensitive" : "insensitive"));			 		
 	}
 	
 	/**

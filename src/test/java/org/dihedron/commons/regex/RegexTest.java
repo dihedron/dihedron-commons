@@ -21,11 +21,17 @@ package org.dihedron.commons.regex;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.apache.log4j.BasicConfigurator;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegexTest {
+	
+//	private static final Logger logger = LoggerFactory.getLogger(RegexTest.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -35,13 +41,13 @@ public class RegexTest {
 
 	@Test
 	public void test() {
-		Regex regex = new Regex("^pipp\\d*\\.pdf");
-		assertFalse(regex.matches("pippo1.pdf"));
-		assertTrue(regex.matches("pipp1.pdf"));
-		assertFalse(regex.matches("pipp1.pdff"));
-		assertFalse(regex.matches("pippo.pdf"));
-		assertTrue(regex.matches("pipp.pdf"));
-		assertFalse(regex.matches("pluto.pdf"));
+		Regex regex1 = new Regex("^pipp\\d*\\.pdf");
+		assertFalse(regex1.matches("pippo1.pdf"));
+		assertTrue(regex1.matches("pipp1.pdf"));
+		assertFalse(regex1.matches("pipp1.pdff"));
+		assertFalse(regex1.matches("pippo.pdf"));
+		assertTrue(regex1.matches("pipp.pdf"));
+		assertFalse(regex1.matches("pluto.pdf"));
 		
 		Regex regex2 = new Regex("^pipp\\d*\\.pdf");
 		assertFalse(regex2.matches("pippo1.pdf"));
@@ -51,5 +57,18 @@ public class RegexTest {
 		assertTrue(regex2.matches("pipp.pdf"));
 		assertFalse(regex2.matches("pluto.pdf"));
 		
+		Regex regex3 = new Regex("([a-z]*)\\:=([a-zA-Z0-9]*)");
+		List<String[]> matches = regex3.getAllMatches("var:=valueNumber0,val:=valueNumber1");
+		assertTrue(matches.get(0)[0].equals("var"));
+		assertTrue(matches.get(0)[1].equals("valueNumber0"));
+		assertTrue(matches.get(1)[0].equals("val"));
+		assertTrue(matches.get(1)[1].equals("valueNumber1"));
+//		int i = 0;
+//		for(String[] match : matches) {
+//			logger.trace("match number {}", i++);
+//			for(String string : match) {
+//				logger.trace("... match: '{}'", string);
+//			}
+//		}
 	}
 }
