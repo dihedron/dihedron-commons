@@ -127,7 +127,7 @@ public class Streams {
 	/**
 	 * Reads all data from the given input file.
 	 * 
-	 * @param file
+	 * @param filepath
 	 *   the path of the file to read from.
 	 * @return
 	 *   an array of bytes read from the input file.

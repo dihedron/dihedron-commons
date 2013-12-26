@@ -36,7 +36,7 @@ public final class Strings {
 	
 	/**
 	 * The default character sequence to use for telling tokens apart in the
-	 * {@link #split(String)} method, and to join them in {@link #join(String[])}.
+	 * {@link #split(String)} method, and to join them in {@link #join(Object...)}.
 	 */
 	public static final String DEFAULT_SEPARATOR = ",";
 	
@@ -276,8 +276,6 @@ public final class Strings {
 	 *   the string to pad.
 	 * @param size
 	 *   the final length of the resulting padded string.
-	 * @param padding
-	 *   the character to use as padding.
 	 * @return
 	 *   the original string padded to the right.
 	 */
