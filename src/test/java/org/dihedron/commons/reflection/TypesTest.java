@@ -20,7 +20,6 @@ package org.dihedron.commons.reflection;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -29,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -38,6 +38,13 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Funto'
  */
 public class TypesTest {
+	
+	@SuppressWarnings("unused")
+	private void myMethod(
+			Set<List<Map<String, Vector<String>>>> parameter1, 
+			String parameter2, 
+			int parameter3) {		
+	}	
 	
 	private class SuperClass {
 		
@@ -186,4 +193,37 @@ public class TypesTest {
 	public void testIsOfSuperClassOf() {
 		assertTrue(Types.isOfSuperClassOf(new SuperClass(), SubClass.class));
 	}
+	
+
+	@Test
+	public void test() {
+		
+		Method[] methods = TypesTest.class.getDeclaredMethods();
+		
+		for(Method method : methods) {
+			
+			if(!method.getName().equals("myMethod")) {
+				continue;
+			}
+		
+			Type[] types = method.getGenericParameterTypes();
+			
+			assertTrue(Types.isGeneric(types[0]));
+			assertFalse(Types.isSimple(types[0]));
+			assertTrue(Types.isOfClass(types[0],  Set.class));
+			
+			
+			
+			assertFalse(Types.isGeneric(types[1]));
+			assertTrue(Types.isSimple(types[1]));
+			assertTrue(Types.isOfClass(types[1],  String.class));
+
+			assertFalse(Types.isGeneric(types[2]));
+			assertTrue(Types.isSimple(types[2]));
+			assertTrue(Types.isOfClass(types[2],  Integer.TYPE));
+			
+		}
+//		fail("Not yet implemented");
+	}
+	
 }
