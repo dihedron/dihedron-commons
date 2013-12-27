@@ -16,54 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+package org.dihedron.commons.cache;
 
-package org.dihedron.commons.visitor;
+import java.io.File;
 
+import org.dihedron.commons.cache.handlers.CacheMissHandler;
+import org.dihedron.commons.cache.handlers.FileRetriever;
+import org.dihedron.commons.cache.storage.MemoryStorage;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
  */
-public class VisitorException extends Exception {
-	/**
-	 * Serial version id.
-	 */
-	private static final long serialVersionUID = -1461779889544856758L;
+public class CacheTest {
 
-	/**
-	 * Constructor.
-	 */
-	public VisitorException() {
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param message
-	 *   the exception message.
-	 */
-	public VisitorException(String message) {
-		super(message);
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param cause
-	 *   the exception cause.
-	 */
-	public VisitorException(Throwable cause) {
-		super(cause);
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param message
-	 *   the exception message.
-	 * @param cause
-	 *   the exception cause.
-	 */
-	public VisitorException(String message, Throwable cause) {
-		super(message, cause);
+	private static final Logger logger = LoggerFactory.getLogger(CacheTest.class);
+	
+	@Test
+	public void test() throws Exception {
+		
+		
+		Cache cache = new Cache(new MemoryStorage());
+		
+		CacheMissHandler handler = new FileRetriever(new File("src/test/resources/test.pdf"));
+		cache.getAsByteArray("google_1", handler);
+		cache.copyAs("google_1", "google_2");
+		cache.copyAs("google_1", "google_3");
+		cache.copyAs("google_1", "google_4");
+		
+		for(String resource : cache) {
+			logger.info("resource: " + resource);
+		}
 	}
 }
