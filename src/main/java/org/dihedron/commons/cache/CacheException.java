@@ -16,54 +16,83 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+package org.dihedron.commons.cache;
 
-package org.dihedron.commons.visitor;
+import java.util.List;
 
 
 /**
  * @author Andrea Funto'
  */
-public class VisitorException extends Exception {
+public class CacheException extends Exception {
+	
 	/**
 	 * Serial version id.
 	 */
-	private static final long serialVersionUID = -1461779889544856758L;
+	private static final long serialVersionUID = -8733027292263547244L;
 
+	/**
+	 * A list of nested exceptions.
+	 */
+	private List<Exception> subexceptions;
+	
 	/**
 	 * Constructor.
 	 */
-	public VisitorException() {
+	public CacheException() {
 	}
 
 	/**
 	 * Constructor.
-	 *
-	 * @param message
-	 *   the exception message.
+	 * 
+	 * @param messages
+	 *   the exception messages.
 	 */
-	public VisitorException(String message) {
+	public CacheException(String message) {
 		super(message);
 	}
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param cause
-	 *   the exception cause.
+	 *   the exceptions root cause.
 	 */
-	public VisitorException(Throwable cause) {
+	public CacheException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
 	 * Constructor.
-	 *
+	 * 
+	 * @param messages
+	 *   the exception messages.
+	 * @param cause
+	 *   the exception root cause.
+	 */
+	public CacheException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	/**
+	 * Constructor.
+	 * 
 	 * @param message
 	 *   the exception message.
-	 * @param cause
-	 *   the exception cause.
+	 * @param subexceptions
+	 *   the exception causes.
 	 */
-	public VisitorException(String message, Throwable cause) {
-		super(message, cause);
+	public CacheException(String message, List<Exception> subexceptions) {
+		this.subexceptions = subexceptions;
+	}
+	
+	/**
+	 * Returns the list of nested exceptions.
+	 * 
+	 * @return
+	 *   the list of nested exceptions.
+	 */
+	public List<Exception> getNestedExceptions() {
+		return this.subexceptions;
 	}
 }

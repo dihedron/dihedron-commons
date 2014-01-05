@@ -17,53 +17,24 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.dihedron.commons.visitor;
+package org.dihedron.commons.cache.handlers;
 
+import java.io.InputStream;
+
+import org.dihedron.commons.cache.CacheException;
 
 /**
  * @author Andrea Funto'
  */
-public class VisitorException extends Exception {
+public interface CacheMissHandler {
+	
 	/**
-	 * Serial version id.
+	 * Retrieves an input stream from which the missing 
+	 * resource can be read.
+	 * 
+	 * @return
+	 *   an input stream from which the missing resource
+	 *   can be read.
 	 */
-	private static final long serialVersionUID = -1461779889544856758L;
-
-	/**
-	 * Constructor.
-	 */
-	public VisitorException() {
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param message
-	 *   the exception message.
-	 */
-	public VisitorException(String message) {
-		super(message);
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param cause
-	 *   the exception cause.
-	 */
-	public VisitorException(Throwable cause) {
-		super(cause);
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param message
-	 *   the exception message.
-	 * @param cause
-	 *   the exception cause.
-	 */
-	public VisitorException(String message, Throwable cause) {
-		super(message, cause);
-	}
+	public InputStream getAsStream() throws CacheException;
 }
