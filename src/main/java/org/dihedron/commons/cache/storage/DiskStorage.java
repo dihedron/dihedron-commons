@@ -261,7 +261,7 @@ public class DiskStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#list(it.bankitalia.sisi.dsvaa.commons.regex.regex.Regex)
+	 * @see org.dihedron.commons.cache.storage.Storage#list(org.dihedron.commons.regex.Regex)
 	 */
 	public String[] list(Regex regex) {
 		if(regex == null) { 
@@ -336,7 +336,7 @@ public class DiskStorage implements Storage {
 	}
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#delete(it.bankitalia.sisi.dsvaa.commons.regex.regex.Regex)
+	 * @see org.dihedron.commons.cache.storage.Storage#delete(org.dihedron.commons.regex.Regex)
 	 */
 	public void delete(Regex regex) {
 		logger.debug("deleting files that match /" + regex + "/ from cache");

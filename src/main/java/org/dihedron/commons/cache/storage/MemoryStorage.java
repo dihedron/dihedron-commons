@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.lf5.util.StreamUtils;
 import org.dihedron.commons.cache.CacheException;
 import org.dihedron.commons.regex.Regex;
+import org.dihedron.commons.streams.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +106,7 @@ public class MemoryStorage implements Storage {
 			if(resource != null && stream != null) {			
 				logger.debug("storing resource {} available bytes: {}", resource, stream.available());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-				StreamUtils.copy(stream, baos);
+				Streams.copy(stream, baos);
 				store(resource, baos.toByteArray());
 				baos.close();
 			}
@@ -140,7 +140,7 @@ public class MemoryStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#delete(it.bankitalia.sisi.dsvaa.commons.regex.regex.Regex)
+	 * @see org.dihedron.commons.cache.storage.Storage#delete(org.dihedron.commons.regex.Regex)
 	 */
 	public void delete(Regex regex) {
 		Set<String> resources = new HashSet<String>(contents.keySet());
