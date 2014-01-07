@@ -30,7 +30,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.log4j.lf5.util.StreamUtils;
 import org.dihedron.commons.cache.CacheException;
 import org.dihedron.commons.regex.Regex;
 import org.dihedron.commons.streams.Streams;
@@ -323,7 +322,7 @@ public class DiskStorage implements Storage {
 		if(input != null){
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			try {
-				StreamUtils.copy(input, output);
+				Streams.copy(input, output);
 				input.close();
 				logger.debug("returning resource as byte array");
 				return output.toByteArray();
