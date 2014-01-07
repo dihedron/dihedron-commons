@@ -33,6 +33,7 @@ import java.io.InputStream;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.dihedron.commons.cache.CacheException;
 import org.dihedron.commons.regex.Regex;
+import org.dihedron.commons.streams.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -282,7 +283,7 @@ public class DiskStorage implements Storage {
 		try {
 			try {
 				fos = new FileOutputStream(new File(directory, resource));
-				StreamUtils.copy(stream, fos);
+				Streams.copy(stream, fos);
 			} finally {
 				if(fos != null) {
 					fos.close();

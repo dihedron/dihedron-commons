@@ -73,7 +73,7 @@ public class Cache implements Iterable<String>{
 	 *   whether the cache is empty.
 	 */
 	public boolean isEmpty() {
-		logger.debug("checking if cache is empty");
+		logger.trace("checking if cache is empty");
 		return storage.isEmpty();
 	}
 	
@@ -129,9 +129,9 @@ public class Cache implements Iterable<String>{
 		}
 		byte [] data = storage.retrieveAsByteArray(source);
 		if(data != null) {
-			logger.debug("storing {} bytes as {}", data.length, destination);
+			logger.trace("storing {} bytes as {}", data.length, destination);
 			storage.store(destination, data);
-			logger.debug("data stored");
+			logger.trace("data stored");
 			return destination;
 		}
 		return null;
@@ -171,7 +171,7 @@ public class Cache implements Iterable<String>{
 	 * @throws CacheException 
 	 */
 	public final InputStream getAsStream(String resource) throws CacheException {
-		logger.debug("retrieving resource '{}' from cache", resource);
+		logger.trace("retrieving resource '{}' from cache", resource);
 		return storage.retrieveAsStream(resource);
 	}
 	
@@ -187,7 +187,7 @@ public class Cache implements Iterable<String>{
 	 * @throws CacheException 
 	 */
 	public final byte[] getAsByteArray(String resource) throws CacheException {
-		logger.debug("retrieving resource '{}' from cache", resource);
+		logger.trace("retrieving resource '{}' from cache", resource);
 		return storage.retrieveAsByteArray(resource);
 	}
 	
@@ -211,7 +211,7 @@ public class Cache implements Iterable<String>{
 		InputStream stream = storage.retrieveAsStream(resource);
 		
 		if(stream == null) {			
-				logger.debug("retrieving '{}' using {}", resource, handler.getClass().getSimpleName());
+				logger.trace("retrieving '{}' using {}", resource, handler.getClass().getSimpleName());
 				stream = handler.getAsStream();
 				storage.store(resource, stream);
 				return getAsStream(resource);
@@ -270,8 +270,7 @@ public class Cache implements Iterable<String>{
 		private CacheIterator(String [] resources) {	
 			if(resources != null && resources.length > 0) {
 				this.resources = Arrays.copyOf(resources, resources.length);
-			}					
-			
+			}			
 		}
 		
 		/**
