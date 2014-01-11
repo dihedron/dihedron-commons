@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.dihedron.commons.cache.CacheException;
+import org.dihedron.commons.cache.Storage;
 import org.dihedron.commons.regex.Regex;
 import org.dihedron.commons.streams.Streams;
 import org.slf4j.Logger;
@@ -195,11 +196,11 @@ public class DiskStorage implements Storage {
 	 * @param createIfMissing
 	 *   if <code>true</code>, the directory will be created if
 	 *   not existing on disk. 
-	 * @throws Exception
+	 * @throws CacheException
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
-	public DiskStorage(String path, boolean createIfMissing) throws Exception{
+	public DiskStorage(String path, boolean createIfMissing) throws CacheException{
 		this(new File(path), createIfMissing);
 	}
 	
@@ -240,7 +241,7 @@ public class DiskStorage implements Storage {
 	}	
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#isEmpty()
+	 * @see org.dihedron.commons.cache.Storage#isEmpty()
 	 */
 	public boolean isEmpty() {
 		String [] files = directory.list();
@@ -248,7 +249,7 @@ public class DiskStorage implements Storage {
 	}	
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#contains(java.lang.String)
+	 * @see org.dihedron.commons.cache.Storage#contains(java.lang.String)
 	 */
 	public boolean contains(String resource) {
 		if(resource == null || resource.length() == 0) {
@@ -261,7 +262,7 @@ public class DiskStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#list(org.dihedron.commons.regex.Regex)
+	 * @see org.dihedron.commons.cache.Storage#list(org.dihedron.commons.regex.Regex)
 	 */
 	public String[] list(Regex regex) {
 		if(regex == null) { 
@@ -273,7 +274,7 @@ public class DiskStorage implements Storage {
 	}	
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#store(java.lang.String, java.io.InputStream)
+	 * @see org.dihedron.commons.cache.Storage#store(java.lang.String, java.io.InputStream)
 	 */	
 	public void store(String resource, InputStream stream) throws CacheException {		
 		delete(resource, caseSensitive);
@@ -295,7 +296,7 @@ public class DiskStorage implements Storage {
 	}
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#store(java.lang.String, byte[])
+	 * @see org.dihedron.commons.cache.Storage#store(java.lang.String, byte[])
 	 */
 	public void store(String resource, byte[] data) throws CacheException {
 		ByteArrayInputStream bais = new ByteArrayInputStream(data);
@@ -303,7 +304,7 @@ public class DiskStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#retrieveAsStream(java.lang.String)
+	 * @see org.dihedron.commons.cache.Storage#retrieveAsStream(java.lang.String)
 	 */
 	public InputStream retrieveAsStream(String resource) {
 		try {
@@ -315,7 +316,7 @@ public class DiskStorage implements Storage {
 	}
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#retrieveAsByteArray(java.lang.String)
+	 * @see org.dihedron.commons.cache.Storage#retrieveAsByteArray(java.lang.String)
 	 */
 	public byte[] retrieveAsByteArray(String resource) {
 		InputStream input = retrieveAsStream(resource);
@@ -336,7 +337,7 @@ public class DiskStorage implements Storage {
 	}
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#delete(org.dihedron.commons.regex.Regex)
+	 * @see org.dihedron.commons.cache.Storage#delete(org.dihedron.commons.regex.Regex)
 	 */
 	public void delete(Regex regex) {
 		logger.debug("deleting files that match /" + regex + "/ from cache");
@@ -349,7 +350,7 @@ public class DiskStorage implements Storage {
 	}
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#delete(java.lang.String, boolean)
+	 * @see org.dihedron.commons.cache.Storage#delete(java.lang.String, boolean)
 	 */
 	public void delete(String resource, boolean caseSensitive){
 		logger.debug("deleting resource '{}' from cache", resource);
@@ -372,7 +373,7 @@ public class DiskStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#clear()
+	 * @see org.dihedron.commons.cache.Storage#clear()
 	 */
 	public void clear() {
 		logger.debug("clearing cache");

@@ -22,6 +22,7 @@ package org.dihedron.commons.cache.handlers;
 import java.io.InputStream;
 
 import org.dihedron.commons.cache.CacheException;
+import org.dihedron.commons.cache.CacheMissHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,7 @@ public class JarResourceRetriever implements CacheMissHandler {
 	}
 
 	/**
-	 * @see org.dihedron.commons.cache.handlers.CacheMissHandler#getAsStream()
+	 * @see org.dihedron.commons.cache.CacheMissHandler#getAsStream()
 	 */
 	public InputStream getAsStream() throws CacheException {		
 		return clazz.getResourceAsStream(resource);

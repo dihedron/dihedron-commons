@@ -83,6 +83,7 @@ public class CacheException extends Exception {
 	 *   the exception causes.
 	 */
 	public CacheException(String message, List<Exception> subexceptions) {
+		super(message);
 		this.subexceptions = subexceptions;
 	}
 	

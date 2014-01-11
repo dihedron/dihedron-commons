@@ -215,7 +215,6 @@ public class Properties {
 			String line;
 			StringBuilder buffer = new StringBuilder();
 			while ((line = br.readLine()) != null)   {
-//				logger.trace("read line: '{}'", line);
 				if(Strings.trimRight(line).startsWith("#")) {
 					// comment line, skip!
 					continue;
@@ -223,18 +222,15 @@ public class Properties {
 					// now check if multi-line property
 					if(line.endsWith("\\")) {
 						// middle line in multi-line, add and skip parsing
-//						logger.trace("in multiline...");
 						buffer.append(line.replaceFirst("\\\\$", ""));
 						continue;
 					} else {
-//						logger.trace("in ordinary, or at end of multiline...");
 						// ordinary line, or end of multi-line: add and parse
 						buffer.append(line);
 					}
 				}
 				line = buffer.toString().trim();
 				buffer.setLength(0);
-//				logger.trace("logical line: '{}'", line);
 				if(line.length() > 0) {
 					int index = line.lastIndexOf(separator);
 					if(index != -1) {

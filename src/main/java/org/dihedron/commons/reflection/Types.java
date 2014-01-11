@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
-public class Types {
+public final class Types {
 
 	/**
 	 * The logger.
@@ -231,7 +231,9 @@ public class Types {
 	 *   whether the object under inspection can be cast to the given class.
 	 */
     public static boolean isOfSubClassOf(Object object, Class<?> clazz) {
-        if(object == null || clazz == null) return false;
+        if(object == null || clazz == null) {
+        	return false;
+        }
         try {
             object.getClass().asSubclass(clazz);
             return true;
@@ -252,7 +254,9 @@ public class Types {
 	 *   whether the object under inspection can be cast to the given class.
 	 */
     public static boolean isOfSuperClassOf(Object object, Class<?> clazz) {
-        if(object == null || clazz == null) return false;
+        if(object == null || clazz == null) {
+        	return false;
+        }
         return object.getClass().isAssignableFrom(clazz);
     }
    	

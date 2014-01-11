@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
-public class Variables {
+public final class Variables {
 	
 	/**
 	 * The logger.
@@ -85,15 +85,16 @@ public class Variables {
 	 *   the text with all variables bound.
 	 */
 	public static final String replaceVariables(String text, boolean caseSensitive, ValueProvider... providers) {
+		String replaceText = text;
 		Regex regex = new Regex(VARIABLE_PATTERN, caseSensitive);
 		List<String[]> variables = null;
 		
 		Set<String> unboundVariables = new HashSet<String>();
 		
 		boolean oneVariableBound = true;
-		while(oneVariableBound && (variables = regex.getAllMatches(text)).size() > 0) {
+		while(oneVariableBound && (variables = regex.getAllMatches(replaceText)).size() > 0) {
 			oneVariableBound = false;			
-			logger.trace("analysing text: '{}'", text);
+			logger.trace("analysing text: '{}'", replaceText);
 			for(String[] groups : variables) {
 				String variable = groups[0];
 				logger.trace("... handling variable '{}'...", variable);
@@ -102,8 +103,8 @@ public class Variables {
 					value = provider.onVariable(variable);
 					if(value != null) {
 						logger.trace("... replacing variable '{}' with value '{}'", variable, value);
-						text = text.replace("${" + variable +"}", value);
-						logger.trace("... text is now '{}'", text);
+						replaceText = replaceText.replace("${" + variable +"}", value);
+						logger.trace("... text is now '{}'", replaceText);
 						oneVariableBound = true;
 						break;
 					}
@@ -113,7 +114,7 @@ public class Variables {
 				}
 			}
 		}
-		return text;
+		return replaceText;
 	}
 	 
 	

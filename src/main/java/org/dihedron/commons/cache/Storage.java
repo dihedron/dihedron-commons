@@ -17,11 +17,10 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.dihedron.commons.cache.storage;
+package org.dihedron.commons.cache;
 
 import java.io.InputStream;
 
-import org.dihedron.commons.cache.CacheException;
 import org.dihedron.commons.regex.Regex;
 
 /**

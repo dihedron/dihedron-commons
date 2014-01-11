@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dihedron.commons.cache.CacheException;
+import org.dihedron.commons.cache.Storage;
 import org.dihedron.commons.regex.Regex;
 import org.dihedron.commons.streams.Streams;
 import org.slf4j.Logger;
@@ -39,8 +40,9 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * A class proving in-memory storage.
+ * 
  * @author Andrea Funto'
- *
  */
 public class MemoryStorage implements Storage {
 	
@@ -62,45 +64,49 @@ public class MemoryStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#isEmpty()
+	 * @see org.dihedron.commons.cache.Storage#isEmpty()
 	 */
-
+	@Override
 	public boolean isEmpty() {
 		return contents.isEmpty();
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#contains(java.lang.String)
+	 * @see org.dihedron.commons.cache.Storage#contains(java.lang.String)
 	 */
-
+	@Override
 	public boolean contains(String resource) {
 		boolean result = contents.containsKey(resource);
-		logger.debug("storage " + (result ? "contains " : "doesn't contain ") + resource);
+		logger.debug("storage {} resource '{}'", (result ? "contains" : "doesn't contain"), resource);
 		return result;
 	}
 
+	/**
+	 * @see org.dihedron.commons.cache.Storage#list(org.dihedron.commons.regex.Regex)
+	 */
+	@Override
 	public String[] list(Regex regex) {
-		if(regex == null) {
-			regex = new Regex();
-		}
-		List<String> matched = new ArrayList<String>();
-		Set<String> resources = contents.keySet();
-		for (String resource : resources) {
-			if(regex.matches(resource)) {
-				matched.add(resource);
+		if(regex != null) {
+			List<String> matched = new ArrayList<String>();
+			Set<String> resources = contents.keySet();
+			for (String resource : resources) {
+				if(regex.matches(resource)) {
+					logger.trace("regular expression matches input string '{}'", resource);
+					matched.add(resource);
+				}
+			}
+			if(matched.size() > 0){
+				String [] result = new String[matched.size()];
+				return matched.toArray(result);			
 			}
 		}
-		if(matched.size() > 0){
-			String []result = new String[matched.size()];
-			return matched.toArray(result);			
-		}
-		return null;
+		return new String[0];
 	}	
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#store(java.lang.String, java.io.InputStream)
+	 * @see org.dihedron.commons.cache.Storage#store(java.lang.String, java.io.InputStream)
 	 */
-
+	@Override
 	public void store(String resource, InputStream stream) throws CacheException {
 		try {
 			if(resource != null && stream != null) {			
@@ -117,8 +123,9 @@ public class MemoryStorage implements Storage {
 	}
 
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#store(java.lang.String, byte[])
+	 * @see org.dihedron.commons.cache.Storage#store(java.lang.String, byte[])
 	 */
+	@Override
 	public void store(String resource, byte[] data) throws CacheException {
 		if(resource != null && data != null){
 			contents.put(resource, data);
@@ -126,22 +133,25 @@ public class MemoryStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#retrieveAsStream(java.lang.String)
+	 * @see org.dihedron.commons.cache.Storage#retrieveAsStream(java.lang.String)
 	 */
+	@Override
 	public InputStream retrieveAsStream(String resource) {
 		return byteArrayToStream(contents.get(resource));
 	}	
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#retrieveAsByteArray(java.lang.String)
+	 * @see org.dihedron.commons.cache.Storage#retrieveAsByteArray(java.lang.String)
 	 */
+	@Override
 	public byte[] retrieveAsByteArray(String resource) {
 		return contents.get(resource);
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#delete(org.dihedron.commons.regex.Regex)
+	 * @see org.dihedron.commons.cache.Storage#delete(org.dihedron.commons.regex.Regex)
 	 */
+	@Override
 	public void delete(Regex regex) {
 		Set<String> resources = new HashSet<String>(contents.keySet());
 		for (String resource : resources) {
@@ -154,8 +164,9 @@ public class MemoryStorage implements Storage {
 	}
 		
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#delete(java.lang.String, boolean)
+	 * @see org.dihedron.commons.cache.Storage#delete(java.lang.String, boolean)
 	 */
+	@Override
 	public void delete(String resource, boolean caseSensitive) {
 		Set<String> resources = new HashSet<String>(contents.keySet());
 		for (String string : resources) {
@@ -172,8 +183,9 @@ public class MemoryStorage implements Storage {
 	}
 	
 	/**
-	 * @see org.dihedron.commons.cache.storage.Storage#clear()
+	 * @see org.dihedron.commons.cache.Storage#clear()
 	 */
+	@Override
 	public void clear() {
 		logger.debug("clearing storage");
 		contents.clear();
@@ -193,53 +205,4 @@ public class MemoryStorage implements Storage {
 		}
 		return null;
 	}	
-	
-	/*
-	public static void main(String [] args) throws Exception {
-		logger = Logger.initialiseWithDefaults(Level.DEBUG, MemoryStorage.class);
-		
-		MemoryStorage storage = new MemoryStorage();
-		File file = new File("d:\\temp2\\pippo.pdf");
-		long size = file.length();
-		storage.store("file1.pdf", new FileInputStream(file)); 
-		storage.store("file2.pdf", new FileInputStream(file)); 
-		storage.store("file3.pdf", new FileInputStream(file));
-		storage.store("file4.pdf", new FileInputStream(file));
-		logger.debug("storage contains file1.pdf? " + storage.contains("file1.pdf") + " [expected: true]");
-		logger.debug("storage contains file2.pdf? " + storage.contains("file1.pdf") + " [expected: true]");
-		logger.debug("storage contains file3.pdf? " + storage.contains("file1.pdf") + " [expected: true]");
-		logger.debug("storage contains file4.pdf? " + storage.contains("file1.pdf") + " [expected: true]");
-		logger.debug("storage contains file5.pdf? " + storage.contains("file1.pdf") + " [expected: false]");
-		
-		byte [] data = storage.retrieveAsByteArray("file1.pdf");
-		logger.debug("size of file1.pdf on disk and in storage match? " + (size == data.length) + " [expected: true]");
-		data = storage.retrieveAsByteArray("file2.pdf");
-		logger.debug("size of file2.pdf on disk and in storage match? " + (size == data.length) + " [expected: true]");
-		data = storage.retrieveAsByteArray("file3.pdf");
-		logger.debug("size of file3.pdf on disk and in storage match? " + (size == data.length) + " [expected: true]");
-		data = storage.retrieveAsByteArray("file4.pdf");
-		logger.debug("size of file4.pdf on disk and in storage match? " + (size == data.length) + " [expected: true]");
-
-		storage.delete(new Regex(".*1\\.pdf", true));
-		storage.contains("file1.pdf");
-	
-//		storage.delete("file\\d\\.pdf", true);
-//		logger.debug("storage is empty? " + storage.isEmpty() + " [expected: true]");
-//		storage.store("pluto.pdf", new FileInputStream(new File("d:\\temp2\\pippo.pdf")));
-//		logger.debug("storage is empty? " + storage.isEmpty() + " [expected: false]");
-//		storage.clear();
-//		logger.debug("storage is empty? " + storage.isEmpty() + " [expected: true]");
-//		storage.store("pluto2.pdf", new FileInputStream(new File("d:\\temp2\\pippo.pdf")));
-//		logger.debug("storage is empty? " + storage.isEmpty() + " [expected: false]");
-//		storage.delete("pi.*\\.pdf", true);
-//		logger.debug("storage is empty? " + storage.isEmpty() + " [expected: false]");
-//		storage.delete("p.*\\.pdf", true);
-//		logger.debug("storage is empty? " + storage.isEmpty() + " [expected: true]");
-//		assert(storage.isEmpty());	
-		
-	}
-
-*/
-
-
 }

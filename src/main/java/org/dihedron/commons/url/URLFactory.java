@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
-public class URLFactory {
+public final class URLFactory {
 	
 	/**
 	 * The logger.

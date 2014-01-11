@@ -18,11 +18,19 @@
  */
 package org.dihedron.commons.concurrent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @author Andrea Funto'
  */
 public class TestTask implements Task<String> {
+	
+	/**
+	 * The logger.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(TestTask.class);
 
 	private int id;
 	
@@ -37,9 +45,14 @@ public class TestTask implements Task<String> {
 	 * @see org.dihedron.concurrent.TaskCallable#execute()
 	 */
 	@Override
-	public String execute() throws Exception {
-        Thread.sleep(sleepTime);
-        return "task " + id + " complete after having slept for " + sleepTime + " ms";
+	public String execute() throws TaskException {
+        try {
+			Thread.sleep(sleepTime);
+			return "task " + id + " complete after having slept for " + sleepTime + " ms";
+		} catch (InterruptedException e) {
+			logger.error("error: thread interrupted", e);
+			throw new TaskException("thread interrupted", e);
+		}
 	}
 	
 	public String toString() {

@@ -36,12 +36,12 @@ class TaskCallable<T> implements Callable<T> {
 	/**
 	 * The constant representing an unidentified task;
 	 */
-	public final static int UNDEFINED_ID = -1;
+	public static final int UNDEFINED_ID = -1;
 	
 	/**
 	 * The logger.
 	 */
-	private final static Logger logger = LoggerFactory.getLogger(TaskCallable.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaskCallable.class);
 	
 	/**
 	 * The actual task being executed.
@@ -88,9 +88,6 @@ class TaskCallable<T> implements Callable<T> {
 		try {
 			// do the real work 
 			return task.execute();
-		} catch(InterruptedException e) {
-			logger.error("thread interrupted while executing task '{}'", id);
-			throw e;
 		} finally {
 			// signal that the task is complete
 			logger.debug("task '{}' is complete (queue size: {})", id, queue.size());

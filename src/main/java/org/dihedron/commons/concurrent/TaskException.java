@@ -16,25 +16,53 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+package org.dihedron.commons.concurrent;
 
-package org.dihedron.commons.cache.handlers;
-
-import java.io.InputStream;
-
-import org.dihedron.commons.cache.CacheException;
 
 /**
  * @author Andrea Funto'
  */
-public interface CacheMissHandler {
-	
+public class TaskException extends Exception {
 	/**
-	 * Retrieves an input stream from which the missing 
-	 * resource can be read.
-	 * 
-	 * @return
-	 *   an input stream from which the missing resource
-	 *   can be read.
+	 * Serial version id.
 	 */
-	public InputStream getAsStream() throws CacheException;
+	private static final long serialVersionUID = 1505568488005107618L;
+
+	/**
+	 * Constructor.
+	 */
+	public TaskException() {
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param message
+	 *   the exception message.
+	 */
+	public TaskException(String message) {
+		super(message);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param cause
+	 *   the exception root cause.
+	 */
+	public TaskException(Throwable cause) {
+		super(cause);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param message
+	 *   the exception message.
+	 * @param cause
+	 *   the exception root cause.
+	 */
+	public TaskException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

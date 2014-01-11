@@ -45,7 +45,7 @@ public class TaskExecutor<T> {
 	/**
 	 * The logger.
 	 */
-	private final static Logger logger = LoggerFactory.getLogger(TaskExecutor.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaskExecutor.class);
 	
 	/**
 	 * The actual executor service.
@@ -60,17 +60,12 @@ public class TaskExecutor<T> {
 	/**
 	 * The list of tasks being executed.
 	 */
-	List<Task<T>> tasks = new ArrayList<Task<T>>();
-	
-	/**
-	 * The corresponding list of results.
-	 */
-	List<Future<T>> futures = new ArrayList<Future<T>>();
+	private List<Task<T>> tasks = new ArrayList<Task<T>>();
 	
 	/**
 	 * The (optional) list of task observers.
 	 */
-	List<TaskObserver<T>> observers = new ArrayList<TaskObserver<T>>();
+	private List<TaskObserver<T>> observers = new ArrayList<TaskObserver<T>>();
 	
 	/**
 	 * Constructor.
@@ -96,7 +91,7 @@ public class TaskExecutor<T> {
 	 * @return
 	 *   the object itself, to enable method chaining.
 	 */
-	public TaskExecutor<T> addObservers(TaskObserver<T>... observers) {
+	public final TaskExecutor<T> addObservers(TaskObserver<T>... observers) {
 		if(observers != null) {
 			for(TaskObserver<T> observer : observers) {
 				this.observers.add(observer);
@@ -241,46 +236,4 @@ public class TaskExecutor<T> {
 	public void dispose() {
 		executor.shutdown();		
 	}
-
-	/*
-	public static void test() throws Exception {
-
-		long start = System.currentTimeMillis();
-		
-		Random random = new SecureRandom();
-		
-		
-		
-		ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-				
-		List<Future<String>> results = new ArrayList<Future<String>>();
-
-		synchronized(queue) {
-			for (int i = 0; i < NUMBER_OF_TASKS; i++) {
-				Callable<String> worker = new TaskImpl(i, queue, random.nextInt(MAX_MS_TO_WAIT));
-				Future<String> submit = executor.submit(worker);
-				results.add(submit);							
-			}
-		}
-		
-		int count = NUMBER_OF_TASKS;
-		while(count-- > 0) {
-			int index = queue.take();
-			System.out.println("----> notified of completion of task " + index + "(count: " + count + ", queue: " + queue.size() + ")");
-			System.out.println("       + result: '" + results.get(index).get() + "'");
-		}
-		
-		System.out.println("all tasks complete in " + (System.currentTimeMillis() - start) + " ms, exiting!");
-
-		executor.shutdown();
-	}
-	
-	public static void main(String[] args) throws Exception {
-		for(int i = 0; i < NUMBER_OF_TESTS; ++i) {
-			System.out.println("-------------------------------------------------");
-			test();
-		}
-	}
-	*/
-	
 }

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.dihedron.commons.cache.CacheException;
+import org.dihedron.commons.cache.CacheMissHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -28,16 +28,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class contains utility methods for inspecting
- * operating system properties. It relies on native
- * methods for some of its queries.
+ * This class contains utility methods for inspecting operating system properties. 
+ * In a future version it may rely on native methods for some of its queries.
+ * 
+ * @author Andrea Funto'
  */
-public class OperatingSystem {
+public final class OperatingSystem {
 	
 	/** 
 	 * The logger. 
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(OperatingSystem.class);
+	
+	/**
+	 * The name of the system property holding the operating system architecture.
+	 */
+	private static final String OS_ARCH = "os.arch";
+
+	/**
+	 * The name of the system property holding the name of the operating system.
+	 */
+	private static final String OS_NAME = "os.name";
 	
 	/** 
 	 * 32 bits Windows label. 
@@ -76,7 +87,7 @@ public class OperatingSystem {
 	 *   the operating system name.
 	 */
 	public static String getName() {
-		return System.getProperty("os.name");
+		return System.getProperty(OS_NAME);
 	}
 	
 	/**
@@ -86,7 +97,7 @@ public class OperatingSystem {
 	 *   the operating system architecture
 	 */
 	public static String getArchitecture() {
-		return System.getProperty("os.arch");
+		return System.getProperty(OS_ARCH);
 	}
 
 	/**
@@ -97,7 +108,7 @@ public class OperatingSystem {
 	 *   whether it is a Windows machine.
 	 */
 	public static boolean isWindows() {
-		String os = System.getProperty("os.name").toLowerCase();
+		String os = System.getProperty(OS_NAME).toLowerCase();
 		return (os.indexOf("win") >= 0);
 	}
 
@@ -109,7 +120,7 @@ public class OperatingSystem {
 	 *   whether it is a Apple machine.
 	 */
 	public static boolean isMac() {
-		String os = System.getProperty("os.name").toLowerCase();
+		String os = System.getProperty(OS_NAME).toLowerCase();
 		return (os.indexOf("mac") >= 0);
 	}
 
@@ -121,7 +132,7 @@ public class OperatingSystem {
 	 *   whether it is a Unix machine.
 	 */
 	public static boolean isUnix() {
-		String os = System.getProperty("os.name").toLowerCase();
+		String os = System.getProperty(OS_NAME).toLowerCase();
 		return (os.indexOf("nix") >= 0);
 	}
 	
@@ -133,7 +144,7 @@ public class OperatingSystem {
 	 *   whether it is a Linux machine.
 	 */
 	public static boolean isLinux() {
-		String os = System.getProperty("os.name").toLowerCase();
+		String os = System.getProperty(OS_NAME).toLowerCase();
 		return (os.indexOf("nux") >= 0);
 	}
 
@@ -145,7 +156,7 @@ public class OperatingSystem {
 	 *   whether it is a Linux/Unix machine.
 	 */
 	public static boolean isUnixOrLinux() {
-		String os = System.getProperty("os.name").toLowerCase();
+		String os = System.getProperty(OS_NAME).toLowerCase();
 		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
 	}
 	
@@ -159,7 +170,7 @@ public class OperatingSystem {
 	 */
 	public static boolean isWindows32() {
 		if(isWindows()) {
-			String architecture = System.getProperty("os.arch");
+			String architecture = System.getProperty(OS_ARCH);
 			if(architecture.equalsIgnoreCase("x86")) {
 				logger.trace("running on Windows, 32 bits");
 				return true;
@@ -176,7 +187,7 @@ public class OperatingSystem {
 	 */
 	public static boolean isWindows64() {
 		if(isWindows()) {
-			String architecture = System.getProperty("os.arch");
+			String architecture = System.getProperty(OS_ARCH);
 			if(architecture.equalsIgnoreCase("x86_64") || architecture.equalsIgnoreCase("amd64")) {
 				logger.trace("running on Windows, 64 bits");
 				return true;
@@ -193,7 +204,7 @@ public class OperatingSystem {
 	 */
 	public static boolean isLinux32() {
 		if(isLinux()) {
-			String architecture = System.getProperty("os.arch");
+			String architecture = System.getProperty(OS_ARCH);
 			if(architecture.equalsIgnoreCase("x86") || architecture.equalsIgnoreCase("i386")) {
 				logger.trace("running on Linux, 32 bits");
 				return true;
@@ -210,7 +221,7 @@ public class OperatingSystem {
 	 */
 	public static boolean isLinux64() {
 		if(isLinux()) {
-			String architecture = System.getProperty("os.arch");
+			String architecture = System.getProperty(OS_ARCH);
 			if(architecture.equalsIgnoreCase("x86_64") || architecture.equalsIgnoreCase("amd64")) {
 				logger.trace("running on Linux, 64 bits");
 				return true;
@@ -227,7 +238,7 @@ public class OperatingSystem {
 	 */
 	public static boolean isMac32() {
 		if(isMac()) {
-			String architecture = System.getProperty("os.arch");
+			String architecture = System.getProperty(OS_ARCH);
 			if(architecture.equalsIgnoreCase("x86") || architecture.equalsIgnoreCase("i386")) {
 				logger.trace("running on Mac, 32 bits");
 				return true;
@@ -246,7 +257,7 @@ public class OperatingSystem {
 	 */
 	public static boolean isMac64() {
 		if(isMac()) {
-			String architecture = System.getProperty("os.arch");
+			String architecture = System.getProperty(OS_ARCH);
 			if(architecture.equalsIgnoreCase("x86_64") || architecture.equalsIgnoreCase("amd64")) {
 				logger.trace("running on Mac, 64 bits");
 				return true;
@@ -307,7 +318,8 @@ public class OperatingSystem {
 	}
 	
 	public static String resolveSystemProperty(String path, String userVariable, String systemProperty) {
-		if (path == null || path.length() == 0) {
+		String resolvedPath = path;
+		if (resolvedPath == null || resolvedPath.length() == 0) {
 			logger.error("invalid input path");
 			return null;
 		}
@@ -322,19 +334,20 @@ public class OperatingSystem {
 			return null;
 		}
 		
-		if (path.contains(userVariable)) {
+		if (resolvedPath.matches(".*\\$\\{" + userVariable + "\\}.*")) {
 			logger.debug("replacing user variable ${{}} with system property value: '{}'", userVariable, systemProperty);
 			String property = System.getProperty(systemProperty);
 			if(property != null) {
 				property = property.replaceAll("\\\\", "\\\\\\\\");
 			}
-			path = path.replaceAll("\\$\\{" + userVariable + "\\}", property);			
+			resolvedPath = resolvedPath.replaceAll("\\$\\{" + userVariable + "\\}", property);			
 		}
-		return path;
+		return resolvedPath;
 	}
 	
 	public static String resolveEnvironmentVariable(String path, String userVariable, String environmentVariable) {
-		if (path == null || path.length() == 0) {
+		String resolvedPath = path;
+		if (resolvedPath == null || resolvedPath.length() == 0) {
 			logger.error("invalid input path");
 			return null;
 		}
@@ -349,30 +362,30 @@ public class OperatingSystem {
 			return null;
 		}
 		
-		if (path.contains(userVariable)) {
+		if (resolvedPath.matches(".*\\$\\{" + userVariable + "\\}.*")) {
 			logger.debug("replacing user variable ${{}} with environment variable value: '{}'", userVariable, environmentVariable);
-			//String property = System.getenv().get(environmentVariable);
 			String property = getEnvironmentVariable(environmentVariable);
 			if(property != null) {
 				property = property.replaceAll("\\\\", "\\\\\\\\");
-			}
-			path = path.replaceAll("\\$\\{" + userVariable + "\\}", property);			
+				resolvedPath = resolvedPath.replaceAll("\\$\\{" + userVariable + "\\}", property);
+			}			
 		}
-		return path;
+		return resolvedPath;
 	}
 	
 
 	public static String resolveKnownPathVariables(String path) {
-		path = resolveSystemProperty(path, "USERHOME", "user.home");
-		path = resolveEnvironmentVariable(path, "WINDIR", "windir");
-		path = resolveEnvironmentVariable(path, "SYSTEMROOT", "SystemRoot");
-		path = resolveEnvironmentVariable(path, "COMMONPROGRAMFILES", "CommonProgramFiles");
-		path = resolveEnvironmentVariable(path, "PROGRAMFILES", "ProgramFiles");
-		path = resolveEnvironmentVariable(path, "TEMP", "TEMP");
-		path = resolveEnvironmentVariable(path, "SYSTEMDRIVE", "SystemDrive");
-		path = resolveEnvironmentVariable(path, "USERPROFILE", "USERPROFILE");
+		String variable = path;
+		variable = resolveSystemProperty(variable, "USERHOME", "user.home");
+		variable = resolveEnvironmentVariable(variable, "WINDIR", "windir");
+		variable = resolveEnvironmentVariable(variable, "SYSTEMROOT", "SystemRoot");
+		variable = resolveEnvironmentVariable(variable, "COMMONPROGRAMFILES", "CommonProgramFiles");
+		variable = resolveEnvironmentVariable(variable, "PROGRAMFILES", "ProgramFiles");
+		variable = resolveEnvironmentVariable(variable, "TEMP", "TEMP");
+		variable = resolveEnvironmentVariable(variable, "SYSTEMDRIVE", "SystemDrive");
+		variable = resolveEnvironmentVariable(variable, "USERPROFILE", "USERPROFILE");
 
-		return path;
+		return variable;
 	}
 
 	public static boolean isDirectory(File file) {
@@ -410,59 +423,11 @@ public class OperatingSystem {
 	
 	public static String getEnvironmentVariable(String variableName) {
 		return System.getenv(variableName);
-		//return OperatingSystem.getEnvironmentVariableImpl(variableName);
-	}
-
-	public static void main(String[] args) {
-		
-		System.out.println(">" + OperatingSystem.getArchitecture() + "<");
-
-//		Map<String, String> environment = System.getenv();
-//		for(Entry<String, String> entry : environment.entrySet()) {
-//			System.out.println( "ENV: " + entry.getKey() + "=>" + entry.getValue());
-//		}
-//		/*
-//		for(String key : environment.keySet()) {
-//			System.out.println( "ENV: " + key + "=>" + environment.get(key));
-//		}
-//		*/
-//		
-//		Properties properties = System.getProperties();
-//		for(Entry<Object, Object> entry : properties.entrySet()) {
-//			System.out.println( "PRO: " + entry.getKey() + "=>" + entry.getValue());
-//		}
-//		/*
-//		for(Object property : properties.keySet()) {
-//			System.out.println( "PRO: " + property + "=>" + properties.get(property));
-//		}
-//		*/
-//		
-//		System.load("D:\\Sources\\workspace6\\digisign\\bin\\digisign.dll");
-//		System.out.println("Java => " + OperatingSystem.getEnvironmentVariable("PATH"));
-//		System.out.println("Java => " + OperatingSystem.getEnvironmentVariable("ProgramFiles"));
-//		System.out.println("Java => " + OperatingSystem.getEnvironmentVariable("pippo"));
-//		System.out.println("Java => " + OperatingSystem.getEnvironmentVariable("JAVA_HOME"));
-//		System.out.println("Java => " + OperatingSystem.getEnvironmentVariable("NUMBER_OF_PROCESSORS"));
-//		System.out.println("Java => " + OperatingSystem.getEnvironmentVariable(null));
-//		
-//		/*
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${USERHOME}\\rossella\\test"));
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${WINDIR}\\rossella\\test"));
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${SYSTEMROOT}\\rossella\\test"));
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${COMMONPROGRAMFILES}\\rossella\\test"));
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${PROGRAMFILES}\\rossella\\test"));
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${TEMP}\\rossella\\test"));
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${SYSTEMDRIVE}\\rossella\\test"));
-//		System.out.println(OperatingSystem
-//				.resolveKnownPathVariables("${USERPROFILE}\\rossella\\test"));
-//*/
 	}
 	
+	/**
+	 * Private constructor to prevent instantiation.
+	 */
+	private OperatingSystem() {
+	}
 }

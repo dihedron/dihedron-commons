@@ -16,37 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.dihedron.commons.cache;
 
-import java.io.File;
-
-import org.dihedron.commons.cache.handlers.FileRetriever;
-import org.dihedron.commons.cache.storage.MemoryStorage;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.InputStream;
 
 /**
  * @author Andrea Funto'
  */
-public class CacheTest {
-
-	private static final Logger logger = LoggerFactory.getLogger(CacheTest.class);
+public interface CacheMissHandler {
 	
-	@Test
-	public void test() throws Exception {
-		
-		
-		Cache cache = new Cache(new MemoryStorage());
-		
-		CacheMissHandler handler = new FileRetriever(new File("src/test/resources/test.pdf"));
-		cache.getAsByteArray("google_1", handler);
-		cache.copyAs("google_1", "google_2");
-		cache.copyAs("google_1", "google_3");
-		cache.copyAs("google_1", "google_4");
-		
-		for(String resource : cache) {
-			logger.info("resource: " + resource);
-		}
-	}
+	/**
+	 * Retrieves an input stream from which the missing 
+	 * resource can be read.
+	 * 
+	 * @return
+	 *   an input stream from which the missing resource
+	 *   can be read.
+	 */
+	public InputStream getAsStream() throws CacheException;
 }

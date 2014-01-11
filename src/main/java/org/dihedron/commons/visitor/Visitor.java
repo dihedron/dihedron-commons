@@ -43,12 +43,12 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
-public class Visitor implements Iterable<Node> {
+public final class Visitor implements Iterable<Node> {
 	
 	/**
 	 * @author Andrea Funto'
 	 */
-	private static class NodeIterator implements Iterator<Node> {
+	private static final class NodeIterator implements Iterator<Node> {
 	
 		/**
 		 * The position of the head of the list.

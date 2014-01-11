@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.dihedron.commons.cache.handlers.CacheMissHandler;
-import org.dihedron.commons.cache.storage.Storage;
 import org.dihedron.commons.regex.Regex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,7 +247,7 @@ public class Cache implements Iterable<String>{
 	/**
 	 * Iterates over the cache resources, one at a time.
 	 */
-	private class CacheIterator implements Iterator<String> {
+	private final class CacheIterator implements Iterator<String> {
 
 		/** 
 		 * The cache resources. 

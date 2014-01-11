@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dihedron.commons.cache.CacheException;
+import org.dihedron.commons.cache.CacheMissHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,16 +72,16 @@ public class MultiCacheMissHandler implements CacheMissHandler {
 	/**
 	 * Constructor.
 	 * 
-	 * @param handlers
+	 * @param array
 	 *   an array of <code>CacheMissHandler</code>s.
 	 */
-	public MultiCacheMissHandler(CacheMissHandler [] handlers) {
+	public MultiCacheMissHandler(CacheMissHandler [] array) {
 		logger.debug("instantiating multi-provider CacheMissHandler");
 		this.handlers = new ArrayList<CacheMissHandler>();
 		// copy handlers into array
-		if(handlers != null) {
-			logger.debug("adding {} elements to handlers", handlers.length);
-			for(CacheMissHandler handler : handlers) {
+		if(array != null) {
+			logger.debug("adding {} elements to handlers", array.length);
+			for(CacheMissHandler handler : array) {
 				logger.debug("adding handler of class '{}'", handler.getClass());
 				this.handlers.add(handler);
 			}

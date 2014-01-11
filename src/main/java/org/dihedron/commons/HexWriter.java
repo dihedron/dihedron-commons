@@ -24,22 +24,22 @@ package org.dihedron.commons;
  * 
  * @author Andrea Funto'
  */
-public class HexWriter {
+public final class HexWriter {
 	
 	/**
 	 * The hexadecimal digits.
 	 */
-    private final static String DIGITS = "0123456789ABCDEF";
+    private static final String DIGITS = "0123456789ABCDEF";
     
 	/** 
 	 * How many bytes should be written per line in the printout. 
 	 */
-	private final static int DEFAULT_BYTES_PER_LINE = 16;
+	private static final int DEFAULT_BYTES_PER_LINE = 16;
 	
 	/** 
 	 * The character that will be used to separate bytes in the printout. 
 	 */
-	private final static String DEFAULT_BYTES_SEPARATOR = " ";	
+	private static final String DEFAULT_BYTES_SEPARATOR = " ";	
 
     /**
      * Return length many bytes of the passed in byte array as a hex string.
@@ -118,8 +118,8 @@ public class HexWriter {
 	 */
 	public static String toMultiLineHex(byte[] data, String byteSeparator, int wrapAfter) {
 		int n, x;
-		String w = new String();
-		String s = new String();
+		String w = null;
+		String s = null;
 
 		String separator = null;
 
@@ -136,9 +136,15 @@ public class HexWriter {
 			} else {
 				separator = byteSeparator;
 			}
-			s = s + w + ((n + 1 == data.length) ? "" : separator);
+			s = (s != null ? s : "") + w + ((n + 1 == data.length) ? "" : separator);
 		}
 		return s;
-	}    
+	} 
+	
+	/**
+	 * Private constructor to prevent construction.
+	 */
+	private HexWriter() {		
+	}
 }
 

@@ -34,5 +34,5 @@ public interface Task<T> {
 	 *   a return value.
 	 * @throws Exception
 	 */
-	T execute() throws Exception;
+	T execute() throws TaskException;
 }
