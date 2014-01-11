@@ -149,7 +149,6 @@ public class Regex {
 	public boolean matches(String string) {
 		Matcher matcher = pattern.matcher(string);
 		boolean result = matcher.matches();
-		logger.trace("input string '{}' {} pattern /{}/", string, (result ? "matches" : "doesn't match"), this.regex);
 		return result;		
 	}
 
