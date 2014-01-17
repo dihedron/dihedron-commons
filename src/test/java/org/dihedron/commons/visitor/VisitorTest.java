@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dihedron.commons.visitor.Visitor.VisitMode;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +109,7 @@ public class VisitorTest {
 	public void testIterator() {
 		
 		MyOuterBean bean = new MyOuterBean();
-		Visitor visitor = new Visitor(bean);
+		Visitor visitor = new Visitor(bean, VisitMode.READ_ONLY);
 		for(Node property : visitor) {
 			String name = property.getName();
 			Object value = property.getValue();

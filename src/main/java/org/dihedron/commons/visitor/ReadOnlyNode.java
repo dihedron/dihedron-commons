@@ -19,21 +19,73 @@
 
 package org.dihedron.commons.visitor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class representing an object property, a node in the object graph.
  *  
  * @author Andrea Funto'
  */
-public interface Node {
+public class ReadOnlyNode implements Node {
+	/**
+	 * The logger.
+	 */
+	private final static Logger logger = LoggerFactory.getLogger(ReadOnlyNode.class);
+
+	/**
+	 * The name of the property.
+	 */
+	private String name;
 	
+	/**
+	 * The value of the property.
+	 */
+	private Object value;
+	
+	/**
+	 * Constructor.
+	 */
+	public ReadOnlyNode() {
+		this.name = null;
+		this.value = null;
+		logger.trace("uninitialised property");
+	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *   the name of the property.
+	 * @param value
+	 *   the field value. 
+	 */
+	public ReadOnlyNode(String name, Object value) {
+		this.name = name;
+		this.value = value;
+		logger.trace("property '{}' has value '{}'", name, value);
+	}
+
 	/**
 	 * Returns the value of the name.
 	 *	
 	 * @return 
 	 *   the name.
 	 */
-	String getName();
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the new value of the name.
+	 *	
+	 * @param name 
+	 *   the name to set.
+	 */
+	public void setName(String name) {
+		logger.trace("setting name to '{}'", name);
+		this.name = name;
+	}
 
 	/**
 	 * Returns the value of the property.
@@ -41,7 +93,9 @@ public interface Node {
 	 * @return 
 	 *   the property value.
 	 */
-	Object getValue();
+	public Object getValue() {
+		return value;
+	}
 
 	/**
 	 * Sets the new value of the property.
@@ -49,5 +103,8 @@ public interface Node {
 	 * @param value 
 	 *   the value to set.
 	 */
-	void setValue(Object value);
+	public void setValue(Object value) {
+		logger.trace("setting value to '{}'", value);
+		this.value = value;
+	}
 }

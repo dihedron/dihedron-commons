@@ -46,6 +46,25 @@ import org.slf4j.LoggerFactory;
 public final class Visitor implements Iterable<Node> {
 	
 	/**
+	 * An enumeration representing whether the object properties must be accessed
+	 * in read only mode or in read/write mode.
+	 *  
+	 * @author Andrea Funto'
+	 */
+	public enum VisitMode {
+		
+		/**
+		 * The sub-nodes will be accessed in read-only mode.
+		 */
+		READ_ONLY,
+		
+		/**
+		 * The sub-nodes will be accessed in read and write mode.
+		 */
+		READ_WRITE
+	}
+	
+	/**
 	 * @author Andrea Funto'
 	 */
 	private static final class NodeIterator implements Iterator<Node> {
@@ -61,14 +80,21 @@ public final class Visitor implements Iterable<Node> {
 		private List<Node> nodes;
 		
 		/**
+		 * What kind of access must be granted to the sub-nodes, whether read-only 
+		 * or read/write.
+		 */
+		private VisitMode mode;
+		
+		/**
 		 * Constructor.
 		 *
 		 * @param object
 		 *   the object to visit.
 		 * @throws VisitorException 
 		 */
-		private NodeIterator(Object object) throws VisitorException {
-			this.nodes = visitNode(object, null);
+		private NodeIterator(Object object, VisitMode mode) throws VisitorException {
+			this.nodes = visitReadOnlyNode(object, null);
+			this.mode = mode;
 		}
 		
 		/**
@@ -98,7 +124,7 @@ public final class Visitor implements Iterable<Node> {
 			throw new UnsupportedOperationException("Operation not supported");		
 		}
 		
-		private List<Node> visitNode(Object node, String path) throws VisitorException {
+		private List<Node> visitReadOnlyNode(Object node, String path) throws VisitorException {
 			logger.trace("visiting node at path '{}' (class '{}')", path, node.getClass().getCanonicalName());
 			List<Node> nodes = null;
 			if(node != null) {
@@ -132,9 +158,9 @@ public final class Visitor implements Iterable<Node> {
 									for(Object elementValue : list) {
 										String elementName = nodeName + "[" + i++ + "]";
 										if(visitable.value()) {
-											nodes.addAll(visitNode(elementValue, elementName));
+											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
 										} else {
-											nodes.add(new Node(elementName, elementValue));
+											nodes.add(new ReadOnlyNode(elementName, elementValue));
 										}
 									}
 								} else if(isArray(nodeValue)) {
@@ -143,9 +169,9 @@ public final class Visitor implements Iterable<Node> {
 										Object elementValue = Array.get(nodeValue, i);
 										String elementName = nodeName + "[" + i + "]";
 										if(visitable.value()) {
-											nodes.addAll(visitNode(elementValue, elementName));
+											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
 										} else {
-											nodes.add(new Node(elementName, elementValue));
+											nodes.add(new ReadOnlyNode(elementName, elementValue));
 										}
 									}									
 								} else if(isMap(nodeValue)) {
@@ -168,9 +194,9 @@ public final class Visitor implements Iterable<Node> {
 										}
 										String elementName = nodeName + "[" + label + "]";
 										if(visitable.value()) {
-											nodes.addAll(visitNode(entry.getValue(), elementName));
+											nodes.addAll(visitReadOnlyNode(entry.getValue(), elementName));
 										} else {
-											nodes.add(new Node(elementName, entry.getValue()));
+											nodes.add(new ReadOnlyNode(elementName, entry.getValue()));
 										}
 									}																		
 								} else if(isSet(nodeValue)) {
@@ -180,18 +206,18 @@ public final class Visitor implements Iterable<Node> {
 									for(Object elementValue : set) {
 										String elementName = nodeName + "$" + i++;
 										if(visitable.value()) {
-											nodes.addAll(visitNode(elementValue, elementName));
+											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
 										} else {
-											nodes.add(new Node(elementName, elementValue));
+											nodes.add(new ReadOnlyNode(elementName, elementValue));
 										}
 									}									
 								} else {
 									logger.trace("recursing into nested object '{}'", nodeName);
-									nodes.addAll(visitNode(nodeValue, nodeName));
+									nodes.addAll(visitReadOnlyNode(nodeValue, nodeName));
 									logger.trace("... done recursing on '{}'", nodeName);
 								}
 							} else {
-								nodes.add(new Node(nodeName, nodeValue));								
+								nodes.add(new ReadOnlyNode(nodeName, nodeValue));								
 							}
 						}
 					}			
@@ -319,13 +345,19 @@ public final class Visitor implements Iterable<Node> {
 	private Object object;
 	
 	/**
+	 * How the visit is performed, that is if the modes will be modifiable or not.
+	 */
+	private VisitMode mode;
+	
+	/**
 	 * Constructor.
 	 * 
 	 * @param object
 	 *   the object whose properties are being enumerated and visited.
 	 */
-	public Visitor(Object object) {
+	public Visitor(Object object, VisitMode mode) {
 		this.object = object;
+		this.mode = mode;
 	}
 
 	/**
@@ -334,7 +366,7 @@ public final class Visitor implements Iterable<Node> {
 	@Override
 	public Iterator<Node> iterator() {
 		try {
-			return new NodeIterator(object);
+			return new NodeIterator(object, mode);
 		} catch (VisitorException e) {
 			logger.error("error visiting object properties", e);
 		}
