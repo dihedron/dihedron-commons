@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * @author Andrea Funto'
  */
-public class FunctionalSet<E> implements Set<E> {
+public class FunctionalSet<E, S> extends Functional<S> implements Set<E> {
 
 	/**
 	 * The wrapped set.
@@ -146,10 +146,15 @@ public class FunctionalSet<E> implements Set<E> {
 		set.clear();
 	}
 	
-	public <R> R forEach($<E, R> item) {
-		R state = null;
+	/**
+	 * @see org.dihedron.commons.functional.Functional#forEach(org.dihedron.commons.functional.$)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public <SE> S forEach($<SE, S> item) {
+		S state = null;
 		for(E element : set) {
-			state = item._(element, state);
+			state = item._((SE)element, state);
 		}
 		return state;
 	}

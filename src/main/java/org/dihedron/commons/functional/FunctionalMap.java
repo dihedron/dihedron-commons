@@ -28,7 +28,7 @@ import java.util.Set;
  * 
  * @author Andrea Funto'
  */
-public class FunctionalMap<K, V> implements Map<K, V> {
+public class FunctionalMap<K, V, S> extends Functional<S> implements Map<K, V> {
 	
 	/**
 	 * The wrapped map.
@@ -142,28 +142,15 @@ public class FunctionalMap<K, V> implements Map<K, V> {
 	}
 
 	/**
-	 * Iterates over the entries in the map, and invokes the 
-	 * {@link $#_(Entry<K, V>, S)} method on each of them, propagating
-	 * the state as it goes.
-	 * 
-	 * @param item
-	 *   an implementation of the {@code $} interface. 
-	 * @return
-	 *   the result of the iteration, as returned by the functor.
+	 * @see org.dihedron.commons.functional.Functional#forEach(org.dihedron.commons.functional.$)
 	 */
-	public <E, S> S forEach($<E, S> item) {
+	@Override
+	@SuppressWarnings("unchecked")	
+	public <ME> S forEach($<ME, S> functor) {
 		S result = null;
 		for(Entry<K, V> entry : entrySet()) {
-			result = item._((E)entry, result);
+			result = functor._((ME)entry, result);
 		}
 		return result;
 	}
-	
-//	public <S> S forEach($<Entry<K, V>, S> item) {
-//		S result = null;
-//		for(Entry<K, V> entry : entrySet()) {
-//			result = item._(entry, result);
-//		}
-//		return result;
-//	}
 }

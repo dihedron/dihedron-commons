@@ -28,7 +28,7 @@ import java.util.ListIterator;
  * 
  * @author Andrea Funto'
  */
-public class FunctionalList<E> implements List<E> {
+public class FunctionalList<E, S> extends Functional<S> implements List<E> {
 	
 	/**
 	 * The wrapped list.
@@ -228,6 +228,19 @@ public class FunctionalList<E> implements List<E> {
 	public List<E> subList(int fromIndex, int toIndex) {
 		return list.subList(fromIndex, toIndex);
 	}
+
+	/**
+	 * @see org.dihedron.commons.functional.Functional#forEach(org.dihedron.commons.functional.$)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")	
+	public <LE> S forEach($<LE, S> item) {
+		S state = null;
+		for(E element : list) {
+			state = item._((LE)element, state);
+		}
+		return state;
+	}
 	
 	/**
 	 * Iterates over the list elements, passing to the given implementation of 
@@ -239,11 +252,11 @@ public class FunctionalList<E> implements List<E> {
 	 * @return
 	 *   the result of the iteration.
 	 */
-	public <S> S forEach($<E, S> item) {
-		S state = null;
-		for(E element : list) {
-			state = item._(element, state);
-		}
-		return state;
-	}	
+//	public <S> S forEach($<E, S> item) {
+//		S state = null;
+//		for(E element : list) {
+//			state = item._(element, state);
+//		}
+//		return state;
+//	}	
 }
