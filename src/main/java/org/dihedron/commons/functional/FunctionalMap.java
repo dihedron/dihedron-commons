@@ -142,15 +142,14 @@ public class FunctionalMap<K, V, S> extends Functional<S> implements Map<K, V> {
 	}
 
 	/**
-	 * @see org.dihedron.commons.functional.Functional#forEach(org.dihedron.commons.functional.$)
+	 * @see org.dihedron.commons.functional.Functional#forEach(java.lang.Object, org.dihedron.commons.functional.$)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")	
-	public <ME> S forEach($<ME, S> functor) {
-		S result = null;
+	public <ME> S forEach(S state, $<ME, S> functor) {
 		for(Entry<K, V> entry : entrySet()) {
-			result = functor._((ME)entry, result);
+			state = functor._((ME)entry, state);
 		}
-		return result;
+		return state;
 	}
 }

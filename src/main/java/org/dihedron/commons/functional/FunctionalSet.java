@@ -145,16 +145,15 @@ public class FunctionalSet<E, S> extends Functional<S> implements Set<E> {
 	public void clear() {
 		set.clear();
 	}
-	
+
 	/**
-	 * @see org.dihedron.commons.functional.Functional#forEach(org.dihedron.commons.functional.$)
+	 * @see org.dihedron.commons.functional.Functional#forEach(java.lang.Object, org.dihedron.commons.functional.$)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <SE> S forEach($<SE, S> item) {
-		S state = null;
+	public <SE> S forEach(S state, $<SE, S> functor) {
 		for(E element : set) {
-			state = item._((SE)element, state);
+			state = functor._((SE)element, state);
 		}
 		return state;
 	}

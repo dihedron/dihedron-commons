@@ -40,14 +40,32 @@ public abstract class Functional<S> {
 	}
 
 	/**
-	 * Iterates over the list elements, passing to the given implementation of 
-	 * the {@code L$} interface the elements and propagating the state as returned 
-	 * by the functor.
+	 * Iterates over the collection elements or entries and passing each of them 
+	 * to the given implementation of the functor interface; if state needs to be 
+	 * propagated, it can be instantiated and returned by the first invocation of 
+	 * the functor and it will be passed along the next elements of the collection.
 	 * 
 	 * @param functor
-	 *   an implementation of the {@code $} class.
+	 *   an implementation of the {@code $} functor interface.
 	 * @return
 	 *   the result of the iteration.
 	 */
-	public abstract <E> S forEach($<E, S> functor);
+	public <E> S forEach($<E, S> functor) {
+		return forEach(null, functor);
+	}
+	
+	/**
+	 * Iterates over the collection elements or entries and passing each of them 
+	 * to the given implementation of the functor interface; if state is provided
+	 * it will be it will be passed along the elements of the collection to the
+	 * functor.
+	 * 
+	 * @param state
+	 *   a state variable to be used during the processing.
+	 * @param functor
+	 *   an implementation of the {@code $} functor interface.
+	 * @return
+	 *   the result of the iteration.
+	 */
+	public abstract <E> S forEach(S state, $<E, S> functor);
 }

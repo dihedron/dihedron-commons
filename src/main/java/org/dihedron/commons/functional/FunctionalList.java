@@ -228,35 +228,16 @@ public class FunctionalList<E, S> extends Functional<S> implements List<E> {
 	public List<E> subList(int fromIndex, int toIndex) {
 		return list.subList(fromIndex, toIndex);
 	}
-
+	
 	/**
-	 * @see org.dihedron.commons.functional.Functional#forEach(org.dihedron.commons.functional.$)
+	 * @see org.dihedron.commons.functional.Functional#forEach(java.lang.Object, org.dihedron.commons.functional.$)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")	
-	public <LE> S forEach($<LE, S> item) {
-		S state = null;
+	public <LE> S forEach(S state, $<LE, S> functor) {
 		for(E element : list) {
-			state = item._((LE)element, state);
+			state = functor._((LE)element, state);
 		}
 		return state;
 	}
-	
-	/**
-	 * Iterates over the list elements, passing to the given implementation of 
-	 * the {@code L$} interface the elements and propagating the state as returned 
-	 * by the functor.
-	 * 
-	 * @param item
-	 *   an implementation of the {@code $} class.
-	 * @return
-	 *   the result of the iteration.
-	 */
-//	public <S> S forEach($<E, S> item) {
-//		S state = null;
-//		for(E element : list) {
-//			state = item._(element, state);
-//		}
-//		return state;
-//	}	
 }
