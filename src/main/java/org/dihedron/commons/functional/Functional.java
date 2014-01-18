@@ -20,6 +20,7 @@ package org.dihedron.commons.functional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -27,18 +28,93 @@ import java.util.Set;
  */
 public abstract class Functional<S> {
 	
-	public static final <E, S> Functional<S> functionalList(List<E> list) {
-		return new FunctionalList<E, S>(list); 
+	/**
+	 * Returns a functional wrapper for the input list, providing a way to apply
+	 * a function on all its elements in a functional style.
+	 * 
+	 * @param list
+	 *   the list to which the functor will be applied.
+	 * @return
+	 *   a list that also extends this abstract class.
+	 */
+	public static final <S, E> Functional<S> functionalList(List<E> list) {
+		return new FunctionalList<S, E>(list); 
 	}
 	
-	public static final <E, S> Functional<S> functionalSet(Set<E> set) {
-		return new FunctionalSet<E, S>(set);
+	/**
+	 * Returns a functional wrapper for the input set, providing a way to apply
+	 * a function on all its elements in a functional style.
+	 * 
+	 * @param set
+	 *   the set to which the functor will be applied.
+	 * @return
+	 *   a set that also extends this abstract class.
+	 */
+	public static final <S, E> Functional<S> functionalSet(Set<E> set) {
+		return new FunctionalSet<S, E>(set);
 	}
 	
-	public static final <K, V, S> Functional<S> functionalMap(Map<K, V> map) {
-		return new FunctionalMap<K, V, S>(map);
+	/**
+	 * Returns a functional wrapper for the input map, providing a way to apply
+	 * a function on all its entries in a functional style.
+	 * 
+	 * @param map
+	 *   the map to which the functor will be applied.
+	 * @return
+	 *   a map that also extends this abstract class.
+	 */	
+	public static final <S, K, V> Functional<S> functionalMap(Map<K, V> map) {
+		return new FunctionalMap<S, K, V>(map);
 	}
 
+	/**
+	 * Applies the given functor to all elements in the input list.
+	 * 
+	 * @param list
+	 *   the list to which the functor will be applied.
+	 * @param state
+	 *   an state variable, that will be used as the return vale for the iteration.
+	 * @param functor
+	 *   a function to be applied to all elements in the list.
+	 * @return
+	 *   the state object after the processing.
+	 */
+	public static final <S, E> S forEach(List<E> list, S state, Fx<S, E> functor) {
+		return new FunctionalList<S, E>(list).forEach(state, functor);
+	}
+	
+	/**
+	 * Applies the given functor to all elements in the input set.
+	 * 
+	 * @param set
+	 *   the set to which the functor will be applied.
+	 * @param state
+	 *   an state variable, that will be used as the return vale for the iteration.
+	 * @param functor
+	 *   a function to be applied to all elements in the set.
+	 * @return
+	 *   the state object after the processing.
+	 */
+	public static final <S, E> S forEach(Set<E> set, S state, Fx<S, E> functor) {
+		return new FunctionalSet<S, E>(set).forEach(state, functor);
+	}
+
+	/**
+	 * Applies the given functor to all entries in the input map.
+	 * 
+	 * @param map
+	 *   the map to which the functor will be applied.
+	 * @param state
+	 *   an state variable, that will be used as the return vale for the iteration.
+	 * @param functor
+	 *   a function to be applied to all entries in the map.
+	 * @return
+	 *   the state object after the processing.
+	 */
+	public static final <S, K, V> S forEach(Map<K, V> map, S state, Fx<S, Entry<K, V>> functor) {
+		return new FunctionalMap<S, K, V>(map).forEach(state, functor);
+	}
+	
 	/**
 	 * Iterates over the collection elements or entries and passing each of them 
 	 * to the given implementation of the functor interface; if state needs to be 
@@ -50,7 +126,7 @@ public abstract class Functional<S> {
 	 * @return
 	 *   the result of the iteration.
 	 */
-	public <E> S forEach($<E, S> functor) {
+	public <E> S forEach(Fx<S, E> functor) {
 		return forEach(null, functor);
 	}
 	
@@ -67,5 +143,5 @@ public abstract class Functional<S> {
 	 * @return
 	 *   the result of the iteration.
 	 */
-	public abstract <E> S forEach(S state, $<E, S> functor);
+	public abstract <E> S forEach(S state, Fx<S, E> functor);
 }

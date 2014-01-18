@@ -18,43 +18,30 @@
  */
 package org.dihedron.commons.functional;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * The interface that must be implemented to iterate over collection elements in 
+ * a pseudo-functional way.
+ * 
  * @author Andrea Funto'
  */
-public class ListFxTest {
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = LoggerFactory.getLogger(ListFxTest.class);
-
-	private static final int MAX_TEST_INTEGER = 1000;
+public interface Fx<S, E> {
 	
-	@Test
-	public void test() {
-		FunctionalList<Integer> list = new FunctionalList<Integer>(new ArrayList<Integer>());
-		for(int i = 1; i <= MAX_TEST_INTEGER; ++i) {
-			list.add(i);
-		}
-		
-		int sum = list.forEach(new $<Integer, Integer>() {
-			public Integer _(Integer element, Integer sum) {
-				if(sum == null) sum = new Integer(0);
-				sum = sum + element;
-				return sum;
-			}			
-		});		
-		int result = ((MAX_TEST_INTEGER + 1) * MAX_TEST_INTEGER) / 2;
-		
-		logger.trace("returned: {} (expected {})", sum, result);
-		assertTrue(sum == result);
-
-	}
+	/**
+	 * This method will be executed on each element in the collection or entry in
+	 * the map, and may have a state object available to store information as the
+	 * iteration proceeds.
+	 *  
+	 * @param element
+	 *   the current element, be it a list/set element or a map emtry.
+	 * @param state
+	 *   a state object, used for keeping track of progression; this object will
+	 *   be the final result of the processing if returned by the last invocation 
+	 *   of this method on a collection element.
+	 * @return
+	 *   an object that will be passed on to the next invocation of this method 
+	 *   as the {@code state} parameter. At the end of the processing, this object
+	 *   will be the result of the overall iteration. 
+	 */
+	S apply(S state, E element);
 }

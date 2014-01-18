@@ -28,7 +28,7 @@ import java.util.Set;
  * 
  * @author Andrea Funto'
  */
-public class FunctionalMap<K, V, S> extends Functional<S> implements Map<K, V> {
+public class FunctionalMap<S, K, V> extends Functional<S> implements Map<K, V> {
 	
 	/**
 	 * The wrapped map.
@@ -142,13 +142,13 @@ public class FunctionalMap<K, V, S> extends Functional<S> implements Map<K, V> {
 	}
 
 	/**
-	 * @see org.dihedron.commons.functional.Functional#forEach(java.lang.Object, org.dihedron.commons.functional.$)
+	 * @see org.dihedron.commons.functional.Functional#forEach(java.lang.Object, org.dihedron.commons.functional.Fx)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")	
-	public <ME> S forEach(S state, $<ME, S> functor) {
+	public <ME> S forEach(S state, Fx<S, ME> functor) {
 		for(Entry<K, V> entry : entrySet()) {
-			state = functor._((ME)entry, state);
+			state = functor.apply(state, (ME)entry);
 		}
 		return state;
 	}
