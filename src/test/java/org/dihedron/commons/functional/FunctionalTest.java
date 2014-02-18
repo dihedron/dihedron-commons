@@ -52,8 +52,8 @@ public class FunctionalTest {
 			((List<Integer>)fx).add(i);
 		}
 		
-		int sum = fx.forEach(new $<Integer, Integer>() {
-			public Integer _(Integer element, Integer sum) {
+		int sum = fx.forEach(new Fx<Integer, Integer>() {
+			public Integer apply(Integer element, Integer sum) {
 				if(sum == null) sum = new Integer(0);
 				sum = sum + element;
 				return sum;
@@ -76,8 +76,8 @@ public class FunctionalTest {
 			((Set<Integer>)fx).add(i);
 		}
 		
-		int sum = fx.forEach(new $<Integer, Integer>() {
-			public Integer _(Integer element, Integer sum) {
+		int sum = fx.forEach(new Fx<Integer, Integer>() {
+			public Integer apply(Integer element, Integer sum) {
 				if(sum == null) sum = new Integer(0);
 				sum = sum + element;
 				return sum;

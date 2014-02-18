@@ -24,15 +24,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class representing an object property, a node in the object graph.
+ * A class representing an object property, a node in the object graph,
+ * whose value can be set.
  *  
  * @author Andrea Funto'
  */
-public class ReadOnlyNode implements Node {
+public class ReadWriteNode implements Node {
 	/**
 	 * The logger.
 	 */
-	private final static Logger logger = LoggerFactory.getLogger(ReadOnlyNode.class);
+	private final static Logger logger = LoggerFactory.getLogger(ReadWriteNode.class);
 
 	/**
 	 * The name of the property.
@@ -47,7 +48,7 @@ public class ReadOnlyNode implements Node {
 	/**
 	 * Constructor.
 	 */
-	public ReadOnlyNode() {
+	public ReadWriteNode() {
 		this.name = null;
 		this.value = null;
 		logger.trace("uninitialised property");
@@ -61,7 +62,7 @@ public class ReadOnlyNode implements Node {
 	 * @param value
 	 *   the field value. 
 	 */
-	public ReadOnlyNode(String name, Object value) {
+	public ReadWriteNode(String name, Object value) {
 		this.name = name;
 		this.value = value;
 		logger.trace("property '{}' has value '{}'", name, value);

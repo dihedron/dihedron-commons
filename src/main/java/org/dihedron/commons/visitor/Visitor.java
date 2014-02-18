@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.dihedron.commons.visitor.nodes.ReadOnlyNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,17 @@ public final class Visitor implements Iterable<Node> {
 	 * @author Andrea Funto'
 	 */
 	private static final class NodeIterator implements Iterator<Node> {
+		
+		/**
+		 * The default kind of access to the object's properties.
+		 */
+		public static final VisitMode DEFAULT_VISIT_MODE = VisitMode.READ_ONLY;
+		
+		/**
+		 * Whether Java Sets should be introspected; by default they should not,
+		 * since there is no sensible way of representing their elements. 
+		 */
+		public static final boolean DEFAULT_VISIT_SETS = false;
 	
 		/**
 		 * The position of the head of the list.
@@ -86,15 +98,58 @@ public final class Visitor implements Iterable<Node> {
 		private VisitMode mode;
 		
 		/**
+		 * Whether Java Sets should be introspected. 
+		 */
+		private boolean visitSets = DEFAULT_VISIT_SETS;
+
+		/**
 		 * Constructor.
 		 *
 		 * @param object
 		 *   the object to visit.
 		 * @throws VisitorException 
 		 */
+		private NodeIterator(Object object) throws VisitorException {
+			this(object, DEFAULT_VISIT_MODE);
+		}
+				
+		/**
+		 * Constructor.
+		 *
+		 * @param object
+		 *   the object to visit.
+		 * @param mode
+		 *   whether the nodes being visited will be accessed in read-only or
+		 *   read-write mode.
+		 * @throws VisitorException 
+		 */
 		private NodeIterator(Object object, VisitMode mode) throws VisitorException {
-			this.nodes = visitReadOnlyNode(object, null);
+			this(object, mode, DEFAULT_VISIT_SETS);
+		}
+
+		/**
+		 * Constructor.
+		 *
+		 * @param object
+		 *   the object to visit.
+		 * @param mode
+		 *   whether the nodes being visited will be accessed in read-only or
+		 *   read-write mode.
+		 * @param visitSets
+		 *   whether Java Sets should be introspected; by default they should 
+		 *   not, since there is no sensible way of representing set elements.
+		 * @throws VisitorException 
+		 */
+		private NodeIterator(Object object, VisitMode mode, boolean visitSets) throws VisitorException {
 			this.mode = mode;
+			switch(this.mode) {
+			case READ_ONLY:
+				this.nodes = visitReadOnlyNode(object, null);
+				break;
+			case READ_WRITE:
+				this.nodes = visitReadWriteNode(object, null);
+			}
+			this.visitSets = visitSets;
 		}
 		
 		/**
@@ -124,7 +179,135 @@ public final class Visitor implements Iterable<Node> {
 			throw new UnsupportedOperationException("Operation not supported");		
 		}
 		
+		/**
+		 * Runs a recursive visit of the given object's property fields.
+		 * 
+		 * @param node
+		 *   the object whose fields are to be visited.
+		 * @param path
+		 *   the path (name) of the current node.
+		 * @return
+		 *   a list of nodes, one for each property of this objects (and their
+		 *   respective properties).
+		 * @throws VisitorException
+		 */
 		private List<Node> visitReadOnlyNode(Object node, String path) throws VisitorException {
+			logger.trace("visiting node at path '{}' (class '{}')", path, node.getClass().getCanonicalName());
+			List<Node> nodes = null;
+			if(node != null) {
+				nodes = new ArrayList<Node>();
+				Set<String> names = new HashSet<String>();
+				Class<?> clazz = node.getClass();
+				do {
+					logger.trace("analysing fields of class '{}'", clazz.getSimpleName());
+					for(Field field : clazz.getDeclaredFields()) {
+						if(Modifier.isStatic(field.getModifiers())) {
+							logger.trace("skipping static field '{}'", field.getName());
+						} else if(names.contains(field.getName())) {
+							logger.trace("skipping overridden field '{}'", field.getName());
+						} else if(field.getName().equals("this$0")) {
+							logger.trace("skipping reference to outer class '{}'", field.getName());
+						} else {
+							logger.trace("adding field '{}'", field.getName());
+							names.add(field.getName());
+							
+							String nodeName = getName(field.getName(), path);
+							Object nodeValue = getValue(node, field);
+							
+							// checking if we need to recurse into this field's properties
+							Visitable visitable = field.getAnnotation(Visitable.class);
+							if(visitable != null) {
+								
+								if(isList(nodeValue)) {					
+									logger.trace("node '{}' is a list of visitable objects", nodeName);
+									List<?> list = (List<?>)nodeValue;
+									int i = 0;
+									for(Object elementValue : list) {
+										String elementName = nodeName + "[" + i++ + "]";
+										if(visitable.value()) {
+											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
+										} else {
+											nodes.add(new ReadOnlyNode(elementName, elementValue));
+										}
+									}
+								} else if(isArray(nodeValue)) {
+									logger.trace("node '{}' is an array of visitable objects", nodeName);
+									for(int i = 0; i < Array.getLength(nodeValue); ++ i) {
+										Object elementValue = Array.get(nodeValue, i);
+										String elementName = nodeName + "[" + i + "]";
+										if(visitable.value()) {
+											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
+										} else {
+											nodes.add(new ReadOnlyNode(elementName, elementValue));
+										}
+									}									
+								} else if(isMap(nodeValue)) {
+									logger.trace("node '{}' is a map of visitable objects", nodeName);
+									Map<?, ?> map = (Map<?, ?>)nodeValue;
+									for(Entry<?, ?> entry : map.entrySet()) {
+										String label = null;
+										Object key = entry.getKey();
+										Class<?> cls = key.getClass();										
+										if( cls == Byte.class 	|| 
+											cls == Short.class 	||  
+											cls == Long.class 	|| 
+											cls == Float.class 	|| 
+											cls == Double.class || 
+											cls == Boolean.class||
+											cls == Integer.class ) {
+											label = key.toString();
+										} else {
+											label = "'" + key.toString() + "'";											
+										}
+										String elementName = nodeName + "[" + label + "]";
+										if(visitable.value()) {
+											nodes.addAll(visitReadOnlyNode(entry.getValue(), elementName));
+										} else {
+											nodes.add(new ReadOnlyNode(elementName, entry.getValue()));
+										}
+									}																		
+								} else if(visitSets && isSet(nodeValue)) {
+									logger.trace("node '{}' is a set of visitable objects", nodeName);
+									Set<?> set = (Set<?>)nodeValue;
+									int i = 0;
+									for(Object elementValue : set) {
+										String elementName = nodeName + "$" + i++;
+										if(visitable.value()) {
+											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
+										} else {
+											nodes.add(new ReadOnlyNode(elementName, elementValue));
+										}
+									}									
+								} else {
+									logger.trace("recursing into nested object '{}'", nodeName);
+									nodes.addAll(visitReadOnlyNode(nodeValue, nodeName));
+									logger.trace("... done recursing on '{}'", nodeName);
+								}
+							} else {
+								nodes.add(new ReadOnlyNode(nodeName, nodeValue));								
+							}
+						}
+					}			
+					clazz = clazz.getSuperclass();
+				} while(clazz != null && clazz != Object.class);
+			}
+			return nodes;
+		}
+
+		/**
+		 * Runs a recursive visit of the given object's property fields; each 
+		 * returned node will provide read/write access to the underlying property.
+		 * 
+		 * @param node
+		 *   the object whose fields are to be visited.
+		 * @param path
+		 *   the path (name) of the current node.
+		 * @return
+		 *   a list of nodes, one for each property of this objects (and their 
+		 *   respective properties).
+		 * @throws VisitorException
+		 */
+		private List<Node> visitReadWriteNode(Object node, String path) throws VisitorException {
 			logger.trace("visiting node at path '{}' (class '{}')", path, node.getClass().getCanonicalName());
 			List<Node> nodes = null;
 			if(node != null) {
@@ -226,6 +409,7 @@ public final class Visitor implements Iterable<Node> {
 			}
 			return nodes;
 		}
+		
 		
 		/**
 		 * Returns the OGNL name of the node.
