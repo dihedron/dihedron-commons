@@ -16,38 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.dihedron.commons.visitor;
 
-
 /**
- * A class representing an object property, a node in the object graph.
+ * An enumeration representing whether the object properties must be accessed
+ * in read only mode or in read/write mode.
  *  
  * @author Andrea Funto'
  */
-public interface Node {
+public enum VisitMode {
 	
 	/**
-	 * Returns the value of the name.
-	 *	
-	 * @return 
-	 *   the name.
+	 * The sub-nodes will be accessed in read-only mode.
 	 */
-	String getName();
-
+	READ_ONLY,
+	
 	/**
-	 * Returns the value of the property.
-	 *	
-	 * @return 
-	 *   the property value.
+	 * The sub-nodes will be accessed in read and write mode.
 	 */
-	Object getValue() throws VisitorException;
-
-	/**
-	 * Sets the new value of the property.
-	 *	
-	 * @param value 
-	 *   the value to set.
-	 */
-	void setValue(Object value) throws VisitorException;
+	READ_WRITE
 }

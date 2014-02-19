@@ -17,7 +17,7 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.dihedron.commons.visitor.nodes;
+package org.dihedron.commons.visitor.impl;
 
 import org.dihedron.commons.visitor.Node;
 import org.slf4j.Logger;
@@ -28,11 +28,11 @@ import org.slf4j.LoggerFactory;
  *  
  * @author Andrea Funto'
  */
-public class ReadOnlyNode implements Node {
+public class ImmutableProperty implements Node {
 	/**
 	 * The logger.
 	 */
-	private final static Logger logger = LoggerFactory.getLogger(ReadOnlyNode.class);
+	private final static Logger logger = LoggerFactory.getLogger(ImmutableProperty.class);
 
 	/**
 	 * The name of the property.
@@ -46,22 +46,13 @@ public class ReadOnlyNode implements Node {
 	
 	/**
 	 * Constructor.
-	 */
-	public ReadOnlyNode() {
-		this.name = null;
-		this.value = null;
-		logger.trace("uninitialised property");
-	}
-	
-	/**
-	 * Constructor.
 	 * 
 	 * @param name
 	 *   the name of the property.
 	 * @param value
 	 *   the field value. 
 	 */
-	public ReadOnlyNode(String name, Object value) {
+	ImmutableProperty(String name, Object value) {
 		this.name = name;
 		this.value = value;
 		logger.trace("property '{}' has value '{}'", name, value);
@@ -78,17 +69,6 @@ public class ReadOnlyNode implements Node {
 	}
 
 	/**
-	 * Sets the new value of the name.
-	 *	
-	 * @param name 
-	 *   the name to set.
-	 */
-	public void setName(String name) {
-		logger.trace("setting name to '{}'", name);
-		this.name = name;
-	}
-
-	/**
 	 * Returns the value of the property.
 	 *	
 	 * @return 
@@ -99,13 +79,14 @@ public class ReadOnlyNode implements Node {
 	}
 
 	/**
-	 * Sets the new value of the property.
+	 * Sets the new value of the property; this operation is unsupported on value
+	 * nodes and results in an exception being thrown.
 	 *	
 	 * @param value 
 	 *   the value to set.
 	 */
 	public void setValue(Object value) {
-		logger.trace("setting value to '{}'", value);
-		this.value = value;
+		logger.error("cannot set value on read-only value node");
+		throw new UnsupportedOperationException("Setting the value of a node is unsupported in read-only visit mode.");
 	}
 }
