@@ -17,39 +17,9 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.dihedron.commons.visitor;
-
-
 /**
- * A class representing an object property, a node in the object graph.
- *  
+ * A package containing implementations of the abstract {@link Node} interface.
+ * 
  * @author Andrea Funto'
  */
-public interface Node {
-	
-	/**
-	 * Returns the value of the name.
-	 *	
-	 * @return 
-	 *   the name.
-	 */
-	String getName();
-
-	/**
-	 * Returns the value of the property.
-	 *	
-	 * @return 
-	 *   the property value.
-	 * @throws VisitorException 
-	 */
-	Object getValue() throws VisitorException;
-
-	/**
-	 * Sets the new value of the property.
-	 *	
-	 * @param value 
-	 *   the value to set.
-	 * @throws VisitorException
-	 */
-	void setValue(Object value) throws VisitorException;
-}
+package org.dihedron.commons.visitor.nodes;

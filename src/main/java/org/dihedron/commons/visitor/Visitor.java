@@ -19,7 +19,6 @@
 
 package org.dihedron.commons.visitor;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -80,21 +79,23 @@ public final class Visitor implements Iterable<Node> {
 		private List<Node> nodes;
 		
 		/**
-		 * What kind of access must be granted to the sub-nodes, whether read-only 
-		 * or read/write.
+		 * The factory that will generate the nodes as the visit proceeds.
 		 */
-		private VisitMode mode;
+		private NodeFactory factory;
 		
 		/**
 		 * Constructor.
 		 *
 		 * @param object
 		 *   the object to visit.
+		 * @param factory
+		 *   the factory that will instantiate nodes corresponding to the object
+		 *   fields as the visit proceeds.
 		 * @throws VisitorException 
 		 */
-		private NodeIterator(Object object, VisitMode mode) throws VisitorException {
-			this.nodes = visitReadOnlyNode(object, null);
-			this.mode = mode;
+		private NodeIterator(Object object, NodeFactory factory) throws VisitorException {
+			this.factory = factory;
+			this.nodes = visitNode(object, null);			
 		}
 		
 		/**
@@ -124,13 +125,13 @@ public final class Visitor implements Iterable<Node> {
 			throw new UnsupportedOperationException("Operation not supported");		
 		}
 		
-		private List<Node> visitReadOnlyNode(Object node, String path) throws VisitorException {
-			logger.trace("visiting node at path '{}' (class '{}')", path, node.getClass().getCanonicalName());
-			List<Node> nodes = null;
-			if(node != null) {
-				nodes = new ArrayList<Node>();
+		private List<Node> visitNode(Object currentNode, String path) throws VisitorException {
+			logger.trace("visiting node at path '{}' (class '{}')", path, currentNode.getClass().getCanonicalName());
+			List<Node> nodes = new ArrayList<Node>();
+			if(currentNode != null) {
+				
 				Set<String> names = new HashSet<String>();
-				Class<?> clazz = node.getClass();
+				Class<?> clazz = currentNode.getClass();
 				do {
 					logger.trace("analysing fields of class '{}'", clazz.getSimpleName());
 					for(Field field : clazz.getDeclaredFields()) {
@@ -145,79 +146,120 @@ public final class Visitor implements Iterable<Node> {
 							names.add(field.getName());
 							
 							String nodeName = getName(field.getName(), path);
-							Object nodeValue = getValue(node, field);
+							
 							
 							// checking if we need to recurse into this field's properties
 							Visitable visitable = field.getAnnotation(Visitable.class);
-							if(visitable != null) {
-								
-								if(isList(nodeValue)) {					
-									logger.trace("node '{}' is a list of visitable objects", nodeName);
-									List<?> list = (List<?>)nodeValue;
+							if(visitable == null || visitable.value() == false) {
+								logger.trace("node '{}' is an opaque object", nodeName);
+								nodes.add(factory.makeObjectNode(path, currentNode, field));								
+							} else {
+								// treat each kind of node differently
+								Class<?> type = field.getType();
+								if(List.class.isAssignableFrom(type)) {
+									logger.trace("node '{}' is a list", nodeName);
+									List<?> list = (List<?>)getValue(currentNode, field);
 									int i = 0;
 									for(Object elementValue : list) {
 										String elementName = nodeName + "[" + i++ + "]";
-										if(visitable.value()) {
-											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
+										if(visitable.recurse()) {
+											nodes.addAll(visitNode(elementValue, elementName));
 										} else {
-											nodes.add(new ReadOnlyNode(elementName, elementValue));
+											nodes.add(factory.makeListElementNode(elementName, list, i));
 										}
 									}
-								} else if(isArray(nodeValue)) {
-									logger.trace("node '{}' is an array of visitable objects", nodeName);
-									for(int i = 0; i < Array.getLength(nodeValue); ++ i) {
-										Object elementValue = Array.get(nodeValue, i);
-										String elementName = nodeName + "[" + i + "]";
-										if(visitable.value()) {
-											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
-										} else {
-											nodes.add(new ReadOnlyNode(elementName, elementValue));
-										}
-									}									
-								} else if(isMap(nodeValue)) {
-									logger.trace("node '{}' is a map of visitable objects", nodeName);
-									Map<?, ?> map = (Map<?, ?>)nodeValue;
+								} else if(Map.class.isAssignableFrom(type)) {									
+									logger.trace("node '{}' is a map", nodeName);
+									Map<?, ?> map = (Map<?, ?>)getValue(currentNode, field);
 									for(Entry<?, ?> entry : map.entrySet()) {
-										String label = null;
-										Object key = entry.getKey();
-										Class<?> cls = key.getClass();										
-										if( cls == Byte.class 	|| 
-											cls == Short.class 	||  
-											cls == Long.class 	|| 
-											cls == Float.class 	|| 
-											cls == Double.class || 
-											cls == Boolean.class||
-											cls == Integer.class ) {
-											label = key.toString();
+										String elementName = nodeName + "['" + entry.getKey().toString() + "']";
+										if(visitable.recurse()) {
+											nodes.addAll(visitNode(entry.getValue(), elementName));
 										} else {
-											label = "'" + key.toString() + "'";											
+											nodes.add(factory.makeMapEntryNode(elementName, map, entry.getKey()));
 										}
-										String elementName = nodeName + "[" + label + "]";
-										if(visitable.value()) {
-											nodes.addAll(visitReadOnlyNode(entry.getValue(), elementName));
-										} else {
-											nodes.add(new ReadOnlyNode(elementName, entry.getValue()));
-										}
-									}																		
-								} else if(isSet(nodeValue)) {
-									logger.trace("node '{}' is a set of visitable objects", nodeName);
-									Set<?> set = (Set<?>)nodeValue;
+									}
+									
+								} else if(Set.class.isAssignableFrom(type)) {
+									logger.trace("node '{}' is a set", nodeName);
+									Set<?> set = (Set<?>)getValue(currentNode, field);
 									int i = 0;
 									for(Object elementValue : set) {
 										String elementName = nodeName + "$" + i++;
-										if(visitable.value()) {
-											nodes.addAll(visitReadOnlyNode(elementValue, elementName));
+										if(visitable.recurse()) {
+											nodes.addAll(visitNode(elementValue, elementName));
 										} else {
-											nodes.add(new ReadOnlyNode(elementName, elementValue));
+											nodes.add(factory.makeSetElementNode(elementName, set, i));
 										}
-									}									
+									}
+								} else if(type.isArray()) {
+									logger.trace("node '{}' is an array", nodeName);
+									
+									Object [] array = null;
+									
+									Object elementValue = getValue(currentNode, field);
+									
+									Class<?> componentType = elementValue.getClass().getComponentType();
+
+								    if(componentType.isPrimitive()) {
+								    	logger.trace("component type: {}", componentType);
+								    	if(componentType == Boolean.TYPE) {
+								    		array = new Object[((boolean[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Boolean(((boolean[])elementValue)[i]);
+								            }
+								    	} else if(componentType == Character.TYPE) {
+								    		array = new Object[((char[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Character(((char[])elementValue)[i]);
+								            }
+								    	} else if(componentType == Byte.TYPE) {
+								    		array = new Object[((byte[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Byte(((byte[])elementValue)[i]);
+								            }
+								    	} else if(componentType == Short.TYPE) {
+								    		array = new Object[((short[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Short(((short[])elementValue)[i]);
+								            }
+								    	} else if(componentType == Integer.TYPE) {
+								    		array = new Object[((int[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Integer(((int[])elementValue)[i]);
+								            }
+								    	} else if(componentType == Long.TYPE) {
+								    		array = new Object[((long[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Long(((long[])elementValue)[i]);
+								            }
+								    	} else if(componentType == Float.TYPE) {
+								    		array = new Object[((float[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Float(((float[])elementValue)[i]);
+								            }
+								    	} else if(componentType == Double.TYPE) {
+								    		array = new Object[((double[])elementValue).length];
+								    		for(int i = 0; i < array.length; ++i) {
+								                array[i] = new Double(((double[])elementValue)[i]);
+								            }
+								    	}
+								    } else {									
+										array = (Object[])getValue(currentNode, field);
+										for(int i = 0; i < array.length; ++i) {
+											Object arrayElementValue = array[i];
+											String elementName = nodeName + "[" + i + "]";
+											if(visitable.recurse()) {
+												nodes.addAll(visitNode(arrayElementValue, elementName));
+											} else {
+												nodes.add(factory.makeArrayElementNode(elementName, array, i));
+											}
+										}
+								    }
 								} else {
-									logger.trace("recursing into nested object '{}'", nodeName);
-									nodes.addAll(visitReadOnlyNode(nodeValue, nodeName));
-									logger.trace("... done recursing on '{}'", nodeName);
+									logger.trace("node '{}' is an opaque object", nodeName);
+									nodes.add(factory.makeObjectNode(path, currentNode, field));								
 								}
-							} else {
-								nodes.add(new ReadOnlyNode(nodeName, nodeValue));								
 							}
 						}
 					}			
@@ -225,7 +267,7 @@ public final class Visitor implements Iterable<Node> {
 				} while(clazz != null && clazz != Object.class);
 			}
 			return nodes;
-		}
+		}		
 		
 		/**
 		 * Returns the OGNL name of the node.
@@ -288,50 +330,6 @@ public final class Visitor implements Iterable<Node> {
 				}
 			}
 		}	
-		
-		/**
-		 * Returns whether the object under inspection is an array of objects, e.g if 
-		 * applied to <code>int[]</code>, it will return <code>true</code>.
-		 * 
-		 * @return
-		 *   whether the object under inspection is an array of objects.
-		 */
-		public static boolean isArray(Object object) {
-	    	return object != null && object.getClass().isArray();
-		}
-	    
-		/**
-		 * Returns whether the object under inspection is an instance of a <code>
-		 * List<?></code>.
-		 * 
-		 * @return
-		 *   whether the object under inspection is a <code>List</code>. 
-		 */
-		public static boolean isList(Object object) {
-			return object != null && object instanceof List<?>;
-		}
-		
-		/**
-		 * Returns whether the object under inspection is an instance of a <code>
-		 * Set<?></code>.
-		 * 
-		 * @return
-		 *   whether the object under inspection is a <code>Set</code>. 
-		 */
-		public static boolean isSet(Object object) {
-			return object != null && object instanceof Set<?>;
-		}
-		    
-	    /**
-	     * Returns whether the object under inspection is an instance of a <code>
-	     * Map<?, ?></code>.
-	     * 
-	     * @return
-	     *   whether the object under inspection is a <code>Map</code>.
-	     */
-		public static boolean isMap(Object object) {
-			return object != null && object instanceof Map<?, ?>;
-		}		
 	}
 	
 	/**
@@ -345,9 +343,11 @@ public final class Visitor implements Iterable<Node> {
 	private Object object;
 	
 	/**
-	 * How the visit is performed, that is if the modes will be modifiable or not.
+	 * The factory that provides node accessors; depending on the type of factory,
+	 * the visit allows for read-only or read/write access to the objet hierarchy
+	 * nodes.
 	 */
-	private VisitMode mode;
+	private NodeFactory factory;
 	
 	/**
 	 * Constructor.
@@ -355,9 +355,9 @@ public final class Visitor implements Iterable<Node> {
 	 * @param object
 	 *   the object whose properties are being enumerated and visited.
 	 */
-	public Visitor(Object object, VisitMode mode) {
+	public Visitor(Object object, NodeFactory factory) {
 		this.object = object;
-		this.mode = mode;
+		this.factory = factory;
 	}
 
 	/**
@@ -366,7 +366,7 @@ public final class Visitor implements Iterable<Node> {
 	@Override
 	public Iterator<Node> iterator() {
 		try {
-			return new NodeIterator(object, mode);
+			return new NodeIterator(object, factory);
 		} catch (VisitorException e) {
 			logger.error("error visiting object properties", e);
 		}

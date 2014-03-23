@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dihedron.commons.visitor.Visitor.VisitMode;
+import org.dihedron.commons.visitor.factories.UnmodifiableNodeFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,8 @@ public class VisitorTest {
 		
 		protected String p1 = "a nice string";
 		
-		@Visitable private List<String> list = new ArrayList<String>();
+		@Visitable private List<String> list1 = new ArrayList<String>();
+		@Visitable private ArrayList<String> list2 = new ArrayList<String>();
 		
 		@Visitable private Set<String> set = new HashSet<String>();
 		
@@ -51,19 +53,26 @@ public class VisitorTest {
 			
 			this.number = number;
 			
-			list.add("0");
-			list.add("1");
-			list.add("2");
-			list.add("3");
-			list.add("4");
-			list.add("5");
+			list1.add("s0");
+			list1.add("s1");
+			list1.add("s2");
+			list1.add("s3");
+			list1.add("s4");
+			list1.add("s5");
+
+			list2.add("al0");
+			list2.add("al1");
+			list2.add("al2");
+			list2.add("al3");
+			list2.add("al4");
+			list2.add("al5");
 			
-			set.add("0");
-			set.add("1");
-			set.add("2");
-			set.add("3");
-			set.add("4");
-			set.add("5");
+			set.add("s0");
+			set.add("s1");
+			set.add("s2");
+			set.add("s3");
+			set.add("s4");
+			set.add("s5");
 		}
 	}
 	
@@ -104,12 +113,13 @@ public class VisitorTest {
 
 	/**
 	 * Test method for {@link org.dihedron.visitor.Visitor#iterator()}.
+	 * @throws VisitorException 
 	 */
 	@Test
-	public void testIterator() {
+	public void testIterator() throws VisitorException {
 		
 		MyOuterBean bean = new MyOuterBean();
-		Visitor visitor = new Visitor(bean, VisitMode.READ_ONLY);
+		Visitor visitor = new Visitor(bean, new UnmodifiableNodeFactory());
 		for(Node property : visitor) {
 			String name = property.getName();
 			Object value = property.getValue();

@@ -16,40 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+package org.dihedron.commons.visitor.nodes;
 
-package org.dihedron.commons.visitor;
-
+import org.dihedron.commons.visitor.VisitorException;
 
 /**
- * A class representing an object property, a node in the object graph.
- *  
  * @author Andrea Funto'
  */
-public interface Node {
+public class ModifiableArrayElementNode extends UnmodifiableArrayElementNode {
 	
 	/**
-	 * Returns the value of the name.
-	 *	
-	 * @return 
-	 *   the name.
+	 * Constructor.
+	 * 
+	 * @param name
+	 *   the pseudo-OGNL path of the node.
+	 * @param array
+	 *   the array to which this element mode belongs.
+	 * @param index
+	 *   the index of this node in the array.
 	 */
-	String getName();
+	public ModifiableArrayElementNode(String name, Object[] array, int index) {
+		super(name, array, index);
+	}
 
 	/**
-	 * Returns the value of the property.
-	 *	
-	 * @return 
-	 *   the property value.
-	 * @throws VisitorException 
+	 * @see org.dihedron.commons.visitor.nodes.AbstractNode#setValue(java.lang.Object)
 	 */
-	Object getValue() throws VisitorException;
-
-	/**
-	 * Sets the new value of the property.
-	 *	
-	 * @param value 
-	 *   the value to set.
-	 * @throws VisitorException
-	 */
-	void setValue(Object value) throws VisitorException;
+	public void setValue(Object value) throws VisitorException {
+		array[index] = value;
+	}
 }

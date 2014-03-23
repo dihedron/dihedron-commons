@@ -16,40 +16,37 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+package org.dihedron.commons.visitor.nodes;
 
-package org.dihedron.commons.visitor;
+import java.util.Set;
 
+import org.dihedron.commons.visitor.VisitorException;
 
 /**
- * A class representing an object property, a node in the object graph.
- *  
  * @author Andrea Funto'
  */
-public interface Node {
+public class ModifiableSetElementNode extends UnmodifiableSetElementNode {
 	
 	/**
-	 * Returns the value of the name.
-	 *	
-	 * @return 
-	 *   the name.
+	 * Constructor.
+	 * 
+	 * @param name
+	 *   the pseudo-OGNL path of the node.
+	 * @param object
+	 *   the object owning the field represented by this node object
+	 * @param field
+	 *   the field containing the object represented by this node object.
 	 */
-	String getName();
+	public ModifiableSetElementNode(String name, Set<?> set, Object element) {
+		super(name, set, element);
+	}
 
 	/**
-	 * Returns the value of the property.
-	 *	
-	 * @return 
-	 *   the property value.
-	 * @throws VisitorException 
+	 * @see org.dihedron.commons.visitor.nodes.AbstractNode#setValue(java.lang.Object)
 	 */
-	Object getValue() throws VisitorException;
-
-	/**
-	 * Sets the new value of the property.
-	 *	
-	 * @param value 
-	 *   the value to set.
-	 * @throws VisitorException
-	 */
-	void setValue(Object value) throws VisitorException;
+	@SuppressWarnings("unchecked")
+	public void setValue(Object value) throws VisitorException {
+		((Set<Object>)set).remove(element);
+		((Set<Object>)set).add(value);
+	}
 }

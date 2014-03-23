@@ -16,40 +16,36 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+package org.dihedron.commons.visitor.nodes;
 
-package org.dihedron.commons.visitor;
+import java.util.Map;
 
+import org.dihedron.commons.visitor.VisitorException;
 
 /**
- * A class representing an object property, a node in the object graph.
- *  
  * @author Andrea Funto'
  */
-public interface Node {
+public class ModifiableMapEntryNode extends UnmodifiableMapEntryNode {
 	
 	/**
-	 * Returns the value of the name.
-	 *	
-	 * @return 
-	 *   the name.
+	 * Constructor.
+	 * 
+	 * @param name
+	 *   the pseudo-OGNL path of the node.
+	 * @param map
+	 *   the map owning this node.
+	 * @param key
+	 *   the key of this entry in the map.
 	 */
-	String getName();
+	public ModifiableMapEntryNode(String name, Map<?, ?> map, Object key) {
+		super(name, map, key);
+	}
 
 	/**
-	 * Returns the value of the property.
-	 *	
-	 * @return 
-	 *   the property value.
-	 * @throws VisitorException 
+	 * @see org.dihedron.commons.visitor.nodes.AbstractNode#getValue()
 	 */
-	Object getValue() throws VisitorException;
-
-	/**
-	 * Sets the new value of the property.
-	 *	
-	 * @param value 
-	 *   the value to set.
-	 * @throws VisitorException
-	 */
-	void setValue(Object value) throws VisitorException;
+	@SuppressWarnings("unchecked")
+	public void setValue(Object value) throws VisitorException {
+		((Map<Object, Object>)map).put(key, value);
+	}
 }

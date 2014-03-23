@@ -391,6 +391,21 @@ public final class Strings {
 	}
 	
 	/**
+	 * Reverses the input string.
+	 * 
+	 * @param string
+	 *   the string to be reversed.
+	 * @return
+	 *   the reversed string.
+	 */
+	public static String reverse(String string) {
+		if(string != null) {
+			return new StringBuilder(string).reverse().toString();
+		}
+		return null;
+	}
+	
+	/**
 	 * Private constructor to prevent utility class instantiation. 
 	 */
 	private Strings() {

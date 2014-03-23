@@ -16,40 +16,36 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
+package org.dihedron.commons.visitor.nodes;
 
-package org.dihedron.commons.visitor;
+import java.util.List;
 
+import org.dihedron.commons.visitor.VisitorException;
 
 /**
- * A class representing an object property, a node in the object graph.
- *  
  * @author Andrea Funto'
  */
-public interface Node {
+public class ModifiableListElementNode extends UnmodifiableListElementNode {
 	
 	/**
-	 * Returns the value of the name.
-	 *	
-	 * @return 
-	 *   the name.
+	 * Constructor.
+	 * 
+	 * @param name
+	 *   the pseudo-OGNL path of the node.
+	 * @param object
+	 *   the object owning the field represented by this node object
+	 * @param field
+	 *   the field containing the object represented by this node object.
 	 */
-	String getName();
+	public ModifiableListElementNode(String name, List<?> list, int index) {
+		super(name, list, index);
+	}
 
 	/**
-	 * Returns the value of the property.
-	 *	
-	 * @return 
-	 *   the property value.
-	 * @throws VisitorException 
+	 * @see org.dihedron.commons.visitor.nodes.AbstractNode#getValue()
 	 */
-	Object getValue() throws VisitorException;
-
-	/**
-	 * Sets the new value of the property.
-	 *	
-	 * @param value 
-	 *   the value to set.
-	 * @throws VisitorException
-	 */
-	void setValue(Object value) throws VisitorException;
+	@SuppressWarnings("unchecked")
+	public void setValue(Object value) throws VisitorException {
+		((List<Object>)list).set(index, value);
+	}
 }
