@@ -73,9 +73,12 @@ public final class Strings {
 	 *   besides blank spaces.
 	 */
 	public static boolean areValid(String... strings) {
-		boolean result = true;
-		for(String string : strings) {
-			result = result && isValid(string);
+		boolean result = false;
+		if(strings != null) {
+			result = true;
+			for(String string : strings) {
+				result = result && isValid(string);
+			}
 		}
 		return result;
 	}
@@ -151,18 +154,20 @@ public final class Strings {
 	 */
 	public static String join(String separator, String... strings) {
 		StringBuilder builder = new StringBuilder();
-		boolean first = true;
-		for(String string : strings) {
-			if(string != null) {				
-				if(!first) {
-					builder.append(separator);					
+		if(strings != null) {
+			boolean first = true;
+			for(String string : strings) {
+				if(string != null) {				
+					if(!first) {
+						builder.append(separator);					
+					}
+					builder.append(string);
+					first = false;
 				}
-				builder.append(string);
-				first = false;
 			}
-		}
-		if(builder.length() > 0) {
-			return builder.toString();
+			if(builder.length() > 0) {
+				return builder.toString();
+			}
 		}
 		return null;
 	}
