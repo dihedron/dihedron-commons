@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.dihedron.commons.visitor.Visitor.VisitMode;
-import org.dihedron.commons.visitor.factories.UnmodifiableNodeFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +104,47 @@ public class VisitorTest {
 		}
 	}
 	
+	public class MySimpleTestBean {
+		
+		private String myString = "before";
+		private int myInt = 5;
+		
+		@Visitable private List<String> myList = new ArrayList<String>();
+		@Visitable private Set<String> mySet = new HashSet<String>();
+		@Visitable private Map<String, String> myMap = new HashMap<String, String>();
+	
+		public MySimpleTestBean() {
+			myList.add("L0");
+			myList.add("L1");
+			myList.add("L2");
+			myList.add("L3");
+			myList.add("L4");
+			myList.add("L5");
+			
+			mySet.add("S0");
+			mySet.add("S1");
+			mySet.add("S2");
+			mySet.add("S3");
+			mySet.add("S4");
+			mySet.add("S5");
+			
+			myMap.put("K0", "V0");
+			myMap.put("K1", "V1");
+			myMap.put("K2", "V2");
+			myMap.put("K3", "V3");
+			myMap.put("K4", "V4");
+			myMap.put("K5", "V5");
+		}
+		
+		public String getMyString() {
+			return myString;
+		}
+		
+		public int getMyInt() {
+			return myInt;
+		}
+	}
+	
 	/**
 	 * The logger.
 	 */
@@ -118,13 +157,30 @@ public class VisitorTest {
 	@Test
 	public void testIterator() throws VisitorException {
 		
+		StringBuilder buffer = new StringBuilder();
+		
 		MyOuterBean bean = new MyOuterBean();
-		Visitor visitor = new Visitor(bean, new UnmodifiableNodeFactory());
+		Visitor visitor = new Visitor(bean, VisitMode.READ_ONLY);
 		for(Node property : visitor) {
 			String name = property.getName();
 			Object value = property.getValue();
 			String type = value != null ? value.getClass().getSimpleName() : "<null>";			
 			logger.trace("property: '{}' --> '{}' ({})", name, value, type);
+			buffer.append("'").append(name).append("'->'").append(value).append("'\n");
 		}
+		
+		logger.info("overall result:\n{}", buffer);
+		
+		buffer.setLength(0);
+		MySimpleTestBean bean2 = new MySimpleTestBean();
+		visitor = new Visitor(bean2, VisitMode.READ_ONLY);
+		for(Node node : visitor) {
+			String name = node.getName();
+			Object value = node.getValue();
+			String type = value != null ? value.getClass().getSimpleName() : "<null>";			
+			logger.trace("property: '{}' --> '{}' ({})", name, value, type);			
+			buffer.append("'").append(name).append("'->'").append(value).append("'\n");
+		}
+		logger.info("overall result:\n{}", buffer);
 	}
 }

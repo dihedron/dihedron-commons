@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.dihedron.commons.visitor.factories.ModifiableNodeFactory;
+import org.dihedron.commons.visitor.factories.UnmodifiableNodeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,29 +47,80 @@ import org.slf4j.LoggerFactory;
 public final class Visitor implements Iterable<Node> {
 	
 	/**
-	 * An enumeration representing whether the object properties must be accessed
-	 * in read only mode or in read/write mode.
-	 *  
-	 * @author Andrea Funto'
+	 * The default kind of access to the object's properties.
 	 */
-	public enum VisitMode {
+	public static final VisitMode DEFAULT_VISIT_MODE = VisitMode.READ_ONLY;
+	
+	/**
+	 * Whether Java Sets should be introspected; by default they should not,
+	 * since there is no sensible way of representing their elements. 
+	 */
+	public static final boolean DEFAULT_VISIT_SETS = false;
+				
+	/**
+	 * The logger.
+	 */
+	private final static Logger logger = LoggerFactory.getLogger(Visitor.class);
+
+	/**
+	 * The object whose properties are being inspected.
+	 */
+	private Object object;
+	
+	/**
+	 * How the visit is performed, that is if the modes will be modifiable or not.
+	 */
+	private VisitMode mode = DEFAULT_VISIT_MODE;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param object
+	 *   the object whose properties are being enumerated and visited.
+	 */
+	public Visitor(Object object) {
+		this(object, DEFAULT_VISIT_MODE);
+	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param object
+	 *   the object whose properties are being enumerated and visited.
+	 * @param mode
+	 *   whether the nodes should be visited in read-only or read/write mode.
+	 * @param visitSets
+	 *   whether the Java sets should be visited or regarded as opaque objects.
+	 */
+	public Visitor(Object object, VisitMode mode) {
+		this.object = object;
+		this.mode = mode;		
+	}
 		
-		/**
-		 * The sub-nodes will be accessed in read-only mode.
-		 */
-		READ_ONLY,
-		
-		/**
-		 * The sub-nodes will be accessed in read and write mode.
-		 */
-		READ_WRITE
+	/**
+	 * @see java.lang.Iterable#iterator()
+	 */
+	@Override
+	public Iterator<Node> iterator() {
+		try {
+			NodeFactory factory = null;
+			if(mode == VisitMode.READ_ONLY) {
+				factory = new UnmodifiableNodeFactory();
+			} else {
+				factory = new ModifiableNodeFactory();
+			}
+			return this.new NodeIterator(object, factory);
+		} catch (VisitorException e) {
+			logger.error("error visiting object properties", e);
+		}
+		return null;
 	}
 	
 	/**
 	 * @author Andrea Funto'
 	 */
-	private static final class NodeIterator implements Iterator<Node> {
-	
+	private final class NodeIterator implements Iterator<Node> {
+			
 		/**
 		 * The position of the head of the list.
 		 */
@@ -82,7 +135,7 @@ public final class Visitor implements Iterable<Node> {
 		 * The factory that will generate the nodes as the visit proceeds.
 		 */
 		private NodeFactory factory;
-		
+				
 		/**
 		 * Constructor.
 		 *
@@ -146,7 +199,6 @@ public final class Visitor implements Iterable<Node> {
 							names.add(field.getName());
 							
 							String nodeName = getName(field.getName(), path);
-							
 							
 							// checking if we need to recurse into this field's properties
 							Visitable visitable = field.getAnnotation(Visitable.class);
@@ -279,8 +331,7 @@ public final class Visitor implements Iterable<Node> {
 		 * @return
 		 *   the OGNL name of the node.
 		 */
-		protected static String getName(String name, String path) {
-			logger.trace("getting OGNL name for node '{}' at path '{}'", name, path);
+		protected String getName(String name, String path) {			
 			StringBuilder buffer = new StringBuilder();
 			if(path != null) {
 				buffer.append(path);
@@ -289,7 +340,7 @@ public final class Visitor implements Iterable<Node> {
 				buffer.append(".");
 			}
 			buffer.append(name);
-			logger.trace("OGNL path of node is '{}'", buffer.toString());
+			logger.trace("OGNL name for node '{}' at path '{}' is '{}'", name, path, buffer.toString());
 			return buffer.toString();
 		}
 		
@@ -305,7 +356,7 @@ public final class Visitor implements Iterable<Node> {
 		 * @throws VisitorException 
 		 *   if an error occurs while evaluating the node's value.
 		 */
-		protected static Object getValue(Object object, Field field) throws VisitorException {
+		protected Object getValue(Object object, Field field) throws VisitorException {
 			boolean reprotect = false;
 			if(object == null) {
 				return null;
@@ -330,46 +381,5 @@ public final class Visitor implements Iterable<Node> {
 				}
 			}
 		}	
-	}
-	
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = LoggerFactory.getLogger(Visitor.class);
-
-	/**
-	 * The object whose properties are being inspected.
-	 */
-	private Object object;
-	
-	/**
-	 * The factory that provides node accessors; depending on the type of factory,
-	 * the visit allows for read-only or read/write access to the objet hierarchy
-	 * nodes.
-	 */
-	private NodeFactory factory;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param object
-	 *   the object whose properties are being enumerated and visited.
-	 */
-	public Visitor(Object object, NodeFactory factory) {
-		this.object = object;
-		this.factory = factory;
-	}
-
-	/**
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<Node> iterator() {
-		try {
-			return new NodeIterator(object, factory);
-		} catch (VisitorException e) {
-			logger.error("error visiting object properties", e);
-		}
-		return null;
 	}
 }

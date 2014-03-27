@@ -32,12 +32,12 @@ public interface Fx<S, E> {
 	 * the map, and may have a state object available to store information as the
 	 * iteration proceeds.
 	 *  
-	 * @param element
-	 *   the current element, be it a list/set element or a map emtry.
 	 * @param state
 	 *   a state object, used for keeping track of progression; this object will
 	 *   be the final result of the processing if returned by the last invocation 
 	 *   of this method on a collection element.
+	 * @param element
+	 *   the current element, be it a list/set element or a map emtry.
 	 * @return
 	 *   an object that will be passed on to the next invocation of this method 
 	 *   as the {@code state} parameter. At the end of the processing, this object
