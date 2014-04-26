@@ -137,6 +137,7 @@
 			</activation>
 
 			<build>
+				<finalName>dihedron-${project.artifactId}-${project.version}</finalName>
 				<plugins>
 					<plugin>
 						<inherited>true</inherited>
