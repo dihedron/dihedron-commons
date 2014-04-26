@@ -23,6 +23,7 @@ package org.dihedron.commons.reflection;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -31,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dihedron.commons.reflection.filters.IsField;
+import org.dihedron.commons.reflection.filters.NameIs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,132 +82,6 @@ public class Reflector {
 	 */
 	private boolean exposePrivateFields = DEFAULT_EXPOSE_PRIVATE_FIELDS;
 	
-	/**
-	 * Returns the set of instance fields of the given class, including those 
-	 * inherited from the super-classes.
-	 * 
-	 * @param clazz
-	 *   the class whose fields are being retrieved.
-	 * @param filter
-	 *   an optional set of names for the fields to be looked up; only fields 
-	 *   with those names will be returned.
-	 * @return
-	 *   the set of fields from the given class and its super-classes.
-	 */
-	public static Set<Field> getFields(Class<?> clazz, String... filter) {
-		Set<Field> fields = new HashSet<Field>();
-		Set<String> acceptable = new HashSet<String>();
-		acceptable.addAll(Arrays.asList(filter));
-		
-		Class<?> cursor = clazz;
-		while(cursor != null && cursor != Object.class) {
-			Field[] array = cursor.getDeclaredFields();
-			for(Field field : array) {
-				if(!Modifier.isStatic(field.getModifiers()) && ( acceptable.isEmpty() || acceptable.contains(field.getName()))) {					
-					logger.trace("adding field '{}' in class '{}' to instance fields", field.getName(), cursor.getSimpleName());
-					fields.add(field);
-				}
-			}
-			cursor = cursor.getSuperclass();
-		}		
-		return fields;
-	}
-	
-	/**
-	 * Returns the set of class (static) fields of the given class, including those 
-	 * inherited from the super-classes.
-	 * 
-	 * @param clazz
-	 *   the class whose fields are being retrieved.
-	 * @param filter
-	 *   an optional set of names for the fields to be looked up; only fields 
-	 *   with those names will be returned.
-	 * @return
-	 *   the set of static fields from the given class and its super-classes.
-	 */
-	public static Set<Field> getClassFields(Class<?> clazz, String... filter) {
-		Set<Field> fields = new HashSet<Field>();
-		Set<String> acceptable = new HashSet<String>();
-		acceptable.addAll(Arrays.asList(filter));
-
-		Class<?> cursor = clazz;
-		while(cursor != null && cursor != Object.class) {
-			Field[] array = cursor.getDeclaredFields();
-			for(Field field : array) {
-				if(Modifier.isStatic(field.getModifiers()) && (acceptable.isEmpty() || acceptable.contains(field.getName()))) {
-					logger.trace("adding field '{}' in class '{}' to static fields", field.getName(), cursor.getSimpleName());
-					fields.add(field);
-				}
-			}
-			cursor = cursor.getSuperclass();
-		}		
-		return fields;
-	}	
-	
-	/**
-	 * Returns the set of instance methods of the given class, including those 
-	 * inherited from the super-classes.
-	 * 
-	 * @param clazz
-	 *   the class whose methods are being retrieved.
-	 * @param filter
-	 *   an optional set of names for the methods to be looked up; only methods 
-	 *   with those names will be returned.
-	 * @return
-	 *   the set of methods from the given class and its super-classes.
-	 */
-	public static Set<Method> getMethods(Class<?> clazz, String... filter) {
-		Set<Method> methods = new HashSet<Method>();
-		Set<String> acceptable = new HashSet<String>();
-		acceptable.addAll(Arrays.asList(filter));
-		
-		Class<?> cursor = clazz;
-		while(cursor != null && cursor != Object.class) {
-			Method[] array = cursor.getDeclaredMethods();
-			for(Method method : array) {
-				if(!Modifier.isStatic(method.getModifiers())) {
-					logger.trace("checking method '{}'", method.getName());
-					if(acceptable.isEmpty() || acceptable.contains(method.getName())) {
-						logger.trace("adding method '{}' in class '{}' to instance methods", method.getName(), cursor.getSimpleName());
-						methods.add(method);
-					}
-				}
-			}
-			cursor = cursor.getSuperclass();
-		}		
-		return methods;
-	}	
-	
-	/**
-	 * Returns the set of class methods of the given class, including those 
-	 * inherited from the super-classes.
-	 * 
-	 * @param clazz
-	 *   the class whose methods are being retrieved.
-	 * @param filter
-	 *   an optional set of names for the methods to be looked up; only methods 
-	 *   with those names will be returned.
-	 * @return
-	 *   the set of class methods from the given class and its super-classes.
-	 */
-	public static Set<Method> getClassMethods(Class<?> clazz, String... filter) {
-		Set<Method> methods = new HashSet<Method>();
-		Set<String> acceptable = new HashSet<String>();
-		acceptable.addAll(Arrays.asList(filter));
-		
-		Class<?> cursor = clazz;
-		while(cursor != null && cursor != Object.class) {
-			Method[] array = cursor.getDeclaredMethods();
-			for(Method method : array) {
-				if(Modifier.isStatic(method.getModifiers()) && (acceptable.isEmpty() || acceptable.contains(method.getName()))) {
-					logger.trace("adding method '{}' in class '{}' to static methods", method.getName(), cursor.getSimpleName());
-					methods.add(method);
-				}
-			}
-			cursor = cursor.getSuperclass();
-		}		
-		return methods;
-	}	
 	
 	/**
 	 * Constructor.
@@ -487,8 +364,7 @@ public class Reflector {
 		} else {
 			throw new ReflectorException("object is not a map");
 		}
-	}
-	
+	}	
 	
 	/**
 	 * Invokes a method on the object under inspection.
@@ -589,6 +465,4 @@ public class Reflector {
 		}
 		return translated;
 	}
-	
-
 }

@@ -46,7 +46,7 @@ public final class Variables {
 	/**
 	 * Regular expression to identify scalar variables.
 	 */
-	private static final String VARIABLE_PATTERN = "(?:\\$\\{([A-Za-z_][\\-A-Za-z_0-9]*)\\})";
+	private static final String VARIABLE_PATTERN = "(?:\\$\\{([A-Za-z_][\\-A-Za-z_\\.0-9]*)\\})";
 
 	
 	/**

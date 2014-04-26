@@ -71,7 +71,7 @@ public class ClassPathURLStreamHandler extends URLStreamHandler {
      */
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
-    	logger.trace("opening connection to resource '{}' (protocol: '{}'", url.getPath(), url.getProtocol());
+    	logger.trace("opening connection to resource '{}' (protocol: '{}')", url.getPath(), url.getProtocol());
         URL resource = classloader.getResource(url.getPath());
         return resource.openConnection();
     }
