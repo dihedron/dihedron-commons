@@ -119,7 +119,7 @@ public final class VisitorHelper {
 	 *   whether the object under inspection is a <code>List</code>. 
 	 */
 	public static boolean isList(Object object) {
-		return object != null && object instanceof List<?>;
+		return object instanceof List<?>;
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public final class VisitorHelper {
 	 *   whether the object under inspection is a <code>Set</code>. 
 	 */
 	public static boolean isSet(Object object) {
-		return object != null && object instanceof Set<?>;
+		return object instanceof Set<?>;
 	}
 	    
     /**
@@ -141,7 +141,7 @@ public final class VisitorHelper {
      *   whether the object under inspection is a <code>Map</code>.
      */
 	public static boolean isMap(Object object) {
-		return object != null && object instanceof Map<?, ?>;
+		return object instanceof Map<?, ?>;
 	}	
 	
 	/**

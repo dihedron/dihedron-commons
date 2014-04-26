@@ -69,6 +69,7 @@ public class TaskExecutorTest {
 		executor.shutdown();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testWaitForAll() {
 
@@ -82,6 +83,7 @@ public class TaskExecutorTest {
 	
 				TaskExecutor<String> engine = new TaskExecutor<String>(executor).addObservers(new TestObserver());
 				List<Future<String>> futures = engine.execute(tasks);
+				@SuppressWarnings("unused")
 				List<String> results = engine.waitForAll(futures);
 				
 			} catch (Exception e) {

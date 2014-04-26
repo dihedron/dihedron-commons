@@ -47,7 +47,7 @@ public class UnmodifiableArrayElementNode extends AbstractNode {
 	 */
 	public UnmodifiableArrayElementNode(String name, Object[] array, int index) {
 		super(name);
-		this.array = array;
+		this.array = array.clone();
 		this.index = index;
 	}
 

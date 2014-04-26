@@ -26,26 +26,20 @@ import org.dihedron.commons.filters.compound.And;
 import org.dihedron.commons.filters.compound.Not;
 import org.dihedron.commons.filters.objects.Null;
 import org.dihedron.commons.filters.strings.Equals;
+import org.dihedron.commons.filters.strings.Matches;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
  */
 public class FiltersTest {
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = LoggerFactory.getLogger(FiltersTest.class);
 	
-
 	/**
 	 * Test method for {@link org.dihedron.commons.filters.Filters#accept(java.util.Collection, org.dihedron.commons.filters.Filter<T>[][])}.
 	 */
-//	@SuppressWarnings("unchecked")
 	@Test
 	public void testAccept() {
+		@SuppressWarnings("unchecked")
 		Collection<String> result = Filter.apply(new And<String>(
 						new Not<String>(
 							new Null<String>()
@@ -55,4 +49,43 @@ public class FiltersTest {
 
 		assertTrue(result.size() == 2);
 	}
+	
+	/**
+	 * Test method for {@link org.dihedron.commons.filters.Filters#accept(java.util.Collection, org.dihedron.commons.filters.Filter<T>[][])}.
+	 */
+	@Test
+	public void testReject() {
+		@SuppressWarnings("unchecked")
+		Collection<String> result = Filter.apply(
+					new Not<String>(
+						new And<String>(
+							new Not<String>(
+								new Null<String>()
+							),
+							new Equals("string")
+						)
+					), 
+					"string", "and", "then", "another", "string");
+
+		assertTrue(result.size() == 3);
+	}
+
+	/**
+	 * Test method for {@link org.dihedron.commons.filters.Filters#accept(java.util.Collection, org.dihedron.commons.filters.Filter<T>[][])}.
+	 */
+	@Test
+	public void testPattern() {
+		@SuppressWarnings("unchecked")
+		Collection<String> result = Filter.apply(
+					new And<String>(
+						new Not<String>(
+							new Null<String>()
+						),
+						new Matches(".*th.*")
+					), 
+					"string", "and", "then", "another", "string");
+
+		assertTrue(result.size() == 2);
+	}
+	
 }

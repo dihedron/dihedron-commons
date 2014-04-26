@@ -235,9 +235,10 @@ public class FunctionalList<S, E> extends Functional<S> implements List<E> {
 	@Override
 	@SuppressWarnings("unchecked")	
 	public <LE> S forEach(S state, Fx<S, LE> functor) {
+		S newState = state;
 		for(E element : list) {
-			state = functor.apply(state, (LE)element);
+			newState = functor.apply(newState, (LE)element);
 		}
-		return state;
+		return newState;
 	}
 }

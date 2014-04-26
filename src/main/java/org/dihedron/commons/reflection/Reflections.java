@@ -34,7 +34,7 @@ import org.dihedron.commons.reflection.filters.IsStatic;
 /**
  * @author Andrea Funto'
  */
-public class Reflections {
+public final class Reflections {
 
 	/**
 	 * Returns the set of instance fields of the given class, including those 
@@ -42,11 +42,23 @@ public class Reflections {
 	 * 
 	 * @param clazz
 	 *   the class whose fields are being retrieved.
-	 * @param filters
-	 *   an optional set of names for the fields to be looked up; only fields 
-	 *   with those names will be returned.
 	 * @return
 	 *   the set of fields from the given class and its super-classes.
+	 */
+	public static Set<Field> getInstanceFields(Class<?> clazz) {
+		return getInstanceFields(clazz, null);
+	}
+	
+	/**
+	 * Returns the filtered set of instance fields of the given class, including 
+	 * those inherited from the super-classes.
+	 * 
+	 * @param clazz
+	 *   the class whose fields are being retrieved.
+	 * @param filter
+	 *   an optional filter; to get all fields pass in a {@code null} value.
+	 * @return
+	 *   the filtered set of fields from the given class and its super-classes.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Set<Field> getInstanceFields(Class<?> clazz, Filter<Field> filter) {
@@ -64,16 +76,28 @@ public class Reflections {
 	}
 		
 	/**
-	 * Returns the set of class (static) fields of the given class, including those 
-	 * inherited from the super-classes.
+	 * Returns the set of class (static) fields of the given class, including 
+	 * those inherited from the super-classes.
 	 * 
 	 * @param clazz
 	 *   the class whose fields are being retrieved.
-	 * @param filters
-	 *   an optional set of names for the fields to be looked up; only fields 
-	 *   with those names will be returned.
 	 * @return
-	 *   the set of static fields from the given class and its super-classes.
+	 *   the set of fields from the given class and its super-classes.
+	 */
+	public static Set<Field> getClassFields(Class<?> clazz) {
+		return getClassFields(clazz, null);
+	}
+	
+	/**
+	 * Returns the filtered set of class (static) fields of the given class, 
+	 * including those inherited from the super-classes.
+	 * 
+	 * @param clazz
+	 *   the class whose fields are being retrieved.
+	 * @param filter
+	 *   an optional filter; to get all fields pass in a {@code null} value. 
+	 * @return
+	 *   the set of fields from the given class and its super-classes.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Set<Field> getClassFields(Class<?> clazz, Filter<Field> filter) {
@@ -94,11 +118,23 @@ public class Reflections {
 	 * 
 	 * @param clazz
 	 *   the class whose methods are being retrieved.
-	 * @param filters
-	 *   an optional set of names for the methods to be looked up; only methods 
-	 *   with those names will be returned.
 	 * @return
-	 *   the set of methods from the given class and its super-classes.
+	 *   the filtered set of methods from the given class and its super-classes.
+	 */
+	public static Set<Method> getInstanceMethods(Class<?> clazz) {
+		return getInstanceMethods(clazz, null);
+	}
+	
+	/**
+	 * Returns the filtered set of instance methods of the given class, including 
+	 * those inherited from the super-classes.
+	 * 
+	 * @param clazz
+	 *   the class whose methods are being retrieved.
+	 * @param filter
+	 *   an optional filter; to get all methods pass in a {@code null} value. 
+	 * @return
+	 *   the filtered set of methods from the given class and its super-classes.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Set<Method> getInstanceMethods(Class<?> clazz, Filter<Method> filter) {
@@ -116,16 +152,28 @@ public class Reflections {
 	}
 	
 	/**
-	 * Returns the set of class methods of the given class, including those 
-	 * inherited from the super-classes.
+	 * Returns the set of class (static) methods of the given class, including 
+	 * those inherited from the super-classes.
 	 * 
 	 * @param clazz
 	 *   the class whose methods are being retrieved.
-	 * @param filters
-	 *   an optional set of names for the methods to be looked up; only methods 
-	 *   with those names will be returned.
 	 * @return
-	 *   the set of class methods from the given class and its super-classes.
+	 *   the filtered set of methods from the given class and its super-classes.
+	 */
+	public static Set<Method> getClassMethods(Class<?> clazz) {
+		return getClassMethods(clazz, null);
+	}
+	
+	/**
+	 * Returns the filtered set of class (static) methods of the given class, 
+	 * including those inherited from the super-classes.
+	 * 
+	 * @param clazz
+	 *   the class whose methods are being retrieved.
+	 * @param filter
+	 *   an optional filter; to get all methods pass in a {@code null} value. 
+	 * @return
+	 *   the filtered set of methods from the given class and its super-classes.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Set<Method> getClassMethods(Class<?> clazz, Filter<Method> filter) {
@@ -146,10 +194,22 @@ public class Reflections {
 	 * 
 	 * @param clazz
 	 *   the class whose fields are being retrieved.
-	 * @param filters
-	 *   an optional set of filter arrays; all filters in each array must be 
-	 *   matched for an element to be accepted (ANDed); each array is applied 
-	 *   and as soon as one matches the element is accepted (ORed).
+	 * @return
+	 *   the set of fields from the given class and its super-classes.
+	 */
+	public static Set<Field> getFields(Class<?> clazz) {
+		return getFields(clazz);
+	}
+	
+	/**
+	 * Returns the filtered set of fields of the given class, including those 
+	 * inherited from the super-classes; if provided, complex filter criteria 
+	 * can be applied.
+	 * 
+	 * @param clazz
+	 *   the class whose fields are being retrieved.
+	 * @param filter
+	 *   an optional filter; to get all fields pass in a {@code null} value.
 	 * @return
 	 *   the set of fields from the given class and its super-classes.
 	 */
@@ -159,23 +219,35 @@ public class Reflections {
 		Class<?> cursor = clazz;
 		while(cursor != null && cursor != Object.class) {
 			// get all fields and apply filters
-			fields.addAll(Filter.apply(filter , cursor.getDeclaredFields()));
+			fields.addAll(Filter.apply(filter, cursor.getDeclaredFields()));
 			// up one step on the hierarchy
 			cursor = cursor.getSuperclass();
 		}		
 		return fields;
 	}
-	
+
 	/**
 	 * Returns the set of methods of the given class, including those inherited 
 	 * from the super-classes; if provided, complex filter criteria can be applied.
 	 * 
 	 * @param clazz
 	 *   the class whose methods are being retrieved.
-	 * @param filters
-	 *   an optional set of filter arrays; all filters in each array must be 
-	 *   matched for an element to be accepted (ANDed); each array is applied 
-	 *   and as soon as one matches the element is accepted (ORed).
+	 * @return
+	 *   the set of methods from the given class and its super-classes.
+	 */
+	public static Set<Method> getMethods(Class<?> clazz) {
+		return getMethods(clazz);
+	}
+	
+	/**
+	 * Returns the filtered set of methods of the given class, including those 
+	 * inherited from the super-classes; if provided, complex filter criteria 
+	 * can be applied.
+	 * 
+	 * @param clazz
+	 *   the class whose methods are being retrieved.
+	 * @param filter
+	 *   an optional filter; to get all fields pass in a {@code null} value.
 	 * @return
 	 *   the set of methods from the given class and its super-classes.
 	 */
@@ -191,7 +263,7 @@ public class Reflections {
 		}		
 		return methods;
 	}	
-	
+
 	/**
 	 * Returns the set of fields and/or methods of the given class, including 
 	 * those inherited from the super-classes; if provided, complex filter
@@ -199,10 +271,23 @@ public class Reflections {
 	 * 
 	 * @param clazz
 	 *   the class whose fields and methods are being retrieved.
-	 * @param filters
-	 *   an optional set of filter arrays; all filters in each array must be 
-	 *   matched for an element to be accepted (ANDed); each array is applied 
-	 *   and as soon as one matches the element is accepted (ORed).
+	 * @return
+	 *   the set of fields and/or methods from the given class and its 
+	 *   super-classes.
+	 */
+	public static Set<Member> getMembers(Class<?> clazz) {
+		return getMembers(clazz, null);
+	}
+	
+	/**
+	 * Returns the filtered set of fields and/or methods of the given class, 
+	 * including those inherited from the super-classes; if provided, complex 
+	 * filter criteria can be applied.
+	 * 
+	 * @param clazz
+	 *   the class whose fields and methods are being retrieved.
+	 * @param filter
+	 *   an optional filter; to get all fields pass in a {@code null} value.
 	 * @return
 	 *   the set of fields and/or methods from the given class and its 
 	 *   super-classes.

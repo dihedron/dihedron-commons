@@ -22,12 +22,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.dihedron.commons.filters.compound.Not;
-import org.dihedron.commons.reflection.filters.IsField;
-import org.dihedron.commons.reflection.filters.IsMethod;
-import org.dihedron.commons.reflection.filters.IsStatic;
 import org.dihedron.commons.reflection.filters.NameIs;
 import org.dihedron.commons.reflection.filters.NameLike;
 import org.junit.Test;
@@ -41,16 +39,19 @@ public class ReflectionsTest {
 	
 	private class A {
 		
+		@SuppressWarnings("unused")
 		protected static final int counterA = 0;
 		
 		private String string = "A";
 		
 		protected int i = 0;
 		
+		@SuppressWarnings("unused")
 		public String getString() {
 			return string;
 		}
 		
+		@SuppressWarnings("unused")
 		public int getInt() {
 			return i;
 		}
@@ -58,6 +59,7 @@ public class ReflectionsTest {
 	
 	private class B extends A {
 		
+		@SuppressWarnings("unused")
 		protected static final int counterB = 0;
 		
 		private long l = 1;
@@ -70,12 +72,14 @@ public class ReflectionsTest {
 			return i + 1;
 		}
 		
+		@SuppressWarnings("unused")
 		public long getSum() {
 			return getInt() + getLong();
 		}
 	}
 	
 	private static class C {
+		@SuppressWarnings("unused")
 		public static final void myStaticMethodinC() {
 			
 		}
@@ -90,6 +94,9 @@ public class ReflectionsTest {
 	@Test 
 	public void testGetFieldsOfAExcludeThis0() {
 		Set<Field> fields = Reflections.getInstanceFields(A.class, new Not<Field>(new NameIs<Field>("this$0")));
+		for(Member field : fields) {
+			logger.trace("field: '{}'", field.getName());
+		}
 		assertTrue(fields.size() == 2);
 		assertTrue(containsByName(fields, "i"));
 		assertTrue(containsByName(fields, "string"));
@@ -98,11 +105,9 @@ public class ReflectionsTest {
 	@Test 
 	public void testGetFieldsOfAIncludeThis0() {
 		Set<Field> fields = Reflections.getInstanceFields(A.class, null);
-//
-//		Set<Member> fields = Reflections.getMembers(A.class, new ReflectorFilter[] {
-//			new IsField(),
-//			new IsNotStatic()
-//		});
+		for(Member field : fields) {
+			logger.trace("field: '{}'", field.getName());
+		}
 		assertTrue(fields.size() == 3);
 		assertTrue(containsByName(fields, "i"));
 		assertTrue(containsByName(fields, "string"));
@@ -114,11 +119,6 @@ public class ReflectionsTest {
 	
 		// class B
 		Set<Field> fields = Reflections.getInstanceFields(B.class, new Not<Field>(new NameIs<Field>("this$0")));
-//		Set<Member> fields = Reflections.getMembers(B.class, new ReflectorFilter[] {
-//			new IsField(),
-//			new IsNotStatic(),
-//			new NameIsNot("this$0")			
-//		});
 		for(Member field : fields) {
 			logger.trace("field: '{}'", field.getName());
 		}
@@ -132,10 +132,6 @@ public class ReflectionsTest {
 	public void testGetFieldsOfBIncludeThis0() {
 	
 		Set<Field> fields = Reflections.getInstanceFields(B.class, null);
-//		Set<Member> fields = Reflections.getMembers(B.class, new ReflectorFilter[] {
-//			new IsField(),
-//			new IsNotStatic()
-//		});
 		for(Member field : fields) {
 			logger.trace("field: '{}'", field.getName());
 		}
@@ -146,138 +142,76 @@ public class ReflectionsTest {
 		assertTrue(containsByName(fields, "this$0"));
 	}
 	
-//	@Test 
-//	public void testGetFieldsOfBIncludeThis0MaskOverridden() {
-//	
-//		Set<Member> fields = Reflections.getMembers(B.class, new ReflectorFilter[] {
-//			new IsField(),
-//			new IsNotStatic(),
-//			new IsNotOverridden()
-//		});
-//		for(Member field : fields) {
-//			logger.trace("field: '{}'", field.getName());
-//		}
-//		assertTrue(fields.size() == 4);
-//		assertTrue(containsByName(fields, "i"));
-//		assertTrue(containsByName(fields, "string"));
-//		assertTrue(containsByName(fields, "l"));		
-//		assertTrue(containsByName(fields, "this$0")); // only once
-//	}
-//	
-//	@Test 
-//	public void testGetMethodsOfA() {
-//		Set<Member> methods = Reflections.getMembers(A.class,  new ReflectorFilter[] {
-//			new IsMethod(),
-//			new IsNotStatic()
-//		});
-//		for(Member method : methods) {
-//			logger.trace("method: '{}'", method.getName());
-//		}
-//		assertTrue(methods.size() == 2);
-//		assertTrue(containsByName(methods, "getInt"));
-//		assertTrue(containsByName(methods, "getString"));
-//	}
-//	
-//	@Test 
-//	public void testGetMethodsOfB() {
-//		Set<Member> methods = Reflections.getMembers(B.class,  new ReflectorFilter[] {
-//			new IsMethod(),
-//			new IsNotStatic()
-//		});
-//		for(Member method : methods) {
-//			logger.trace("method: '{}'", method.getName());
-//		}
-//		assertTrue(methods.size() == 5);
-//		assertTrue(containsByName(methods, "getInt")); // this is there twice
-//		assertTrue(containsByName(methods, "getString"));
-//		assertTrue(containsByName(methods, "getLong"));
-//		assertTrue(containsByName(methods, "getSum"));
-//	}
-//	
-//	@Test 
-//	public void testGetMethodsOfBMaskOverridden() {
-//		Set<Member> methods = Reflections.getMembers(B.class,  new ReflectorFilter[] {
-//			new IsMethod(),
-//			new IsNotStatic(),
-//			new IsNotOverridden()
-//		});
-//		for(Member method : methods) {
-//			logger.trace("method: '{}'", method.getName());
-//		}
-//		assertTrue(methods.size() == 4);
-//		assertTrue(containsByName(methods, "getInt")); // this is there once only
-//		assertTrue(containsByName(methods, "getString"));
-//		assertTrue(containsByName(methods, "getLong"));
-//		assertTrue(containsByName(methods, "getSum"));
-//	}
-//
-//	@Test 
-//	public void testGetMethodsOfBWithPatternMaskOverridden() {
-//		Set<Member> methods = Reflections.getMembers(B.class,  new ReflectorFilter[] {
-//			new IsMethod(),
-//			new IsNotStatic(),
-//			new NameLike("getS.*"),
-//			new IsNotOverridden()
-//		});
-//		for(Member method : methods) {
-//			logger.trace("method: '{}'", method.getName());
-//		}
-//		assertTrue(methods.size() == 2);
-//		assertTrue(containsByName(methods, "getString"));
-//		assertTrue(containsByName(methods, "getSum"));
-//	}
-//	
-//	@Test 
-//	public void testGetStaticFieldsOfB() {
-//		Set<Member> fields = Reflections.getMembers(B.class,  new ReflectorFilter[] {
-//			new IsField(),
-//			new IsStatic()
-//		});
-//		for(Member field : fields) {
-//			logger.trace("field: '{}'", field.getName());
-//		}
-//		assertTrue(fields.size() == 2);
-//		assertTrue(containsByName(fields, "counterA"));
-//		assertTrue(containsByName(fields, "counterB"));
-//	}
-//
-//	
-//	@Test 
-//	public void testGetStaticMethodsOfC() {
-//		Set<Member> methods = Reflections.getMembers(C.class,  new ReflectorFilter[] {
-//			new IsMethod(),
-//			new IsStatic()
-//		});
-//		for(Member method : methods) {
-//			logger.trace("method: '{}'", method.getName());
-//		}
-//		assertTrue(methods.size() == 1);
-//		assertTrue(containsByName(methods, "myStaticMethodinC"));
-//	}
-//	
-//	@Test 
-//	public void testGetMethodsOfBWithORedConditions() {
-//		Set<Member> methods = Reflections.getMembers(B.class,  
-//				new ReflectorFilter[] {
-//					new IsMethod(),
-//					new IsNotStatic(),
-//					new NameIs("getSum")
-//				},
-//				new ReflectorFilter[] {
-//						new IsMethod(),
-//						new IsNotStatic(),
-//						new NameIs("getLong")
-//				}				
-//		);
-//		for(Member method : methods) {
-//			logger.trace("method: '{}'", method.getName());
-//		}
-//		assertTrue(methods.size() == 2);
-//		assertTrue(containsByName(methods, "getSum"));
-//		assertTrue(containsByName(methods, "getLong"));
-//		
-//	}
 	
+	@Test 
+	public void testGetMethodsOfA() {
+		Set<Method> methods = Reflections.getInstanceMethods(A.class, null);
+		for(Member method : methods) {
+			logger.trace("method: '{}'", method.getName());
+		}
+		assertTrue(methods.size() == 2);
+		assertTrue(containsByName(methods, "getInt"));
+		assertTrue(containsByName(methods, "getString"));
+	}
+	
+	@Test 
+	public void testGetMethodsOfB() {
+		Set<Method> methods = Reflections.getInstanceMethods(B.class, null);
+		for(Member method : methods) {
+			logger.trace("method: '{}'", method.getName());
+		}
+		assertTrue(methods.size() == 4);
+		assertTrue(containsByName(methods, "getInt"));
+		assertTrue(containsByName(methods, "getString"));
+		assertTrue(containsByName(methods, "getLong"));
+		assertTrue(containsByName(methods, "getSum"));
+	}
+	
+
+	@Test 
+	public void testGetMethodsOfBWithPatternInclude() {
+		Set<Method> methods = Reflections.getInstanceMethods(B.class, new NameLike<Method>("getS.*"));
+		for(Member method : methods) {
+			logger.trace("method: '{}'", method.getName());
+		}
+		assertTrue(methods.size() == 2);
+		assertTrue(containsByName(methods, "getString"));
+		assertTrue(containsByName(methods, "getSum"));
+	}
+
+	@Test 
+	public void testGetMethodsOfBWithPatternExclude() {
+		Set<Method> methods = Reflections.getInstanceMethods(B.class, new Not<Method>(new NameLike<Method>("getS.*")));
+		for(Member method : methods) {
+			logger.trace("method: '{}'", method.getName());
+		}
+		assertTrue(methods.size() == 2);
+		assertTrue(containsByName(methods, "getInt"));
+		assertTrue(containsByName(methods, "getLong"));
+	}
+		
+	
+	@Test 
+	public void testGetStaticFieldsOfB() {
+		Set<Field> fields = Reflections.getClassFields(B.class, null);
+		for(Member field : fields) {
+			logger.trace("field: '{}'", field.getName());
+		}
+		assertTrue(fields.size() == 2);
+		assertTrue(containsByName(fields, "counterA"));
+		assertTrue(containsByName(fields, "counterB"));
+	}
+
+	
+	@Test 
+	public void testGetStaticMethodsOfC() {
+		Set<Method> methods = Reflections.getClassMethods(C.class, null);
+		for(Member method : methods) {
+			logger.trace("method: '{}'", method.getName());
+		}
+		assertTrue(methods.size() == 1);
+		assertTrue(containsByName(methods, "myStaticMethodinC"));
+	}
 	
 	/**
 	 * Checks if the given collection of {@code Method}s or {@code Field}s has 

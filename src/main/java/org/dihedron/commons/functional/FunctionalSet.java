@@ -152,9 +152,10 @@ public class FunctionalSet<S, E> extends Functional<S> implements Set<E> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <SE> S forEach(S state, Fx<S, SE> functor) {
+		S newState = state;
 		for(E element : set) {
-			state = functor.apply(state, (SE)element);
+			newState = functor.apply(newState, (SE)element);
 		}
-		return state;
+		return newState;
 	}
 }

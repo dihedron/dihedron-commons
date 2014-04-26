@@ -94,9 +94,10 @@ public class $<S> {
 	 */
 	@SuppressWarnings("unchecked")
 	public <E> S forEach(S state, Fx<S, E> functor) {
+		S newState = state;
 		while(iterator.hasNext()) {
-			state = functor.apply(state, (E)iterator.next());
+			newState = functor.apply(newState, (E)iterator.next());
 		}
-		return state;		
+		return newState;		
 	}
 }

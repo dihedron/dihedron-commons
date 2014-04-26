@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskQueue<T> {
+public final class TaskQueue<T> {
 
 	/**
 	 * The logger.

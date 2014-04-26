@@ -147,9 +147,10 @@ public class FunctionalMap<S, K, V> extends Functional<S> implements Map<K, V> {
 	@Override
 	@SuppressWarnings("unchecked")	
 	public <ME> S forEach(S state, Fx<S, ME> functor) {
+		S newState = state;
 		for(Entry<K, V> entry : entrySet()) {
-			state = functor.apply(state, (ME)entry);
+			newState = functor.apply(newState, (ME)entry);
 		}
-		return state;
+		return newState;
 	}
 }

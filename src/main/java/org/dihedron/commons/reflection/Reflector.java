@@ -23,17 +23,11 @@ package org.dihedron.commons.reflection;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.dihedron.commons.reflection.filters.IsField;
-import org.dihedron.commons.reflection.filters.NameIs;
+import org.dihedron.commons.strings.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +44,7 @@ public class Reflector {
 	 * that the fields are read directly through reflection, bypassing their getter 
 	 * methods).
 	 */
-	public static final boolean DEFAULT_USE_GETTER = false;
+	public static final boolean DEFAULT_USE_GETTERS = false;
 	
 	/**
 	 * Default value for whether the non-public fields and methods should be
@@ -58,7 +52,7 @@ public class Reflector {
 	 * that fields and methods will be accessed regardless of their being protected
 	 * or private).
 	 */
-	public static final boolean DEFAULT_EXPOSE_PRIVATE_FIELDS = true;
+	public static final boolean DEFAULT_ACCESS_PRIVATE_MEMBERS = true;
 	
 	/**
 	 * The logger
@@ -73,107 +67,83 @@ public class Reflector {
 	/**
 	 * Whether fields should be accessed using their getter method.
 	 */
-	private boolean useGetter = DEFAULT_USE_GETTER;
+	private boolean useGetters = DEFAULT_USE_GETTERS;
 	
 	/**
 	 * Whether private and protected fields and methods should be directly 
-	 * accessed (if <code>true</code>) or the getter and setter methods should 
-	 * be used instead (if <code>false</code>).
+	 * accessed (if {@code true}) or the getter and setter methods should 
+	 * be used instead (if {@code false}).
 	 */
-	private boolean exposePrivateFields = DEFAULT_EXPOSE_PRIVATE_FIELDS;
-	
-	
+	private boolean accessPrivateMembers = DEFAULT_ACCESS_PRIVATE_MEMBERS;
+		
 	/**
 	 * Constructor.
+	 */
+	public Reflector() {
+		this.object = null;
+		this.useGetters = DEFAULT_USE_GETTERS;
+		this.accessPrivateMembers = DEFAULT_ACCESS_PRIVATE_MEMBERS;
+	}
+	
+	/**
+	 * Specifies the object to inspect.
 	 * 
 	 * @param object
 	 *   the object under inspection.
+	 * @return
+	 *   the object itself, for method chaining.
 	 */
-	public Reflector(Object object) {
-		this(object, DEFAULT_USE_GETTER);
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param object
-	 *   the object under inspection. 
-	 * @param useGetter
-	 *   whether fields should be accessed only through their getter.
-	 */
-	public Reflector(Object object, boolean useGetter) {
-		this(object, useGetter, DEFAULT_EXPOSE_PRIVATE_FIELDS);
-	}	
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param object
-	 *   the object under inspection. 
-	 * @param useGetter
-	 *   whether fields should be accessed only through their getter.
-	 * @param expose
-	 *   whether private and protected fields and methods should be made available
-	 *   through the inspector as if they were public, by means of on-the-fly
-	 *   transparent unprotection.
-	 */
-	public Reflector(Object object, boolean useGetter, boolean expose) {
+	public Reflector inspect(Object object) {
 		this.object = object;
-		this.useGetter = useGetter;
-		this.exposePrivateFields = expose;
-	}	
+		return this;
+	}
 
 	/**
-	 * Returns if access to fields is restricted to getter method invocation.
+	 * Sets the Reflector in a mode such that it will use getter methods to 
+	 * access values; this will result in a method invocation and may lead to
+	 * a value different from that stored in the field due to getter manipulation.
 	 * 
 	 * @return
-	 *   <code>true</code> if fields are to be read only by calling their getter 
-	 *   method, <code>false</code> if their value can be read directly through 
-	 *   reflection, actually bypassing their getter method.
+	 *   the object itself, for method chaining.
 	 */
-	public boolean isUseGetter() {
-		return useGetter;
+	public Reflector usingGetters() {
+		useGetters = true;
+		return this;
 	}
-
+	
 	/**
-	 * Sets whether the inspector should go through a getter methdo invocation to
-	 * access the object's fields.
-	 * 
-	 * @param useGetter
-	 *   set this to <code>true</code> if fields are to be read only by calling 
-	 *   their getter method, to <code>false</code> if their value can be read 
-	 *   directly through reflection, actually bypassing their getter method.
-	 */
-	public void setUseGetter(boolean useGetter) {
-		this.useGetter = useGetter;
-	}
-
-	/**
-	 * Returns whether the inspector will make private and protected methods and 
-	 * fields available as if they were public.
+	 * Sets the Reflector in a mode such that it will use Java Reflection to 
+	 * access values directly, actually bypassing their getter methods.
 	 * 
 	 * @return
-	 *   <code>true</code> if the inspector will treat public and private/protected
-	 *   methods and fields alike, <code>false</code> if private and protected fields
-	 *   and methods will be kept so and not exposed through the inspector. 
+	 *   the object itself, for method chaining.
 	 */
-	public boolean isExposePrivateFields() {
-		return exposePrivateFields;
+	public Reflector usingReflection() {
+		useGetters = false;
+		return this;
+	}
+
+
+	/**
+	 * Sets the Reflector in a mode that allows private fields and methods access.
+	 *
+	 * @return
+	 *   the object itself, for method chaining.
+	 */
+	public void accessingPrivateMembers() {
+		this.accessPrivateMembers = true;
 	}
 
 	/**
-	 * Sets whether the inspector will make private and protected fields and 
-	 * methods available to callers.
-	 * 
-	 * @param expose
-	 *   set this to <code>true</code> to gain access to protected and private 
-	 *   fields and methods through the inspector, to <code>false</code> to
-	 *   keep private things private.
+	 * Sets the Reflector in a mode that disallows private fields and methods access.
+	 *
+	 * @return
+	 *   the object itself, for method chaining.
 	 */
-	public void setExposePrivateFields(boolean expose) {
-		this.exposePrivateFields = expose;
+	public void avoidingPrivateMembers() {
+		this.accessPrivateMembers = false;
 	}
-
+	
 	/**
 	 * Retrieves the value of a field.
 	 * 
@@ -184,22 +154,28 @@ public class Reflector {
 	 * @throws ReflectorException 
 	 */
 	public Object getFieldValue(String fieldName) throws ReflectorException {
-		
-		assert fieldName != null : "error: field name must not be null";
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}
+		if(!Strings.isValid(fieldName)) {
+			logger.error("field name is null or not valid");
+			throw new ReflectorException("field name is null or not valid");
+		}
 		
 		Object result = null;
 		String name = fieldName.trim();
-		if(useGetter) {
+		if(useGetters) {
 			logger.trace("accessing value using getter");
 			String methodName = "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1);			
 			result = invoke(methodName);
 		} else {
-			logger.trace("accessing value through exposePrivateFields field reading");
+			logger.trace("accessing value through direct field access");
 			Field field = null;			
 			boolean needReprotect = false;
 			try {
 				field = object.getClass().getDeclaredField(name);				
-				if(exposePrivateFields) {
+				if(accessPrivateMembers) {
 					needReprotect = unprotect(field);
 				}
 				result = field.get(object);
@@ -226,20 +202,27 @@ public class Reflector {
 	 * @throws ReflectorException 
 	 */
 	public void setFieldValue(String fieldName, Object value) throws ReflectorException  {
-		assert fieldName != null : "error: field name must not be null";
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}
+		if(!Strings.isValid(fieldName)) {
+			logger.error("field name is null or not valid");
+			throw new ReflectorException("field name is null or not valid");
+		}
 
 		String name = fieldName.trim();
-		if(useGetter) {
+		if(useGetters) {
 			logger.trace("accessing value using setter");
 			String methodName = "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
 			invoke(methodName);
 		} else {
-			logger.trace("accessing value through exposePrivateFields field reading");
+			logger.trace("accessing value through direct field access");
 			Field field = null;
 			boolean needReprotect = false;
 			try {
 				field = object.getClass().getDeclaredField(name);
-				if(exposePrivateFields) {
+				if(accessPrivateMembers) {
 					needReprotect = unprotect(field);
 				}
 				field.set(object, value);
@@ -269,7 +252,13 @@ public class Reflector {
 	 * @throws ReflectorException 
 	 *   if the index is not valid for the given object.
 	 */
-	public Object getElementAtIndex(int index) throws ReflectorException   {		
+	public Object getElementAtIndex(int index) throws ReflectorException  {
+		
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}
+		
 		Object result = null;
 		if(object.getClass().isArray()) {
 			result = Array.get(object, translateArrayIndex(index, getArrayLength()));
@@ -295,6 +284,11 @@ public class Reflector {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void setElementAtIndex(int index, Object value) throws ReflectorException   {
 		
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}
+		
 		if(object.getClass().isArray()) {
 			 Array.set(object, translateArrayIndex(index, getArrayLength()), value);
 		} else if (object instanceof List<?>){
@@ -312,7 +306,13 @@ public class Reflector {
 	 * @throws ReflectorException 
 	 *   if the object is not a list or an array.
 	 */
-	public int getArrayLength() throws ReflectorException   {
+	public int getArrayLength() throws ReflectorException  {
+		
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}
+		
 		int length = 0;
 		if(object.getClass().isArray()) {
 			length = Array.getLength(object);
@@ -336,7 +336,13 @@ public class Reflector {
 	 * @throws ReflectorException
 	 *   if the object is not <code>Map</code>.
 	 */
-	public Object getValueForKey(Object key) throws ReflectorException   {		
+	public Object getValueForKey(Object key) throws ReflectorException  {
+
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}
+		
 		Object result = null;
 		if(object instanceof Map) {
 			result = ((Map<?, ?>)object).get(key);
@@ -358,7 +364,13 @@ public class Reflector {
 	 *   if the object is not <code>Map</code>.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void setValueForKey(Object key, Object value) throws ReflectorException   {
+	public void setValueForKey(Object key, Object value) throws ReflectorException  {
+		
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}
+
 		if(object instanceof Map) {
 			((Map)object).put(key, value);
 		} else {
@@ -380,14 +392,22 @@ public class Reflector {
 	 *   the object access.
 	 */
 	public Object invoke(String methodName, Object... args) throws ReflectorException  {
-		assert methodName != null : "error: method name must not be null";
+		
+		if(object == null) {
+			logger.error("object is null: did you specify it using the 'inspect()' method?");
+			throw new ReflectorException("object is null: did you specify it using the 'inspect()' method?");
+		}		
+		if(!Strings.isValid(methodName)) {
+			logger.error("method name is null or not valid");
+			throw new ReflectorException("method name is null or not valid");
+		}
 		
 		Method method = null;
 		Object result = null;
 		boolean needReprotect = false;
 		try {
 			method = object.getClass().getMethod(methodName);			
-			if(exposePrivateFields) {
+			if(accessPrivateMembers) {
 				needReprotect = unprotect(method);
 			}
 			result = method.invoke(object, args);
@@ -441,7 +461,7 @@ public class Reflector {
 	/**
 	 * Utility method that translates an array index, either positive or negative, 
 	 * into its positive representation. The method ensures that the index is within
-	 * array bounds, then it translates negatiuve indexes to their positive 
+	 * array bounds, then it translates negative indexes to their positive 
 	 * counterparts according to the simple rule that element at index -1 is the 
 	 * last element in the array, index -2 is the one before the last, and so on.
 	 *  
@@ -451,9 +471,13 @@ public class Reflector {
 	 *   the length of the array or the list.
 	 * @return
 	 *   the actual (positive) index of the element.
+	 * @throws ReflectorException 
 	 */
-	private int translateArrayIndex(int index, int length) {
-		assert (index > 0 ? index < length : Math.abs(index) <= Math.abs(length)) : "index must be less than number of elements";
+	private int translateArrayIndex(int index, int length) throws ReflectorException {
+		if(!(index > 0 ? index < length : Math.abs(index) <= Math.abs(length))) {
+			logger.error("index ({}) must be less than number of elements ({})", index, length);
+			throw new ReflectorException("index must be less than number of elements");
+		}
 		int translated = index;
 		
 		if(!(translated > 0 ? translated < length : Math.abs(translated) <= Math.abs(length))){
