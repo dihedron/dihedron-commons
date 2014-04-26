@@ -20,6 +20,8 @@
 
 package org.dihedron.commons.strings;
 
+import java.util.Collection;
+
 
 /**
  * Utility package for string operations.
@@ -140,37 +142,7 @@ public final class Strings {
 	public static String concatenate(String... strings) {
 		return join("", strings);
 	}
-	
-	/**
-	 * Joins the given set of strings using the provided separator.
-	 * 
-	 * @param separator
-	 *   a character sequence used to separate strings.
-	 * @param strings
-	 *   the set of strings to be joined.
-	 * @return
-	 *   a string containing the list of input strings, or null if no valid input
-	 *   was provided.
-	 */
-	public static String join(String separator, String... strings) {
-		StringBuilder builder = new StringBuilder();
-		if(strings != null) {
-			boolean first = true;
-			for(String string : strings) {
-				if(string != null) {				
-					if(!first) {
-						builder.append(separator);					
-					}
-					builder.append(string);
-					first = false;
-				}
-			}
-			if(builder.length() > 0) {
-				return builder.toString();
-			}
-		}
-		return null;
-	}
+
 	
 	/**
 	 * Splits the input string using the default separator (',') to identify its
@@ -250,6 +222,57 @@ public final class Strings {
 		}
 		return buffer.toString();
 	}
+	
+	/**
+	 * Joins the given set of strings using the provided separator.
+	 * 
+	 * @param separator
+	 *   a character sequence used to separate strings.
+	 * @param strings
+	 *   the set of strings to be joined.
+	 * @return
+	 *   a string containing the list of input strings, or null if no valid input
+	 *   was provided.
+	 */
+	public static String join(String separator, Collection<String> strings) {
+		if(strings != null) {
+			String[] array = new String[strings.size()];
+			return join(separator, strings.toArray(array)); 
+		}
+		return null;			
+	}
+	
+	/**
+	 * Joins the given set of strings using the provided separator.
+	 * 
+	 * @param separator
+	 *   a character sequence used to separate strings.
+	 * @param strings
+	 *   the set of strings to be joined.
+	 * @return
+	 *   a string containing the list of input strings, or null if no valid input
+	 *   was provided.
+	 */
+	public static String join(String separator, String... strings) {
+		StringBuilder builder = new StringBuilder();
+		if(strings != null) {
+			boolean first = true;
+			for(String string : strings) {
+				if(string != null) {				
+					if(!first) {
+						builder.append(separator);					
+					}
+					builder.append(string);
+					first = false;
+				}
+			}
+			if(builder.length() > 0) {
+				return builder.toString();
+			}
+		}
+		return null;
+	}
+	
 	
 	/**
 	 * Formats an output string by centring the given input string and padding 
