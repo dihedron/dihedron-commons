@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.dihedron.commons.filters.compound.Not;
+import org.dihedron.commons.reflection.filters.HasAnnotation;
 import org.dihedron.commons.reflection.filters.IsOverloaded;
 import org.dihedron.commons.reflection.filters.NameIs;
 import org.dihedron.commons.reflection.filters.NameLike;
@@ -81,8 +82,7 @@ public class ReflectionsTest {
 	
 	private static class C {
 		@SuppressWarnings("unused")
-		public static final void myStaticMethodInC() {
-		
+		public static final void myStaticMethodInC() {		
 		}
 		
 		@SuppressWarnings("unused")
@@ -90,8 +90,13 @@ public class ReflectionsTest {
 			
 		}
 		
+		@SuppressWarnings("unused")		
+		public void overloaded(String s) {			
+		}
+		
 		@SuppressWarnings("unused")
-		public void overloaded(String s) {
+		@SafeVarargs
+		public void annotated() {
 			
 		}
 	}
@@ -233,6 +238,20 @@ public class ReflectionsTest {
 		assertTrue(methods.size() == 1);
 		assertTrue(containsByName(methods, "overloaded"));
 	}
+	
+	@Test 
+	public void testAnnotations() {
+		Set<Method> methods = Reflections.getInstanceMethods(C.class, new HasAnnotation<Method>(SafeVarargs.class));
+		for(Member method : methods) {
+			logger.trace("method: '{}'", method.getName());
+		}
+		assertTrue(methods.size() == 1);
+		assertTrue(containsByName(methods, "annotated"));
+		
+		methods = Reflections.getInstanceMethods(C.class, new HasAnnotation<Method>(SuppressWarnings.class));
+		assertTrue(methods.size() == 0); // not retained at runtime!		
+	}
+	
 	
 	/**
 	 * Checks if the given collection of {@code Method}s or {@code Field}s has 
