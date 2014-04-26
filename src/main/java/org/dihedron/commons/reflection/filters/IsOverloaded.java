@@ -16,32 +16,36 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.commons.filters.compound;
+package org.dihedron.commons.reflection.filters;
+
+import java.lang.reflect.Member;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.dihedron.commons.filters.Filter;
-
 
 /**
  * @author Andrea Funto'
  */
-public class Not<T> extends Filter<T> {
+public class IsOverloaded<T extends Member> extends Filter<T> {
 
-
-	private Filter<T> subfilter;
+	private Map<String, Member> members = new HashMap<String, Member>();
 	
 	/**
-	 * Constructor.
-	 */
-	public Not(Filter<T> filter) {
-		this.subfilter = filter;
-	}
-
-	/**
-	 * @see org.dihedron.commons.filters.Filter#matches(java.lang.Object)
+	 * @see org.dihedron.commons.reflection.ReflectorFilter#matches(java.lang.reflect.Member)
 	 */
 	@Override
-	public boolean matches(T object) {
-		return !subfilter.matches(object);
+	public boolean matches(T member) {
+		if(members.containsKey(member.getName())) {
+			Member previous = members.get(member.getName());
+			if(previous.getDeclaringClass() == member.getDeclaringClass()) {
+				// there are two members (methods!) with the same name in the 
+				// same class, thus there's some overloading going on here!
+				return true;
+			}
+		}
+		members.put(member.getName(), member);
+		return false;
 	}
 	
 	/**
@@ -49,6 +53,6 @@ public class Not<T> extends Filter<T> {
 	 */
 	@Override
 	public void reset() {
-		subfilter.reset();
+		this.members.clear();
 	}
 }

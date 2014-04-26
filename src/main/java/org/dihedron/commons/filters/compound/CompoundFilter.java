@@ -44,7 +44,23 @@ public abstract class CompoundFilter<T> extends Filter<T> {
 		}
 	}
 	
+	/**
+	 * Returns the list of sub-filters.
+	 * 
+	 * @return
+	 *   the list of sub-filters.
+	 */
 	protected List<Filter<T>> getSubFilters() {
 		return subfilters;
+	}
+	
+	/**
+	 * @see org.dihedron.commons.filters.Filter#reset()
+	 */
+	@Override
+	public void reset() {
+		for(Filter<T> subfilter : subfilters) {
+			subfilter.reset();
+		}
 	}
 }

@@ -96,4 +96,11 @@ public abstract class Filter<T> {
 	 *   {@code false} otherwise.
 	 */	
 	public abstract boolean matches(T object);
+	
+	/**
+	 * This is an optional method; it should be implemented by stateful filters,
+	 * which need to be reset before being reused.
+	 */
+	public void reset() {		
+	}
 }

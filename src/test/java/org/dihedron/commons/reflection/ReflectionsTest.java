@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.dihedron.commons.filters.compound.Not;
+import org.dihedron.commons.reflection.filters.IsOverloaded;
 import org.dihedron.commons.reflection.filters.NameIs;
 import org.dihedron.commons.reflection.filters.NameLike;
 import org.junit.Test;
@@ -80,7 +81,17 @@ public class ReflectionsTest {
 	
 	private static class C {
 		@SuppressWarnings("unused")
-		public static final void myStaticMethodinC() {
+		public static final void myStaticMethodInC() {
+		
+		}
+		
+		@SuppressWarnings("unused")
+		public void overloaded(int i) {
+			
+		}
+		
+		@SuppressWarnings("unused")
+		public void overloaded(String s) {
 			
 		}
 	}
@@ -210,7 +221,17 @@ public class ReflectionsTest {
 			logger.trace("method: '{}'", method.getName());
 		}
 		assertTrue(methods.size() == 1);
-		assertTrue(containsByName(methods, "myStaticMethodinC"));
+		assertTrue(containsByName(methods, "myStaticMethodInC"));
+	}
+	
+	@Test 
+	public void testOverloaded() {
+		Set<Method> methods = Reflections.getInstanceMethods(C.class, new IsOverloaded<Method>());
+		for(Member method : methods) {
+			logger.trace("method: '{}'", method.getName());
+		}
+		assertTrue(methods.size() == 1);
+		assertTrue(containsByName(methods, "overloaded"));
 	}
 	
 	/**
