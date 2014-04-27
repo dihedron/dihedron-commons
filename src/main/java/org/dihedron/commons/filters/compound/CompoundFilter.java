@@ -36,6 +36,7 @@ public abstract class CompoundFilter<T> extends Filter<T> {
 	/**
 	 * Constructor.
 	 */
+	@SafeVarargs
 	protected CompoundFilter(Filter<T> ...filters) {
 		if(filters != null) {
 			for(Filter<T> filter : filters) {

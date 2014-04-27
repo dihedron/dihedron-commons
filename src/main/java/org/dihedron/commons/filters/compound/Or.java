@@ -25,6 +25,7 @@ import org.dihedron.commons.filters.Filter;
  */
 public class Or<T> extends CompoundFilter<T> {
 	
+	@SafeVarargs
 	public Or(Filter<T> ... filters) {
 		super(filters);
 	}
