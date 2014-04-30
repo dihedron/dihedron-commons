@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>crypto</artifactId>
 	<packaging>jar</packaging>
-	<name>c. Common Utilities - Cryptographic Utilities</name>
+	<name>c. Cryptographic Utilities</name>
 			
 	<description>Set of cryptographic support classes.</description>
 	<build>

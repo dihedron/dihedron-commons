@@ -11,9 +11,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>core</artifactId>
 	<packaging>jar</packaging>
-	<name>Core Common Utilities</name>
+	<name>a. Core Utility Classes</name>
 	
-	<description>Core components of the common utilities library.</description>
+	<description>Core classes of the common utilities library.</description>
 
 	<dependencies>
 		<dependency>
