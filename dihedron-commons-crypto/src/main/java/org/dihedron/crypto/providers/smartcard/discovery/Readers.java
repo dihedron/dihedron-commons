@@ -21,11 +21,13 @@ package org.dihedron.crypto.providers.smartcard.discovery;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 
+import org.dihedron.commons.filters.Filter;
 import org.dihedron.crypto.exceptions.SmartCardException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +43,8 @@ public final class Readers {
 	private static final Logger logger = LoggerFactory.getLogger(Readers.class);
 	
 	/**
-	 * Enumerates alla available readers and returns basic information about 
-	 * each of them: their assigned slot, the description and, i a smart card 
+	 * Enumerates all available readers and returns basic information about 
+	 * each of them: their assigned slot, the description and, if a smart card 
 	 * is present, its ATR.
 	 * 
 	 * @return
@@ -52,7 +54,7 @@ public final class Readers {
 	 *   accessing the smart card reader (terminal) factory object.
 	 */
 	public static Collection<Reader> enumerate() throws SmartCardException {
-		Collection<Reader> readers = new ArrayList<Reader>();
+		List<Reader> readers = new ArrayList<Reader>();
 		try {
 			int slot = 0;
 			for (CardTerminal terminal : TerminalFactory.getInstance("PC/SC", null).terminals().list()) {
@@ -79,6 +81,20 @@ public final class Readers {
 			throw new SmartCardException("error opening PC/SC provider: it may not be available", e);
 		}
 		return readers;
+	}
+	
+	/**
+	 * Enumerates the available readers, applying a filter to it.
+	 * 
+	 * @param filter
+	 *   the filter to be applied.
+	 * @return
+	 *   a collection of readers filtered according to the given criteria.
+	 * @throws SmartCardException
+	 */
+	public static Collection<Reader> enumerate(Filter<Reader> filter) throws SmartCardException {
+		Collection<Reader> readers = enumerate();
+		return Filter.apply(filter, readers);
 	}
 	
 	/**
