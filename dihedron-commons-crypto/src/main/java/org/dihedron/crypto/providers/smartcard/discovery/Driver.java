@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dihedron.commons.Platform;
 import org.dihedron.commons.variables.EnvironmentValueProvider;
 import org.dihedron.commons.variables.SystemPropertyValueProvider;
 import org.dihedron.commons.variables.Variables;

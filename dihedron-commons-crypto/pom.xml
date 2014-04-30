@@ -11,9 +11,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>commons-crypto</artifactId>
 	<packaging>jar</packaging>
-	<name>b. Common Utilities - Patterns</name>
+	<name>c. Common Utilities - Cryptographic Utilities</name>
 			
-	<description>Core components of the common utilities library.</description>
+	<description>Set of cryptographic support classes.</description>
 	<build>
 		<plugins>
      		<!-- 

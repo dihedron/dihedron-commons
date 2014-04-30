@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with Crypto. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.crypto.providers.smartcard.discovery;
+package org.dihedron.commons;
 
 /**
  * An enumeration of all (potentially) supported platforms.

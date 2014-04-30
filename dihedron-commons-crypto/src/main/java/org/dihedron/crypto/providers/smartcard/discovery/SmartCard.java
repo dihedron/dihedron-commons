@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.dihedron.commons.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

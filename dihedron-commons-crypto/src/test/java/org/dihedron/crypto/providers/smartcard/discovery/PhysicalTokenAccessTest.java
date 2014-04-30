@@ -16,31 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with Crypto. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.crypto;
+package org.dihedron.crypto.providers.smartcard.discovery;
 
 import java.io.IOException;
 import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dihedron.crypto.Crypto;
+import org.dihedron.crypto.KeyRing;
 import org.dihedron.crypto.exceptions.ProviderException;
 import org.dihedron.crypto.providers.ProviderFactory;
 import org.dihedron.crypto.providers.smartcard.SmartCardKeyRing;
 import org.dihedron.crypto.providers.smartcard.SmartCardProviderFactory;
 import org.dihedron.crypto.providers.smartcard.SmartCardTraits;
-import org.dihedron.crypto.providers.smartcard.discovery.DataBase;
-import org.dihedron.crypto.providers.smartcard.discovery.DataBaseLoader;
-import org.dihedron.crypto.providers.smartcard.discovery.Reader;
-import org.dihedron.crypto.providers.smartcard.discovery.Readers;
-import org.dihedron.crypto.providers.smartcard.discovery.SmartCard;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
+ * NOTE: this test should only be run if you have a physical token attached to your PC.
+ * 
  * @author Andrea Funto'
  */
-public class Main {
+@Ignore
+public class PhysicalTokenAccessTest {
 
 	/**
 	 * The logger
@@ -71,7 +73,8 @@ public class Main {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void testLoadCertificates() throws Exception {
 		
 		ProviderFactory<SmartCardTraits> factory = null;
 		Provider provider = null;

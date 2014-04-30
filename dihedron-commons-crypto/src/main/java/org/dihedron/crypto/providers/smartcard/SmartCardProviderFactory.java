@@ -27,11 +27,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Provider;
 
+import org.dihedron.commons.Platform;
 import org.dihedron.crypto.exceptions.ProviderException;
 import org.dihedron.crypto.exceptions.SmartCardException;
 import org.dihedron.crypto.exceptions.UnavailableDriverException;
 import org.dihedron.crypto.providers.ProviderFactory;
-import org.dihedron.crypto.providers.smartcard.discovery.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

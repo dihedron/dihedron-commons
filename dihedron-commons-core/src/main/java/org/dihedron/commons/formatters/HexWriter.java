@@ -17,7 +17,7 @@
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.dihedron.commons;
+package org.dihedron.commons.formatters;
 
 /**
  * Utility for printing a number as an hexadecimal string.
