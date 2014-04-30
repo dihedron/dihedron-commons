@@ -21,7 +21,6 @@ package org.dihedron.crypto.providers.smartcard.discovery;
 
 
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -108,51 +107,51 @@ public final class DataBaseLoader {
 	 * @throws SmartCardException
 	 */
 	public static DataBase loadDefault() throws IOException, SmartCardException {
-		return loadFromClassPath(DEFAULT_SMARTCARDS_XML);
+		return loadFromStream(Streams.fromClassPath(DEFAULT_SMARTCARDS_XML));
 	}
 	
-	/**
-	 * Initialises the database by parsing the input configuration file as read 
-	 * from the file-system.
-	 * 
-	 * @param filepath
-	 *   the path to the input configuration file on the file-system.
-	 * @throws IOException 
-	 * @throws SmartCardException 
-	 */
-	public static DataBase loadFromFileSystem(String filepath) throws IOException, SmartCardException {
-		InputStream stream = Streams.fromFile(filepath);
-		return loadFromStream(stream);
-	}
-	
-	/**
-	 * Initialises the configuration by parsing the input configuration file
-	 * as read from the file-system.
-	 * 
-	 * @param file
-	 *   the <code>File</code> object representing the configuration file on
-	 *   the file-system.
-	 * @throws IOException 
-	 * @throws SmartCardException
-	 */
-	public static DataBase loadFromFileSystem(File file) throws SmartCardException, IOException {
-		InputStream stream = Streams.fromFile(file);
-		return loadFromStream(stream);
-	}
-	
-	/**
-	 * Initialises the configuration by parsing the input configuration file
-	 * as read from the classpath.
-	 * 
-	 * @param path
-	 *   the path to the resource, to be located on the classpath.
-	 * @throws SmartCardException
-	 */
-	public static DataBase loadFromClassPath(String path) throws SmartCardException {
-		InputStream stream = Streams.fromClassPath(path);
-		return loadFromStream(stream);
-	}
-	
+//	/**
+//	 * Initialises the database by parsing the input configuration file as read 
+//	 * from the file-system.
+//	 * 
+//	 * @param filepath
+//	 *   the path to the input configuration file on the file-system.
+//	 * @throws IOException 
+//	 * @throws SmartCardException 
+//	 */
+//	public static DataBase loadFromFileSystem(String filepath) throws IOException, SmartCardException {
+//		InputStream stream = Streams.fromFile(filepath);
+//		return loadFromStream(stream);
+//	}
+//	
+//	/**
+//	 * Initialises the configuration by parsing the input configuration file
+//	 * as read from the file-system.
+//	 * 
+//	 * @param file
+//	 *   the <code>File</code> object representing the configuration file on
+//	 *   the file-system.
+//	 * @throws IOException 
+//	 * @throws SmartCardException
+//	 */
+//	public static DataBase loadFromFileSystem(File file) throws SmartCardException, IOException {
+//		InputStream stream = Streams.fromFile(file);
+//		return loadFromStream(stream);
+//	}
+//	
+//	/**
+//	 * Initialises the configuration by parsing the input configuration file
+//	 * as read from the classpath.
+//	 * 
+//	 * @param path
+//	 *   the path to the resource, to be located on the classpath.
+//	 * @throws SmartCardException
+//	 */
+//	public static DataBase loadFromClassPath(String path) throws SmartCardException {
+//		InputStream stream = Streams.fromClassPath(path);
+//		return loadFromStream(stream);
+//	}
+//	
 	/**
 	 * Initialises the database by parsing the XML file passed in as an input 
 	 * stream.

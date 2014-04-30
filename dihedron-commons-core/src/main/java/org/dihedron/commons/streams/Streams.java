@@ -29,9 +29,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.security.InvalidParameterException;
 
 import org.dihedron.commons.strings.Strings;
+import org.dihedron.commons.url.URLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,6 +124,42 @@ public class Streams {
 			}
 		}
 	}	
+	
+	/**
+	 * Reads a resource from an URL, specified as a string; since this class makes
+	 * use of the URL factory, URLs may also represent resources in the class
+	 * path, re (in the format "classpath:org/dihedron/resources/MyResource.png").
+	 * 
+	 * @param url
+	 *   a string presenting an URL.
+	 * @return
+	 *   an input stream to access the URL.
+	 * @throws IOException
+	 *   if the URL is malformed or an error occurs opening the stream.
+	 */
+	public static InputStream fromURL(String url) throws IOException {
+		if(Strings.isValid(url)) {
+			return fromURL(URLFactory.makeURL(url));
+		}
+		return null;
+	}
+	
+	/**
+	 * Opens an input stream to the given URL.
+	 * 
+	 * @param url
+	 *   the URL to open the stream to.
+	 * @return
+	 *   an input stream to access the URL.
+	 * @throws IOException
+	 *   if an error occurs opening the stream.
+	 */
+	public static InputStream fromURL(URL url) throws IOException {
+		if(url != null) {
+			return url.openStream();
+		}
+		return null;
+	}
 	
 	/**
 	 * Returns an input stream from a {@code File} object.

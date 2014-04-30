@@ -20,6 +20,7 @@ package org.dihedron.crypto.providers.smartcard.discovery;
 
 import java.io.IOException;
 
+import org.dihedron.commons.streams.Streams;
 import org.dihedron.crypto.exceptions.SmartCardException;
 import org.dihedron.crypto.providers.smartcard.discovery.DataBase;
 import org.dihedron.crypto.providers.smartcard.discovery.DataBaseLoader;
@@ -43,9 +44,16 @@ public class DataBaseLoaderTest {
 	 */
 	@Test
 	public void testLoadFromClassPath() throws SmartCardException {
-		DataBase database = DataBaseLoader.loadFromClassPath("org/dihedron/crypto/providers/smartcard/discovery/smartcards.xml");
+		DataBase database = DataBaseLoader.loadFromStream(Streams.fromClassPath("org/dihedron/crypto/providers/smartcard/discovery/smartcards.xml"));
 		logger.trace("database:\n {}", database);
 	}
+	
+	@Test
+	public void testLoadFromURL() throws SmartCardException, IOException {
+		DataBase database = DataBaseLoader.loadFromStream(Streams.fromURL("classpath:org/dihedron/crypto/providers/smartcard/discovery/smartcards.xml"));
+		logger.trace("database:\n {}", database);
+	}
+	
 
 	/**
 	 * Test method for {@link org.dihedron.crypto.providers.smartcard.discovery.DataBaseLoader#loadFromClassPath(java.lang.String)}.
