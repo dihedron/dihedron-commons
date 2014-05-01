@@ -9,19 +9,10 @@
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>patterns</artifactId>
+	<artifactId>base</artifactId>
 	<packaging>jar</packaging>
-	<name>b. Complex Functionalities &amp; Patterns</name>
+	<name>a. Base Utility Classes</name>
 	
-	<description>b Library of more complex base functionalities (micro-patterns).</description>
+	<description>Base set of functionalities of the common utilities library.</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.dihedron.commons</groupId>
-			<artifactId>base</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>		
-	</dependencies>
-	
 </project>
