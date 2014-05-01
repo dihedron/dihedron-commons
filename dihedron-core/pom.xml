@@ -9,7 +9,7 @@
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>core</artifactId>
+	<artifactId>dihedron-core</artifactId>
 	<packaging>jar</packaging>
 	<name>a. Core Utility Classes</name>
 	

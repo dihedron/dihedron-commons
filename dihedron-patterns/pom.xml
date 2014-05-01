@@ -9,7 +9,7 @@
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>patterns</artifactId>
+	<artifactId>dihedron-patterns</artifactId>
 	<packaging>jar</packaging>
 	<name>b. Complex Functionalities &amp; Patterns</name>
 	
@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.dihedron.commons</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>dihedron-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>		
