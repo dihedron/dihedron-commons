@@ -9,9 +9,9 @@
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>base</artifactId>
+	<artifactId>core</artifactId>
 	<packaging>jar</packaging>
-	<name>a. Base Utility Classes</name>
+	<name>a. Core Utility Classes</name>
 	
 	<description>Base set of functionalities of the common utilities library.</description>
 

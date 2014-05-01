@@ -50,7 +50,7 @@
 	</properties>
 
 	<modules>
-		<module>./dihedron-base</module>
+		<module>./dihedron-core</module>
 		<module>./dihedron-patterns</module>
 	</modules>
 
