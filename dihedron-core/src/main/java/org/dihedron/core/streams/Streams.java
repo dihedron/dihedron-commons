@@ -244,7 +244,7 @@ public class Streams {
 	}
 	
 	/**
-	 * Returns an output stream bcked up by an array of bytes in memory.
+	 * Returns an output stream backed up by an array of bytes in memory.
 	 * 
 	 * @return
 	 *   an {@code OutputStream} object.
@@ -266,5 +266,37 @@ public class Streams {
 	 */
 	public static InputStream fromClassPath(String path) {
 		return Streams.class.getClassLoader().getResourceAsStream(path);		
+	}
+	
+	/**
+	 * Closes a stream, if not null, suppressing any exception it may throw.
+	 * 
+	 * @param stream
+	 *   the stream to be closed.
+	 */
+	public static void closeSafely(InputStream stream) {
+		if(stream != null) {
+			try {
+				stream.close();
+			} catch(IOException e) {
+				logger.warn("error closing internal input stream");
+			}
+		}
+	}
+	
+	/**
+	 * Closes a stream, if not null, suppressing any exception it may throw.
+	 * 
+	 * @param stream
+	 *   the stream to be closed.
+	 */
+	public static void closeSafely(OutputStream stream) {		
+		if(stream != null) {
+			try {
+				stream.close();
+			} catch(IOException e) {
+				logger.warn("error closing internal input stream");
+			}
+		}
 	}
 }

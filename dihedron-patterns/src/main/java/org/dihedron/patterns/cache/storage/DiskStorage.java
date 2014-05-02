@@ -54,6 +54,18 @@ public class DiskStorage implements Storage {
 	 * The default path to the cache. 
 	 */
 	public static final File DEFAULT_CACHE_LOCATION = new File(".cache");
+
+	/** 
+	 * Whether by default the storage engine should create the directory tree
+	 * if this is not ready yet.
+	 */
+	public static final boolean DEFAULT_CREATE_IF_MISSING = true;	
+	
+	/** 
+	 * Whether by default new files added to the cache should be deleted when 
+	 * the process exits. 
+	 */
+	public static final boolean DEFAULT_DELETE_ON_EXIT = false;	
 	
 	/** 
 	 * The directory where the cache is kept. 
@@ -66,59 +78,18 @@ public class DiskStorage implements Storage {
 	private boolean caseSensitive = false;
 	
 	/**
-	 * This class provides a way of filtering/selecting items given
-	 * their name or a regular expression.
+	 * Whether files should be deleted when the process exits.
 	 */
-	protected static class Filter implements FilenameFilter, FileFilter {
-		
-		/** 
-		 * The logger. 
-		 */
-		private static Logger logger = LoggerFactory.getLogger(Filter.class);		
-		
-		/** 
-		 * The regular expression against which the filtering is performed. 
-		 */
-		private Regex regex;
-		
-		/**
-		 * Constructor.
-		 * 
-		 * @param regex
-		 *   a regular expression.
-		 */
-		public Filter(Regex regex) {
-			this.regex = regex;
-			logger.debug("checking regex /{}/, case {}", regex, (regex.isCaseSensitive() ? "sensitive" : "insensitive"));			 
-		}
-
-		/**
-		 * Checks whether a resource complies with the filter
-		 * criteria.
-		 */		
-		public boolean accept(File dir, String name) {
-			boolean result = regex.matches(name);
-			logger.debug("checked resource '{}', result is {}", name, result);
-			return result;
-		}
-
-		/**
-		 * Checks whether a resource complies with the filter
-		 * criteria.
-		 */
-		public boolean accept(File pathname) {
-			return accept(null, pathname.getName());
-		}		
-	}	
-
+	private boolean deleteOnExit = DEFAULT_DELETE_ON_EXIT;
+	
 	/**
 	 * Constructor; creates the cache storage in the default directory.
 	 * 
-	 * @throws Exception 
+	 * @throws CacheException 
 	 * @see DiskStorage#DEFAULT_CACHE_LOCATION
 	 */
 	public DiskStorage() throws CacheException {
-		this(DEFAULT_CACHE_LOCATION, true);
+		this(DEFAULT_CACHE_LOCATION, DEFAULT_CREATE_IF_MISSING, DEFAULT_DELETE_ON_EXIT);
 	}
 	
 	/**
@@ -131,7 +102,7 @@ public class DiskStorage implements Storage {
 	 *   parameters is not compatible with the creation of the cache.
 	 */
 	public DiskStorage(String path) throws CacheException {
-		this(new File(path), true);
+		this(new File(path), DEFAULT_CREATE_IF_MISSING, DEFAULT_DELETE_ON_EXIT);
 	}	
 	
 	/**
@@ -144,7 +115,7 @@ public class DiskStorage implements Storage {
 	 *   parameters is not compatible with the creation of the cache.
 	 */
 	public DiskStorage(File path) throws CacheException {
-		this(path, true);
+		this(path, DEFAULT_CREATE_IF_MISSING, DEFAULT_DELETE_ON_EXIT);
 	}	
 	
 	/**
@@ -160,10 +131,25 @@ public class DiskStorage implements Storage {
 	 *   parameters is not compatible with the creation of the cache.
 	 */
 	public DiskStorage(File path, boolean createIfMissing) throws CacheException {
+		this(path, createIfMissing, DEFAULT_DELETE_ON_EXIT);
+	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param path
+	 *   the directory where the cache storage will be created/installed.
+	 * @param createIfMissing
+	 *   if <code>true</code>, the directory will be created if
+	 *   not existing on disk.
+	 * @throws Exception
+	 *   if the input values are invalid or if the combination of 
+	 *   parameters is not compatible with the creation of the cache.
+	 */
+	public DiskStorage(File path, boolean createIfMissing, boolean deleteOnExit) throws CacheException {
 		if(path == null) {
-			throw new CacheException("Null file specified for the cache storage");
-		}
-		
+			throw new CacheException("null file specified for the cache storage");
+		}		
 		if(path.exists()) {
 			if(!path.isDirectory()) {	
 				logger.error("{} is not a directory", path.getAbsolutePath());
@@ -186,23 +172,8 @@ public class DiskStorage implements Storage {
 				throw new CacheException("Directory " + path.getAbsolutePath() + " does not exist");				
 			}
 		}
-	}
-		
-	/**
-	 * Constructor.
-	 * 
-	 * @param path
-	 *   the directory where the cache storage will be created/installed.
-	 * @param createIfMissing
-	 *   if <code>true</code>, the directory will be created if
-	 *   not existing on disk. 
-	 * @throws CacheException
-	 *   if the input values are invalid or if the combination of 
-	 *   parameters is not compatible with the creation of the cache.
-	 */
-	public DiskStorage(String path, boolean createIfMissing) throws CacheException{
-		this(new File(path), createIfMissing);
-	}
+		this.deleteOnExit = deleteOnExit;
+	}	
 	
 	/**
 	 * Returns the physical cache location.
@@ -233,11 +204,34 @@ public class DiskStorage implements Storage {
 	 * with respect to resource names.
 	 * 
 	 * @return
-	 *   <code>true</code> if case sensitive, <code>false</code>
-	 *   otherwise.
+	 *   {@code true} if case sensitive, {@code false} otherwise.
 	 */
 	public boolean isCaseSensitive(){
 		return caseSensitive;
+	}
+	
+	/**
+	 * Sets the behaviour of the cache storage with respect to file deletion
+	 * when the process exits.
+	 * 
+	 * @param deleteOnExit
+	 *   whether the cache storage should mark new files for deletion when the
+	 *   process exits.
+	 */
+	public void setDeleteOnExit(boolean deleteOnExit) {
+		this.deleteOnExit = deleteOnExit;		
+	}
+	
+	/**
+	 * Returns whether the cache storage will makr k new files for deletion when
+	 * the process exits.
+	 * 
+	 * @return
+	 *   {@code true} to have files automatically deleted upon process termination,
+	 *   {@code false} to keep them.
+	 */
+	public boolean isDeletOnExit(){
+		return deleteOnExit;
 	}	
 	
 	/**
@@ -270,7 +264,7 @@ public class DiskStorage implements Storage {
 			return directory.list();
 		}
 		logger.debug("returning list of resources matching /{}/", regex);
-		return directory.list(new Filter(regex));
+		return directory.list(this.new Filter(regex));
 	}	
 	
 	/**
@@ -281,17 +275,24 @@ public class DiskStorage implements Storage {
 		logger.debug("storing '{}' into cache", resource);
 		FileOutputStream fos = null;
 		try {
-			try {
-				fos = new FileOutputStream(new File(directory, resource));
-				Streams.copy(stream, fos);
-			} finally {
-				if(fos != null) {
-					fos.close();
-				}
+			File file = new File(directory, resource);
+			if(deleteOnExit) {
+				logger.trace("file'{}' will be deleted when the JVM exits", file.getAbsolutePath());
+				file.deleteOnExit();
 			}
+			fos = new FileOutputStream(file);
+			Streams.copy(stream, fos);
 		} catch(IOException e) {
 			logger.error("error storing data to disk", e);
-			throw new CacheException("Error storing data to disk", e);
+			throw new CacheException("error storing data to disk", e);
+		} finally {
+			if(fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					logger.warn("error closing internal stream", e);
+				}
+			}
 		}
 	}
 
@@ -299,8 +300,19 @@ public class DiskStorage implements Storage {
 	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String, byte[])
 	 */
 	public void store(String resource, byte[] data) throws CacheException {
-		ByteArrayInputStream bais = new ByteArrayInputStream(data);
-		store(resource, bais);
+		ByteArrayInputStream bais = null;
+		try {
+			bais = new ByteArrayInputStream(data);
+			store(resource, bais);
+		} finally {
+			if(bais != null) {
+				try {
+					bais.close();
+				} catch (IOException e) {
+					logger.warn("error closing internal stream", e);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -320,17 +332,33 @@ public class DiskStorage implements Storage {
 	 */
 	public byte[] retrieveAsByteArray(String resource) {
 		InputStream input = retrieveAsStream(resource);
-		if(input != null){
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			try {
+		ByteArrayOutputStream output = null;
+		try {			
+			if(input != null){
+				output = new ByteArrayOutputStream();			
 				Streams.copy(input, output);
 				input.close();
 				logger.debug("returning resource as byte array");
 				return output.toByteArray();
-			} catch (FileNotFoundException e) {
-				logger.error("error retrieving resource '" + resource  + "'", e);
-			} catch (IOException e) {				
-				logger.error("error retrieving resource '" + resource + "'", e);
+			}
+		} catch (FileNotFoundException e) {
+			logger.error("error retrieving resource '" + resource  + "'", e);
+		} catch (IOException e) {				
+			logger.error("error retrieving resource '" + resource + "'", e);
+		} finally {
+			if(output != null) {
+				try {
+					output.close();
+				} catch(IOException e) {
+					logger.warn("error closing internal output stream");
+				}
+			}
+			if(output != null) {
+				try {
+					output.close();
+				} catch(IOException e) {
+					logger.warn("error closing internal output stream");
+				}
 			}
 		}			
 		return null;
@@ -383,4 +411,53 @@ public class DiskStorage implements Storage {
 			file.delete();
 		}		
 	}
+	
+	/**
+	 * This class provides a way of filtering/selecting items given
+	 * their name or a regular expression.
+	 * 
+	 * @author Andrea Funto'
+	 */
+	protected class Filter implements FilenameFilter, FileFilter {
+		
+		/** 
+		 * The logger. 
+		 */
+		private final Logger logger = LoggerFactory.getLogger(Filter.class);		
+		
+		/** 
+		 * The regular expression against which the filtering is performed. 
+		 */
+		private Regex regex;
+		
+		/**
+		 * Constructor.
+		 * 
+		 * @param regex
+		 *   a regular expression.
+		 */
+		public Filter(Regex regex) {
+			this.regex = regex;
+			logger.debug("checking regex /{}/, case {}", regex, (regex.isCaseSensitive() ? "sensitive" : "insensitive"));			 
+		}
+
+		/**
+		 * Checks whether a resource complies with the filter
+		 * criteria.
+		 */		
+		public boolean accept(File dir, String name) {
+			boolean result = regex.matches(name);
+			logger.debug("checked resource '{}', result is {}", name, result);
+			return result;
+		}
+
+		/**
+		 * Checks whether a resource complies with the filter
+		 * criteria.
+		 */
+		public boolean accept(File pathname) {
+			return accept(null, pathname.getName());
+		}		
+	}	
+
 }

@@ -81,13 +81,13 @@ public interface Storage {
 	void store(String resource, byte [] data) throws CacheException;
 		
 	/**
-	 * Retrieve the given resource(if present), and returns its data as a byte 
-	 * array.
+	 * Retrieve the given resource(if present), and returns its data as an input 
+	 * stream.
 	 *  
 	 * @param resource
 	 *   the name of the resource.
 	 * @return
-	 *   the resource data, as a stream, or null if not present.
+	 *   the resource data, as a stream, or {@code null} if not present.
 	 */
 	InputStream retrieveAsStream(String resource);
 	

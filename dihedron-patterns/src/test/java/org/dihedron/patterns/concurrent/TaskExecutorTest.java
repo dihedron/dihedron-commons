@@ -47,7 +47,7 @@ public class TaskExecutorTest {
 
 	private static final int THREAD_POOL_SIZE = 50;
 	
-	private static final int NUMBER_OF_TASKS = 100;
+	private static final int NUMBER_OF_TASKS = 50;
 	
 	private static final int NUMBER_OF_TESTS = 10;
 	
