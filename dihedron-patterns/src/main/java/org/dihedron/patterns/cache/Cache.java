@@ -20,11 +20,12 @@ package org.dihedron.patterns.cache;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.dihedron.core.regex.Regex;
+import org.dihedron.core.streams.Streams;
+import org.dihedron.core.strings.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,7 @@ public class Cache implements Iterable<String>{
 	 * @return
 	 *   the storage engine.
 	 */
+	@Deprecated
 	public Storage getStorageEngine() {
 		return storage;
 	}
@@ -76,23 +78,39 @@ public class Cache implements Iterable<String>{
 	}
 	
 	/**
-	 * Empties the cache.
+	 * Returns the number of elements in the cache.
+	 * 
+	 * @return
+	 *   the number of elements in the cache.
 	 */
-	public void clear(){
-		logger.debug("clearing the cache");
-		storage.clear();
+	public long size() {
+		return storage.size();
 	}
 	
 	/**
-	 * Deletes all resources that match the given resource name 
-	 * criteria.
+	 * Empties the cache.
+	 * 
+	 * @return
+	 *   the cache itself, for method chaining.
+	 */
+	public Cache clear(){
+		logger.debug("clearing the cache");
+		storage.clear();
+		return this;
+	}
+	
+	/**
+	 * Deletes all resources that match the given resource name criteria.
 	 * 
 	 * @param regex
 	 *   the resource name pattern.
+	 * @return
+	 *   the cache itself, for method chaining.
 	 */
-	public void delete(Regex regex) {
+	public Cache delete(Regex regex) {
 		logger.debug("deleting all files named according to /{}/", regex);
 		storage.delete(regex);
+		return this;
 	}
 	
 	/**
@@ -104,10 +122,13 @@ public class Cache implements Iterable<String>{
 	 * @param caseInsensitive
 	 *   whether the resource name comparison should be
 	 *   case insensitive.
+	 * @return
+	 *   the cache itself, for method chaining.
 	 */
-	public void delete(String resource, boolean caseInsensitive) {
+	public Cache delete(String resource, boolean caseInsensitive) {
 		logger.debug("deleting all files named according to '{}' (case insensitive)", resource);
 		storage.delete(resource, caseInsensitive);
+		return this;
 	}
 	
 	/**
@@ -119,28 +140,53 @@ public class Cache implements Iterable<String>{
 	 * @param destination
 	 *   the name of the destination resource
 	 * @return
-	 *   the name of the destination resource, or null if something fails.
+	 *   the cache itself, for method chaining.
 	 */
-	public String copyAs(String source, String destination) throws CacheException {
-		if(source == null || source.length() == 0 || destination == null || destination.length() == 0) {
-			logger.error("invalid input parameters: from '{}' to '{}'", source, destination);
+	public Cache copyAs(String source, String destination) throws CacheException {
+		if(!Strings.areValid(source, destination)) {
+			logger.error("invalid input parameters for copy from '{}' to '{}'", source, destination);
+			throw new CacheException("invalid input parameters (source: '" + source + "', destination: '" + destination + "')");
 		}
-		byte [] data = storage.retrieveAsByteArray(source);
-		if(data != null) {
-			logger.trace("storing {} bytes as {}", data.length, destination);
-			storage.store(destination, data);
-			logger.trace("data stored");
-			return destination;
+		InputStream input = null;
+		OutputStream output = null;
+		try {
+			input = storage.retrieve(source);
+			output = storage.store(destination);
+			long copied = Streams.copy(input, output);
+			logger.trace("copied {} bytes from '{}' to '{}'", copied, source, destination);
+		} catch (IOException e) {
+			logger.error("error copying from '" + source + "' to '" + destination + "'", e);
+			throw new CacheException("error copying from '" + source + "' to '" + destination + "'", e);
+		} finally {
+			Streams.safelyClose(input);
+			Streams.safelyClose(output);
 		}
-		return null;
+		return this;
 	}
 	
 	/**
 	 * Returns the iterator on the cache items.
-	 */	
+	 * 
+	 * @see Iterable#iterator()
+	 */
+	@Override
 	public Iterator<String> iterator() {		
-		return new CacheIterator(storage.list(new Regex()));
+		return storage.iterator();
 	}
+	
+	/**
+	 * Returns the iterator on the cache items; only items whose name matches 
+	 * the given regular expression will be returned.
+	 * 
+	 * @param regex
+	 *   an optional regular expression; if {@code null} all items will be 
+	 *   returned.
+	 * @return
+	 *   an iterator that allows looping over the resource names.
+	 */	
+	public Iterator<String> iterator(Regex regex) {		
+		return storage.iterator(regex);
+	}	
 	
 	/**
 	 * Checks whether the cache contains the given resource.
@@ -158,38 +204,6 @@ public class Cache implements Iterable<String>{
 	}
 	
 	/**
-	 * Retrieve a resource from the cache, if it exists;
-	 * returns null otherwise.
-	 * 
-	 * @param resource
-	 *   the name of the resource.
-	 * @return
-	 *   the resource (as a Stream) if it's in the cache
-	 *   already; null otherwise.
-	 * @throws CacheException 
-	 */
-	public final InputStream getAsStream(String resource) throws CacheException {
-		logger.trace("retrieving resource '{}' from cache", resource);
-		return storage.retrieveAsStream(resource);
-	}
-	
-	/**
-	 * Retrieve a resource from the cache, if it exists;
-	 * returns null otherwise.
-	 * 
-	 * @param resource
-	 *   the name of the resource.
-	 * @return
-	 *   the resource (as an array of bytes) if it's in the cache
-	 *   already; null otherwise.
-	 * @throws CacheException 
-	 */
-	public final byte[] getAsByteArray(String resource) throws CacheException {
-		logger.trace("retrieving resource '{}' from cache", resource);
-		return storage.retrieveAsByteArray(resource);
-	}
-	
-	/**
 	 * Retrieves a resource from the cache if it is in there; if
 	 * the <code>autoRefresh</code> flag is on, the cache will check
 	 * if the resource has not been refreshed during this session yet
@@ -197,105 +211,70 @@ public class Cache implements Iterable<String>{
 	 * 
 	 * @param resource
 	 *   the name of the resource.
-	 * @param handler
-	 *   the object which will retrieve the resource, if missing.
+	 * @param handlers
+	 *   an optional set of cache miss handler, which will be requested to 
+	 *   retrieve the resource, if missing; the handlers will be called in the 
+	 *   order specified here, and as soon as one returns a valid stream the 
+	 *   lookup stops.
 	 * @return
-	 *   the resource as an input stream if it can be retrieved, 
-	 *   null otherwise.
-	 * @throws Exception 
-	 * @throws Exception
+	 *   the resource as an input stream if it can be retrieved, {@code null}
+	 *   otherwise.
+	 * @throws CacheException 
 	 */
-	public InputStream getAsStream(String resource, CacheMissHandler handler) throws CacheException {
-		InputStream stream = storage.retrieveAsStream(resource);
-		
-		if(stream == null) {			
-				logger.trace("retrieving '{}' using {}", resource, handler.getClass().getSimpleName());
-				stream = handler.getAsStream();
-				storage.store(resource, stream);
-				return getAsStream(resource);
-					
-		} else {
-			return stream;
+	public InputStream get(String resource, CacheMissHandler ... handlers) throws CacheException {
+		InputStream stream = storage.retrieve(resource);		
+		if(stream == null) {
+			logger.trace("cache miss for resource '{}'...", resource);
+			if(handlers != null) {				
+				lookup:
+				for(CacheMissHandler handler : handlers) {
+					logger.trace("... attempting retrieval of '{}' using handler of class '{}'", resource, handler.getClass().getSimpleName());
+					InputStream input = null;
+					OutputStream output = null;
+					try {
+						input = handler.getAsStream();
+						if(input != null) {
+							output = storage.store(resource);
+							long copied = Streams.copy(input,  output);
+							logger.trace("... stored {} bytes for resource '{}'", copied, resource);
+							break lookup;
+						} else {
+							logger.trace("... resource '{}' not found", resource);
+							continue lookup;
+						}
+					} catch (IOException e) {
+						logger.warn("I/O error trying to retrieve resource '" + resource + "' with handler of class '" + handler.getClass().getSimpleName() +"'", e);
+					} finally {
+						Streams.safelyClose(input);
+						Streams.safelyClose(output);
+					}					
+				}
+			}
+			logger.trace("retrieving resource from storage");
+			stream = storage.retrieve(resource);			
 		}
+		return stream;
 	}
 	
 	/**
-	 * Retrieves a resource from the cache if it is in there; if
-	 * the <code>autoRefresh</code> flag is on, the cache will check
-	 * if the resource has not been refreshed during this session yet
-	 * and (if so) will retrieve it again.
+	 * Tells the cache to store under the given resource name the contents 
+	 * that will be written to the output stream; the method creates a new 
+	 * resource entry and opens an output stream to it, then returns the
+	 * stream to the caller so this can copy its data into it. It is up to 
+	 * the caller to close the steam once all data have been written to it.
+	 * This mechanism actually by-passes the cache and the miss handlers and
+	 * provides direct access to the underlying storage engine, thus providing
+	 * a highly efficient way of storing data into the cache. 
 	 * 
 	 * @param resource
-	 *   the name of the resource.
-	 * @param handler
-	 *   the object which will retrieve the resource, if missing.
+	 *   the name of the new resource, to which the returned output stream 
+	 *   will point.
 	 * @return
-	 *   the resource as a byte array if it can be retrieved, 
-	 *   null otherwise.
+	 *   an output stream ; the caller will write its data into it, and then 
+	 *   will flush and close it one it's done writing data.
 	 * @throws CacheException
 	 */
-	public byte[] getAsByteArray(String resource, CacheMissHandler handler) throws CacheException {
-		try {
-			getAsStream(resource, handler).close();
-			return storage.retrieveAsByteArray(resource);
-		} catch(IOException e) {
-			logger.error("I/O exception trying to access resource '{}' as a stream", resource);
-			throw new CacheException("I/O exception trying to access resource '" + resource + "' as a stream", e);
-		}
-	}
-	
-	/**
-	 * Iterates over the cache resources, one at a time.
-	 */
-	private final class CacheIterator implements Iterator<String> {
-
-		/** 
-		 * The cache resources. 
-		 */
-		private String [] resources;
-		
-		/**
-		 * The current item.
-		 */
-		private int current = 0;
-		
-		/**
-		 * Constructor.
-		 * 
-		 * @param resources
-		 *   the resources in the cache.
-		 */
-		private CacheIterator(String [] resources) {	
-			if(resources != null && resources.length > 0) {
-				this.resources = Arrays.copyOf(resources, resources.length);
-			}			
-		}
-		
-		/**
-		 * Whether there are other resources in the cache.
-		 */
-		public boolean hasNext() {
-			if(resources != null && current < resources.length) {
-				return true;
-			}
-			return false;			
-		}
-
-		/**
-		 * Returns the next resource in the cache, if any.
-		 */
-		public String next() {
-			if(resources != null && current < resources.length) {
-				return resources[current++];
-			}
-			throw new NoSuchElementException("No more items in the cache");
-		}
-
-		/**
-		 * Unsupported operation: removes the next resource from the cache. 
-		 */
-		public void remove() {			
-			throw new UnsupportedOperationException("Removal from cache is not supported");			
-		}		
+	public OutputStream put(String resource) throws CacheException {
+		return storage.store(resource);
 	}
 }

@@ -18,10 +18,10 @@
  */
 package org.dihedron.patterns.cache;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
-import org.dihedron.patterns.cache.Cache;
-import org.dihedron.patterns.cache.CacheMissHandler;
 import org.dihedron.patterns.cache.handlers.FileRetriever;
 import org.dihedron.patterns.cache.storage.MemoryStorage;
 import org.junit.Test;
@@ -40,12 +40,21 @@ public class CacheTest {
 		
 		
 		Cache cache = new Cache(new MemoryStorage());
+		assertTrue(cache.isEmpty());
+		
+
 		
 		CacheMissHandler handler = new FileRetriever(new File("src/test/resources/test.pdf"));
-		cache.getAsByteArray("google_1", handler);
+		cache.get("google_1", handler);
+		assertTrue(cache.size() == 1);
+		
+		
+		
 		cache.copyAs("google_1", "google_2");
 		cache.copyAs("google_1", "google_3");
 		cache.copyAs("google_1", "google_4");
+		assertTrue(cache.size() == 4);
+		
 		
 		for(String resource : cache) {
 			logger.info("resource: " + resource);

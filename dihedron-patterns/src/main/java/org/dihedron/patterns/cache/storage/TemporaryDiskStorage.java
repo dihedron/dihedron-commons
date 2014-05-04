@@ -20,13 +20,17 @@
 package org.dihedron.patterns.cache.storage;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.dihedron.core.regex.Regex;
 import org.dihedron.patterns.cache.CacheException;
@@ -39,12 +43,12 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
-public class DiskStorage extends AbstractStorage {
+public class TemporaryDiskStorage extends AbstractStorage {
 	
 	/** 
 	 * The logger. 
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(DiskStorage.class);
+	private static final Logger logger = LoggerFactory.getLogger(TemporaryDiskStorage.class);
 
 	/** 
 	 * The default path to the cache. 
@@ -60,20 +64,25 @@ public class DiskStorage extends AbstractStorage {
 	 * The directory where the cache is kept. 
 	 */
 	private File directory;
-
-	/** 
-	 * Whether the file names on disk are treated respecting the case. 
-	 */
-	private boolean caseSensitive = false;
 	
+	/**
+	 * A unique string that allows to distinguish among temporary files allocated 
+	 * to concurrent instances of the cache library.
+	 */
+	private String instance;
+	
+	/**
+	 * The index of the cache contents.
+	 */
+	private Map<String, File> index = new HashMap<String, File>();
 
 	/**
 	 * Constructor; creates the cache storage in the default directory.
 	 * 
 	 * @throws Exception 
-	 * @see DiskStorage#DEFAULT_CACHE_LOCATION
+	 * @see TemporaryDiskStorage#DEFAULT_CACHE_LOCATION
 	 */
-	public DiskStorage() throws CacheException {
+	public TemporaryDiskStorage() throws CacheException {
 		this(DEFAULT_CACHE_LOCATION, DEFAULT_CREATE_IF_MISSING);
 	}
 	
@@ -86,7 +95,7 @@ public class DiskStorage extends AbstractStorage {
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
-	public DiskStorage(String path) throws CacheException {
+	public TemporaryDiskStorage(String path) throws CacheException {
 		this(new File(path), DEFAULT_CREATE_IF_MISSING);
 	}	
 	
@@ -99,7 +108,7 @@ public class DiskStorage extends AbstractStorage {
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
-	public DiskStorage(File path) throws CacheException {
+	public TemporaryDiskStorage(File path) throws CacheException {
 		this(path, DEFAULT_CREATE_IF_MISSING);
 	}	
 	
@@ -115,11 +124,11 @@ public class DiskStorage extends AbstractStorage {
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
-	public DiskStorage(File path, boolean createIfMissing) throws CacheException {
+	public TemporaryDiskStorage(File path, boolean createIfMissing) throws CacheException {
+		instance = ManagementFactory.getRuntimeMXBean().getName();
 		if(path == null) {
 			throw new CacheException("Null file specified for the cache storage");
-		}
-		
+		}		
 		if(path.exists()) {
 			if(!path.isDirectory()) {	
 				logger.error("{} is not a directory", path.getAbsolutePath());
@@ -156,7 +165,7 @@ public class DiskStorage extends AbstractStorage {
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
-	public DiskStorage(String path, boolean createIfMissing) throws CacheException{
+	public TemporaryDiskStorage(String path, boolean createIfMissing) throws CacheException{
 		this(new File(path), createIfMissing);
 	}
 	
@@ -169,40 +178,13 @@ public class DiskStorage extends AbstractStorage {
 	public File getLocation() {
 		return directory;
 	}
-	
-	/**
-	 * Sets the behaviour of the cache storage with respect to
-	 * case sensitivity; on some systems (e.g. Windows), the file
-	 * system is case insensitive; on others (Unix, Linux, MacOS) 
-	 * it treats file names with differing cases differently.
-	 * 
-	 * @param caseSensitive
-	 *   whether the cache storage should treat resource names
-	 *   differing only bay the case differently.
-	 */
-	public void setCaseSensitive(boolean caseSensitive) {
-		this.caseSensitive = caseSensitive;		
-	}
-	
-	/**
-	 * Returns whether the cache storage is case sensitive or not
-	 * with respect to resource names.
-	 * 
-	 * @return
-	 *   <code>true</code> if case sensitive, <code>false</code>
-	 *   otherwise.
-	 */
-	public boolean isCaseSensitive(){
-		return caseSensitive;
-	}	
-	
+		
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#isEmpty()
 	 */
 	@Override
 	public boolean isEmpty() {
-		String [] files = directory.list();
-		return files == null || files.length == 0;
+		return index.isEmpty();
 	}	
 
 	/**
@@ -210,13 +192,7 @@ public class DiskStorage extends AbstractStorage {
 	 */
 	@Override
 	public boolean contains(String resource) {
-		if(resource == null || resource.length() == 0) {
-			logger.error("invalid resource name provided");
-			return false;
-		}
-		logger.debug("checking if '{}' is in cache", resource);
-		File file = new File(directory, resource);
-		return file.exists() && file.isFile();		
+		return index.containsKey(resource);
 	}
 	
 	/**
@@ -224,27 +200,40 @@ public class DiskStorage extends AbstractStorage {
 	 */
 	@Override
 	public String[] list(Regex regex) {
-		if(regex == null) { 
+		if(regex == null) {
 			logger.debug("returning full list of storage contents");
-			return directory.list();
+			return index.keySet().toArray(new String[0]);
+		} else {		
+			logger.debug("returning list of resources matching /{}/", regex);
+			List<String> matched = new ArrayList<String>();
+			for(String key : index.keySet()) {
+				if(regex.matches(key)) {
+					matched.add(key);
+				}				
+			}
+			return matched.toArray(new String[0]);
 		}
-		logger.debug("returning list of resources matching /{}/", regex);
-		return directory.list(new Filter(regex));
 	}	
 	
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String, java.io.InputStream)
 	 */	
 	@Override
-	public OutputStream store(String resource) throws CacheException {		
-		delete(resource, caseSensitive);
-		File file = new File(directory, resource);
-		logger.debug("storing '{}' into cache as '{}'", resource, file.getAbsolutePath());		
+	public OutputStream store(String resource) throws CacheException {
+		File file = null;
 		try {
+			delete(resource, true);
+			file = File.createTempFile(instance, null, directory);
+			file.deleteOnExit();
+			logger.debug("storing '{}' into cache as '{}'", resource, file.getAbsolutePath());
+			index.put(resource, file);
 			return new FileOutputStream(file);
 		} catch (FileNotFoundException e) {
 			logger.error("error opening output stream", e);
 			throw new CacheException("error opening output stream to '" + file.getAbsolutePath() + "'", e);
+		} catch (IOException e) {
+			logger.error("error allocating temporary file", e);
+			throw new CacheException("error allocating temporary file", e);
 		}
 	}
 	
@@ -254,24 +243,25 @@ public class DiskStorage extends AbstractStorage {
 	@Override
 	public InputStream retrieve(String resource) {
 		try {
-			return new FileInputStream(new File(directory, resource));
+			if(index.containsKey(resource)) {
+				return new FileInputStream(index.get(resource));
+			}
 		} catch (FileNotFoundException e) {
 			logger.error("resource '{}' does not exist", resource);
 		}
 		return null;
 	}
 
+	// TODO: go n from here!
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#delete(org.dihedron.core.regex.Regex)
 	 */
 	public void delete(Regex regex) {
-		logger.debug("deleting files that match /" + regex + "/ from cache");
-		File [] files = directory.listFiles((FileFilter)new Filter(regex));
-		for (File file : files) {
-			logger.debug("removing '{}' from cache", file.getName());
-			boolean result = file.delete();
-			logger.debug("file {}removed from cache", (result ? "" : "not "));
-		}	
+		logger.debug("deleting files that match /{}/ from cache", regex);
+		for(String resource : list(regex)) {
+			logger.debug("removing '{}' from cache", resource);
+			delete(resource, true);
+		}
 	}
 
 	/**
@@ -279,79 +269,22 @@ public class DiskStorage extends AbstractStorage {
 	 */
 	public void delete(String resource, boolean caseSensitive){
 		logger.debug("deleting resource '{}' from cache", resource);
-		if(!caseSensitive) {
-			File file = new File(getLocation() + "\\" + resource);
-			if(file.exists()) {
-				logger.debug("file found: deleting '{}'", resource);
-				file.delete();
-			}
-		} else {
-			String [] names = directory.list();
-			for (String name : names) {
-				logger.debug("checking {}...", name);
-				if(name.equalsIgnoreCase(resource)) {					
-					delete(name, false);
-					return;
-				}
-			}
-		}
+		if(index.containsKey(resource)) {
+			File file = index.get(resource);
+			logger.debug("removing '{}' from cache", file.getName());
+			boolean result = file.delete();
+			logger.debug("file {}removed from cache", (result ? "" : "not "));
+		}		
 	}
 	
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#clear()
 	 */
 	public void clear() {
-		logger.debug("clearing cache");
-		File[] files = directory.listFiles();
-		for (File file : files) {
-			logger.debug("removing '{}' from cache", file.getName());
-			file.delete();
+		logger.debug("clearing cache");				
+		for(String resource : list()) {
+			logger.debug("removing '{}' from cache", resource);
+			delete(resource, true);
 		}		
 	}
-	
-	/**
-	 * This class provides a way of filtering/selecting items given their name 
-	 * or a regular expression.
-	 * 
-	 * @author Andrea Funto'
-	 */
-	protected static class Filter implements FilenameFilter, FileFilter {
-		
-		/** 
-		 * The logger. 
-		 */
-		private static Logger logger = LoggerFactory.getLogger(Filter.class);		
-		
-		/** 
-		 * The regular expression against which the filtering is performed. 
-		 */
-		private Regex regex;
-		
-		/**
-		 * Constructor.
-		 * 
-		 * @param regex
-		 *   a regular expression.
-		 */
-		public Filter(Regex regex) {
-			this.regex = regex;
-			logger.debug("checking regex /{}/, case {}", regex, (regex.isCaseSensitive() ? "sensitive" : "insensitive"));			 
-		}
-
-		/**
-		 * Checks whether a resource complies with the filter criteria.
-		 */		
-		public boolean accept(File dir, String name) {
-			boolean result = regex.matches(name);
-			logger.debug("checked resource '{}', result is {}", name, result);
-			return result;
-		}
-
-		/**
-		 * Checks whether a resource complies with the filter criteria.
-		 */
-		public boolean accept(File pathname) {
-			return accept(null, pathname.getName());
-		}		
-	}		
 }

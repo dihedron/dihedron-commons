@@ -267,4 +267,39 @@ public class Streams {
 	public static InputStream fromClassPath(String path) {
 		return Streams.class.getClassLoader().getResourceAsStream(path);		
 	}
+	
+	/**
+	 * Tries to close the given stream; if any exception is thrown in the process, 
+	 * it suppresses it.
+	 * 
+	 * @param stream
+	 *   the input stream to be closed. 
+	 */
+	public static void safelyClose(InputStream stream) {
+		if(stream != null) {
+			try {
+				stream.close();
+			} catch(IOException e) {
+				logger.warn("error closing internal input stream, this may lead to a stream leak", e);
+			}
+		}
+	}
+	
+	/**
+	 * Tries to close the given stream; if any exception is thrown in the process, 
+	 * it suppresses it.
+	 * 
+	 * @param stream
+	 *   the output stream to be closed. 
+	 */
+	public static void safelyClose(OutputStream stream) {
+		if(stream != null) {
+			try {
+				stream.close();
+			} catch(IOException e) {
+				logger.warn("error closing internal output stream, this may lead to a stream leak", e);
+			}
+		}
+	}
+	
 }
