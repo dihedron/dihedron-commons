@@ -252,7 +252,6 @@ public class TemporaryDiskStorage extends AbstractStorage {
 		return null;
 	}
 
-	// TODO: go n from here!
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#delete(org.dihedron.core.regex.Regex)
 	 */
