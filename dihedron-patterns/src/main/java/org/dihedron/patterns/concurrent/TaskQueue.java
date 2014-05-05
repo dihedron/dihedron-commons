@@ -20,8 +20,6 @@ package org.dihedron.patterns.concurrent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,10 +88,10 @@ public final class TaskQueue<T> {
 		}
 	};
 
-	/**
-	 * The queue used to synchronise task execution.
-	 */
-	private BlockingQueue<Integer> queue;	
+//	/**
+//	 * The queue used to synchronise task execution.
+//	 */
+//	private BlockingQueue<Integer> queue;	
 	
 	/**
 	 * A set of observers which will be notified at various stages of the tasks
@@ -106,6 +104,6 @@ public final class TaskQueue<T> {
 	 * synchronisation of background tasks..
 	 */
 	private TaskQueue() {
-		this.queue = new LinkedBlockingQueue<Integer>();
+//		this.queue = new LinkedBlockingQueue<Integer>();
 	}
 }

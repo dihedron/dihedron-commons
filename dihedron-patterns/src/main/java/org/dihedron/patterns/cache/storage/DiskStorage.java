@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -33,7 +32,6 @@ import org.dihedron.core.regex.Regex;
 import org.dihedron.patterns.cache.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * This class implements the mechanics to persist cache resources onto disk.

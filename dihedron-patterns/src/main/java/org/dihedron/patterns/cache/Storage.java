@@ -98,7 +98,6 @@ public interface Storage extends Iterable<String> {
 	 */
 	boolean contains(String resource);
 	
-	
 	/**
 	 * Handles the persistence of the given resource into the storage, by opening
 	 * a stream to the resource and returning it to the caller; it is up to the
