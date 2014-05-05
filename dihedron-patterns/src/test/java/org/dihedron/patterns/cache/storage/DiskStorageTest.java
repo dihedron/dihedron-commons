@@ -77,13 +77,13 @@ public class DiskStorageTest {
 			copy("file4.pdf", storage, new FileInputStream(new File("src/test/resources/test.pdf")));			
 			assertTrue(storage.size() == 4);
 			for (String string : storage.list()) {
-				logger.debug(">>>> resource in storage: '{}'", string);
+				logger.debug("resource in storage: '{}'", string);
 			}			
 			
 			String [] list = storage.list(new Regex(".*2\\.pdf"));
 			assertTrue(list.length == 1);
 			for (String string : list) {
-				logger.debug("****>>>>>resource in storage: '{}'", string);
+				logger.debug("resource in storage: '{}'", string);
 			}			
 			
 			

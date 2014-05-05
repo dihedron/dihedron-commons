@@ -197,7 +197,7 @@ public class DiskStorage extends AbstractStorage {
 	@Override
 	public boolean isEmpty() {
 		String [] files = directory.list();
-		for(String file : files) logger.debug("******>>>>>>file: '{}'", file);
+		for(String file : files) logger.debug("file: '{}'", file);
 		return files == null || files.length == 0;
 	}	
 
@@ -303,7 +303,7 @@ public class DiskStorage extends AbstractStorage {
 		logger.debug("clearing cache");
 		File[] files = directory.listFiles();
 		for (File file : files) {
-			logger.debug("*** removing '{}' from cache", file.getName());
+			logger.debug("removing '{}' from cache", file.getName());
 			file.delete();
 		}		
 	}
