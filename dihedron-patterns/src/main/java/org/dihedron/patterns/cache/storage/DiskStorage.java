@@ -55,13 +55,7 @@ public class DiskStorage extends AbstractStorage {
 	 * if this is not ready yet.
 	 */
 	public static final boolean DEFAULT_CREATE_IF_MISSING = true;	
-	
-	/** 
-	 * Whether by default new files added to the cache should be deleted when 
-	 * the process exits. 
-	 */
-	public static final boolean DEFAULT_DELETE_ON_EXIT = false;	
-		
+			
 	/** 
 	 * The directory where the cache is kept. 
 	 */
@@ -71,12 +65,7 @@ public class DiskStorage extends AbstractStorage {
 	 * Whether the file names on disk are treated respecting the case. 
 	 */
 	private boolean caseSensitive = false;
-	
-	/**
-	 * Whether files should be deleted when the process exits.
-	 */
-	private boolean deleteOnExit = DEFAULT_DELETE_ON_EXIT;
-	
+		
 	/**
 	 * Constructor; creates the cache storage in the default directory.
 	 * 
@@ -84,7 +73,7 @@ public class DiskStorage extends AbstractStorage {
 	 * @see DiskStorage#DEFAULT_CACHE_LOCATION
 	 */
 	public DiskStorage() throws CacheException {
-		this(DEFAULT_CACHE_LOCATION, DEFAULT_CREATE_IF_MISSING, DEFAULT_DELETE_ON_EXIT);
+		this(DEFAULT_CACHE_LOCATION, DEFAULT_CREATE_IF_MISSING);
 	}
 	
 	/**
@@ -92,12 +81,12 @@ public class DiskStorage extends AbstractStorage {
 	 * 
 	 * @param path
 	 *   the directory where the cache storage will be created/installed.
-	 * @throws Exception
+	 * @throws CacheException
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
 	public DiskStorage(String path) throws CacheException {
-		this(new File(path), DEFAULT_CREATE_IF_MISSING, DEFAULT_DELETE_ON_EXIT);
+		this(new File(path), DEFAULT_CREATE_IF_MISSING);
 	}	
 	
 	/**
@@ -105,28 +94,27 @@ public class DiskStorage extends AbstractStorage {
 	 * 
 	 * @param path
 	 *   the directory where the cache will be created/installed.
-	 * @throws Exception
+	 * @throws CacheException
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
 	public DiskStorage(File path) throws CacheException {
-		this(path, DEFAULT_CREATE_IF_MISSING, DEFAULT_DELETE_ON_EXIT);
+		this(path, DEFAULT_CREATE_IF_MISSING);
 	}	
-	
+
 	/**
 	 * Constructor.
 	 * 
 	 * @param path
 	 *   the directory where the cache storage will be created/installed.
 	 * @param createIfMissing
-	 *   if <code>true</code>, the directory will be created if
-	 *   not existing on disk.
+	 *   if {@code true}, the directory will be created if not existing on disk.
 	 * @throws Exception
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
-	public DiskStorage(File path, boolean createIfMissing) throws CacheException {
-		this(path, createIfMissing, DEFAULT_DELETE_ON_EXIT);
+	public DiskStorage(String path, boolean createIfMissing) throws CacheException {
+		this(new File(path), createIfMissing);
 	}
 	
 	/**
@@ -135,13 +123,12 @@ public class DiskStorage extends AbstractStorage {
 	 * @param path
 	 *   the directory where the cache storage will be created/installed.
 	 * @param createIfMissing
-	 *   if <code>true</code>, the directory will be created if
-	 *   not existing on disk.
+	 *   if {@code true}, the directory will be created if not existing on disk.
 	 * @throws Exception
 	 *   if the input values are invalid or if the combination of 
 	 *   parameters is not compatible with the creation of the cache.
 	 */
-	public DiskStorage(File path, boolean createIfMissing, boolean deleteOnExit) throws CacheException {
+	public DiskStorage(File path, boolean createIfMissing) throws CacheException {
 		if(path == null) {
 			throw new CacheException("null file specified for the cache storage");
 		}		
@@ -167,7 +154,6 @@ public class DiskStorage extends AbstractStorage {
 				throw new CacheException("directory '" + path.getAbsolutePath() + "' does not exist");				
 			}
 		}
-		this.deleteOnExit = deleteOnExit;
 	}	
 	
 	/**
@@ -206,35 +192,12 @@ public class DiskStorage extends AbstractStorage {
 	}
 	
 	/**
-	 * Sets the behaviour of the cache storage with respect to file deletion
-	 * when the process exits.
-	 * 
-	 * @param deleteOnExit
-	 *   whether the cache storage should mark new files for deletion when the
-	 *   process exits.
-	 */
-	public void setDeleteOnExit(boolean deleteOnExit) {
-		this.deleteOnExit = deleteOnExit;		
-	}
-	
-	/**
-	 * Returns whether the cache storage will makr k new files for deletion when
-	 * the process exits.
-	 * 
-	 * @return
-	 *   {@code true} to have files automatically deleted upon process termination,
-	 *   {@code false} to keep them.
-	 */
-	public boolean isDeletOnExit(){
-		return deleteOnExit;
-	}	
-	
-	/**
 	 * @see org.dihedron.patterns.cache.Storage#isEmpty()
 	 */
 	@Override
 	public boolean isEmpty() {
 		String [] files = directory.list();
+		for(String file : files) logger.debug("******>>>>>>file: '{}'", file);
 		return files == null || files.length == 0;
 	}	
 
@@ -269,15 +232,11 @@ public class DiskStorage extends AbstractStorage {
 	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String)
 	 */	
 	@Override
-	public OutputStream store(String resource) throws CacheException {		
-		delete(resource, caseSensitive);
+	public OutputStream store(String resource) throws CacheException {
 		File file = new File(directory, resource);
-		logger.debug("storing '{}' into cache as '{}'", resource, file.getAbsolutePath());		
 		try {
-			if(deleteOnExit) {
-				logger.trace("file '{}' will be deleted when the JVM exits", file.getAbsolutePath());
-				file.deleteOnExit();
-			}
+			delete(resource, caseSensitive);			
+			logger.debug("storing '{}' into cache as '{}'", resource, file.getAbsolutePath());		
 			return new FileOutputStream(file);
 		} catch (FileNotFoundException e) {
 			logger.error("error opening output stream to '" + file.getAbsolutePath() + "'", e);
@@ -306,8 +265,11 @@ public class DiskStorage extends AbstractStorage {
 		File [] files = directory.listFiles((FileFilter)new Filter(regex));
 		for (File file : files) {
 			logger.debug("removing '{}' from cache", file.getName());
-			boolean result = file.delete();
-			logger.debug("file {}removed from cache", (result ? "" : "not "));
+			if(file.delete()) {
+				logger.debug("file removed from cache");
+			} else {
+				logger.warn("file not removed from cache");
+			}
 		}	
 	}
 
@@ -341,7 +303,7 @@ public class DiskStorage extends AbstractStorage {
 		logger.debug("clearing cache");
 		File[] files = directory.listFiles();
 		for (File file : files) {
-			logger.debug("removing '{}' from cache", file.getName());
+			logger.debug("*** removing '{}' from cache", file.getName());
 			file.delete();
 		}		
 	}

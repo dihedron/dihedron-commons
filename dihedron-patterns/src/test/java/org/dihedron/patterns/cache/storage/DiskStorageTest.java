@@ -18,14 +18,19 @@
  */
 package org.dihedron.patterns.cache.storage;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.dihedron.core.regex.Regex;
 import org.dihedron.core.streams.Streams;
+import org.dihedron.patterns.cache.CacheException;
+import org.dihedron.patterns.cache.Storage;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,37 +49,50 @@ public class DiskStorageTest {
 		}		
 	}
 	
+	private void copy(String name, Storage storage, InputStream is) throws CacheException, IOException {
+		OutputStream os = null;
+		try {
+			os = storage.store(name);
+			Streams.copy(is, os);
+		} finally {
+			Streams.safelyClose(is);
+			Streams.safelyClose(os);
+		}
+	}
+	
+	
 	@Test
 	public void test() throws Exception {		
 		
 		File directory = null;
 		try {
 			// clean up
-			directory = new File("testDir");
+			directory = new File("target/testDir");
 			cleanup(directory);
 			
 			DiskStorage storage = new DiskStorage(directory);
-			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file1.pdf"));
-			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file2.pdf"));
-			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file3.pdf"));
-			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file4.pdf"));
-//			storage.store("file1.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
-//			storage.store("file2.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
-//			storage.store("file3.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
-//			storage.store("file4.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
-			
-			for (String string : storage.list(new Regex(".*2\\.pdf"))) {
-				logger.debug("resource in storage: '{}'", string);
-			}			
+			copy("file1.pdf", storage, new FileInputStream(new File("src/test/resources/test.pdf")));
+			copy("file2.pdf", storage, new FileInputStream(new File("src/test/resources/test.pdf")));
+			copy("file3.pdf", storage, new FileInputStream(new File("src/test/resources/test.pdf")));
+			copy("file4.pdf", storage, new FileInputStream(new File("src/test/resources/test.pdf")));			
 			assertTrue(storage.size() == 4);
+			for (String string : storage.list()) {
+				logger.debug(">>>> resource in storage: '{}'", string);
+			}			
+			
+			String [] list = storage.list(new Regex(".*2\\.pdf"));
+			assertTrue(list.length == 1);
+			for (String string : list) {
+				logger.debug("****>>>>>resource in storage: '{}'", string);
+			}			
+			
 			
 			storage.delete(new Regex("file\\d\\.pdf", true));					
 			logger.debug("storage is empty? {} [expected: true]", storage.isEmpty());
 			assertTrue(storage.isEmpty());
 			
 			
-			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("pluto.pdf"));
-//			storage.store("pluto.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));			
+			copy("pluto.pdf", storage, new FileInputStream(new File("src/test/resources/test.pdf")));			
 			logger.debug("storage is empty? {} [expected: false]", storage.isEmpty());
 			assertFalse(storage.isEmpty());
 			
@@ -84,8 +102,7 @@ public class DiskStorageTest {
 			assertTrue(storage.isEmpty());
 			
 			
-			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("pluto2.pdf"));
-//			storage.store("pluto2.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
+			copy("pluto2.pdf", storage, new FileInputStream(new File("src/test/resources/test.pdf")));
 			logger.debug("storage is empty? {} [expected: false]", storage.isEmpty());
 			assertFalse(storage.isEmpty());
 			
