@@ -117,7 +117,7 @@ public class WebResourceRetriever implements CacheMissHandler {
 			}
 		} catch(IOException e) {
 			logger.error("error accessing url '{}'", url);
-			throw new CacheException("Error accessing url " + url, e);
+			throw new CacheException("error accessing url " + url, e);
 		}
 		return stream;
 	}

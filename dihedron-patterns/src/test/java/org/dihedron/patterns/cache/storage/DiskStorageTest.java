@@ -19,12 +19,13 @@
 package org.dihedron.patterns.cache.storage;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.FileInputStream;
 
 import org.dihedron.core.regex.Regex;
-import org.dihedron.patterns.cache.storage.DiskStorage;
+import org.dihedron.core.streams.Streams;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,27 +54,47 @@ public class DiskStorageTest {
 			cleanup(directory);
 			
 			DiskStorage storage = new DiskStorage(directory);
-			storage.store("file1.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
-			storage.store("file2.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
-			storage.store("file3.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
-			storage.store("file4.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
+			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file1.pdf"));
+			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file2.pdf"));
+			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file3.pdf"));
+			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("file4.pdf"));
+//			storage.store("file1.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
+//			storage.store("file2.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
+//			storage.store("file3.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
+//			storage.store("file4.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
 			
 			for (String string : storage.list(new Regex(".*2\\.pdf"))) {
 				logger.debug("resource in storage: '{}'", string);
-			}
+			}			
+			assertTrue(storage.size() == 4);
 			
-			storage.delete(new Regex("file\\d\\.pdf", true));
-					
+			storage.delete(new Regex("file\\d\\.pdf", true));					
 			logger.debug("storage is empty? {} [expected: true]", storage.isEmpty());
-					
-			storage.store("pluto.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
+			assertTrue(storage.isEmpty());
+			
+			
+			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("pluto.pdf"));
+//			storage.store("pluto.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));			
 			logger.debug("storage is empty? {} [expected: false]", storage.isEmpty());
+			assertFalse(storage.isEmpty());
+			
+			
 			storage.clear();
 			logger.debug("storage is empty? {} [expected: true]", storage.isEmpty());
-			storage.store("pluto2.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
+			assertTrue(storage.isEmpty());
+			
+			
+			Streams.copy(new FileInputStream(new File("src/test/resources/test.pdf")), storage.store("pluto2.pdf"));
+//			storage.store("pluto2.pdf", new FileInputStream(new File("src/test/resources/test.pdf")));
 			logger.debug("storage is empty? {} [expected: false]", storage.isEmpty());
+			assertFalse(storage.isEmpty());
+			
+			
 			storage.delete(new Regex("pi.*\\.pdf", true));
 			logger.debug("storage is empty? {} [expected: false]", storage.isEmpty());
+			assertFalse(storage.isEmpty());
+			
+			
 			storage.delete(new Regex("p.*\\.pdf", true));
 			logger.debug("storage is empty? {} [expected: true]", storage.isEmpty());
 			assertTrue(storage.isEmpty());
@@ -81,4 +102,5 @@ public class DiskStorageTest {
 			cleanup(directory);
 		}
 	}
+	
 }

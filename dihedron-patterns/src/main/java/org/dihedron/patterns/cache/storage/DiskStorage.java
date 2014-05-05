@@ -19,8 +19,6 @@
 
 package org.dihedron.patterns.cache.storage;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -29,11 +27,10 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.dihedron.core.regex.Regex;
-import org.dihedron.core.streams.Streams;
 import org.dihedron.patterns.cache.CacheException;
-import org.dihedron.patterns.cache.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
-public class DiskStorage implements Storage {
+public class DiskStorage extends AbstractStorage {
 	
 	/** 
 	 * The logger. 
@@ -66,7 +63,7 @@ public class DiskStorage implements Storage {
 	 * the process exits. 
 	 */
 	public static final boolean DEFAULT_DELETE_ON_EXIT = false;	
-	
+		
 	/** 
 	 * The directory where the cache is kept. 
 	 */
@@ -152,24 +149,24 @@ public class DiskStorage implements Storage {
 		}		
 		if(path.exists()) {
 			if(!path.isDirectory()) {	
-				logger.error("{} is not a directory", path.getAbsolutePath());
-				throw new CacheException(path.getAbsolutePath() + " is not a directory");
+				logger.error("'{}' is not a directory", path.getAbsolutePath());
+				throw new CacheException("'" + path.getAbsolutePath() + "' is not a directory");
 			} else {
-				logger.debug("installing cache in directory {}", path.getAbsolutePath());
+				logger.debug("installing cache in directory '{}'", path.getAbsolutePath());
 				directory = path;
 			}
 		} else {
 			if(createIfMissing) {
 				if(path.mkdirs()) {
-					logger.info("created cache in directory {}", path.getAbsolutePath());
+					logger.info("created cache in directory '{}'", path.getAbsolutePath());
 					directory = path;
 				} else {
-					logger.error("error creating new directory in {}", path.getAbsolutePath());
-					throw new CacheException("Error creating new directory in " + path.getAbsolutePath());
+					logger.error("error creating new directory in '{}'", path.getAbsolutePath());
+					throw new CacheException("error creating new directory in '" + path.getAbsolutePath() + "'");
 				}				
 			} else {
-				logger.error("directory {} does not exist", path.getAbsolutePath());
-				throw new CacheException("Directory " + path.getAbsolutePath() + " does not exist");				
+				logger.error("directory '{}' does not exist", path.getAbsolutePath());
+				throw new CacheException("directory '" + path.getAbsolutePath() + "' does not exist");				
 			}
 		}
 		this.deleteOnExit = deleteOnExit;
@@ -237,6 +234,7 @@ public class DiskStorage implements Storage {
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#isEmpty()
 	 */
+	@Override
 	public boolean isEmpty() {
 		String [] files = directory.list();
 		return files == null || files.length == 0;
@@ -245,6 +243,7 @@ public class DiskStorage implements Storage {
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#contains(java.lang.String)
 	 */
+	@Override
 	public boolean contains(String resource) {
 		if(resource == null || resource.length() == 0) {
 			logger.error("invalid resource name provided");
@@ -258,6 +257,7 @@ public class DiskStorage implements Storage {
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#list(org.dihedron.core.regex.Regex)
 	 */
+	@Override
 	public String[] list(Regex regex) {
 		if(regex == null) { 
 			logger.debug("returning full list of storage contents");
@@ -268,99 +268,35 @@ public class DiskStorage implements Storage {
 	}	
 	
 	/**
-	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String, java.io.InputStream)
+	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String)
 	 */	
-	public void store(String resource, InputStream stream) throws CacheException {		
+	@Override
+	public OutputStream store(String resource) throws CacheException {		
 		delete(resource, caseSensitive);
-		logger.debug("storing '{}' into cache", resource);
-		FileOutputStream fos = null;
+		File file = new File(directory, resource);
+		logger.debug("storing '{}' into cache as '{}'", resource, file.getAbsolutePath());		
 		try {
-			File file = new File(directory, resource);
 			if(deleteOnExit) {
-				logger.trace("file'{}' will be deleted when the JVM exits", file.getAbsolutePath());
+				logger.trace("file '{}' will be deleted when the JVM exits", file.getAbsolutePath());
 				file.deleteOnExit();
 			}
-			fos = new FileOutputStream(file);
-			Streams.copy(stream, fos);
-		} catch(IOException e) {
-			logger.error("error storing data to disk", e);
-			throw new CacheException("error storing data to disk", e);
-		} finally {
-			if(fos != null) {
-				try {
-					fos.close();
-				} catch (IOException e) {
-					logger.warn("error closing internal stream", e);
-				}
-			}
-		}
-	}
-
-	/**
-	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String, byte[])
-	 */
-	public void store(String resource, byte[] data) throws CacheException {
-		ByteArrayInputStream bais = null;
-		try {
-			bais = new ByteArrayInputStream(data);
-			store(resource, bais);
-		} finally {
-			if(bais != null) {
-				try {
-					bais.close();
-				} catch (IOException e) {
-					logger.warn("error closing internal stream", e);
-				}
-			}
+			return new FileOutputStream(file);
+		} catch (FileNotFoundException e) {
+			logger.error("error opening output stream to '" + file.getAbsolutePath() + "'", e);
+			throw new CacheException("error opening output stream to '" + file.getAbsolutePath() + "'", e);
 		}
 	}
 	
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#retrieveAsStream(java.lang.String)
 	 */
-	public InputStream retrieveAsStream(String resource) {
+	@Override
+	public InputStream retrieve(String resource) {
 		try {
 			return new FileInputStream(new File(directory, resource));
 		} catch (FileNotFoundException e) {
 			logger.error("resource '{}' does not exist", resource);
 		}
-		return null;
-	}
-
-	/**
-	 * @see org.dihedron.patterns.cache.Storage#retrieveAsByteArray(java.lang.String)
-	 */
-	public byte[] retrieveAsByteArray(String resource) {
-		InputStream input = retrieveAsStream(resource);
-		ByteArrayOutputStream output = null;
-		try {			
-			if(input != null){
-				output = new ByteArrayOutputStream();			
-				Streams.copy(input, output);
-				input.close();
-				logger.debug("returning resource as byte array");
-				return output.toByteArray();
-			}
-		} catch (FileNotFoundException e) {
-			logger.error("error retrieving resource '" + resource  + "'", e);
-		} catch (IOException e) {				
-			logger.error("error retrieving resource '" + resource + "'", e);
-		} finally {
-			if(output != null) {
-				try {
-					output.close();
-				} catch(IOException e) {
-					logger.warn("error closing internal output stream");
-				}
-			}
-			if(output != null) {
-				try {
-					output.close();
-				} catch(IOException e) {
-					logger.warn("error closing internal output stream");
-				}
-			}
-		}			
 		return null;
 	}
 
@@ -413,8 +349,8 @@ public class DiskStorage implements Storage {
 	}
 	
 	/**
-	 * This class provides a way of filtering/selecting items given
-	 * their name or a regular expression.
+	 * This class provides a way of filtering/selecting items given their name 
+	 * or a regular expression.
 	 * 
 	 * @author Andrea Funto'
 	 */
@@ -442,8 +378,7 @@ public class DiskStorage implements Storage {
 		}
 
 		/**
-		 * Checks whether a resource complies with the filter
-		 * criteria.
+		 * Checks whether a resource complies with the filter criteria.
 		 */		
 		public boolean accept(File dir, String name) {
 			boolean result = regex.matches(name);
@@ -452,12 +387,10 @@ public class DiskStorage implements Storage {
 		}
 
 		/**
-		 * Checks whether a resource complies with the filter
-		 * criteria.
+		 * Checks whether a resource complies with the filter criteria.
 		 */
 		public boolean accept(File pathname) {
 			return accept(null, pathname.getName());
 		}		
 	}	
-
 }

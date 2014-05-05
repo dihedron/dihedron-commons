@@ -269,33 +269,35 @@ public class Streams {
 	}
 	
 	/**
-	 * Closes a stream, if not null, suppressing any exception it may throw.
+	 * Tries to close the given stream; if any exception is thrown in the process, 
+	 * it suppresses it.
 	 * 
 	 * @param stream
-	 *   the stream to be closed.
+	 *   the input stream to be closed. 
 	 */
-	public static void closeSafely(InputStream stream) {
+	public static void safelyClose(InputStream stream) {
 		if(stream != null) {
 			try {
 				stream.close();
 			} catch(IOException e) {
-				logger.warn("error closing internal input stream");
+				logger.warn("error closing internal input stream, this may lead to a stream leak", e);
 			}
 		}
 	}
 	
 	/**
-	 * Closes a stream, if not null, suppressing any exception it may throw.
+	 * Tries to close the given stream; if any exception is thrown in the process, 
+	 * it suppresses it.
 	 * 
 	 * @param stream
-	 *   the stream to be closed.
+	 *   the output stream to be closed. 
 	 */
-	public static void closeSafely(OutputStream stream) {		
+	public static void safelyClose(OutputStream stream) {
 		if(stream != null) {
 			try {
 				stream.close();
 			} catch(IOException e) {
-				logger.warn("error closing internal input stream");
+				logger.warn("error closing internal output stream, this may lead to a stream leak", e);
 			}
 		}
 	}

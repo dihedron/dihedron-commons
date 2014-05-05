@@ -21,8 +21,8 @@ package org.dihedron.patterns.cache.storage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,8 +33,8 @@ import java.util.Set;
 
 import org.dihedron.core.regex.Regex;
 import org.dihedron.core.streams.Streams;
+import org.dihedron.core.strings.Strings;
 import org.dihedron.patterns.cache.CacheException;
-import org.dihedron.patterns.cache.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
-public class MemoryStorage implements Storage {
+public class MemoryStorage extends AbstractStorage {
 	
 	/** 
 	 * The logger. 
@@ -54,7 +54,7 @@ public class MemoryStorage implements Storage {
 	/** 
 	 * A map containing all cache resources. 
 	 */
-	private Map<String, byte[]> contents = Collections.synchronizedMap(new HashMap<String, byte[]>());
+	private Map<String, ByteArrayOutputStream> contents = Collections.synchronizedMap(new HashMap<String, ByteArrayOutputStream>());
 	
 	/**
 	 * Constructor.
@@ -86,67 +86,55 @@ public class MemoryStorage implements Storage {
 	 */
 	@Override
 	public String[] list(Regex regex) {
+		List<String> matched = new ArrayList<String>();
 		if(regex != null) {
-			List<String> matched = new ArrayList<String>();
-			Set<String> resources = contents.keySet();
-			for (String resource : resources) {
+			for (String resource : contents.keySet()) {
 				if(regex.matches(resource)) {
 					logger.trace("regular expression matches input string '{}'", resource);
 					matched.add(resource);
 				}
 			}
-			if(matched.size() > 0){
-				String [] result = new String[matched.size()];
-				return matched.toArray(result);			
-			}
+		} else {
+			matched.addAll(contents.keySet());
 		}
-		return new String[0];
+		
+//		if(matched.size() > 0){
+//			String [] result = new String[matched.size()];
+//			return matched.toArray(result);			
+//		} else {
+//			return new String[0];
+//		}
+		return matched.toArray(new String[0]);
 	}	
 
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String, java.io.InputStream)
 	 */
 	@Override
-	public void store(String resource, InputStream stream) throws CacheException {
-		try {
-			if(resource != null && stream != null) {			
-				logger.debug("storing resource {} available bytes: {}", resource, stream.available());
-				ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-				Streams.copy(stream, baos);
-				store(resource, baos.toByteArray());
-				baos.close();
-			}
-		} catch(IOException e) {
-			logger.error("error storing data into memory");
-			throw new CacheException("Error storing data into memory", e);
+	public OutputStream store(String resource) throws CacheException {
+		if(Strings.isValid(resource)) {
+			Streams.safelyClose(contents.get(resource));
+			logger.debug("storing resource '{}'", resource);
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			contents.put(resource, stream);
+			return stream; 
 		}
+		return null;
 	}
 
-	/**
-	 * @see org.dihedron.patterns.cache.Storage#store(java.lang.String, byte[])
-	 */
-	@Override
-	public void store(String resource, byte[] data) throws CacheException {
-		if(resource != null && data != null){
-			contents.put(resource, data);
-		}
-	}
-	
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#retrieveAsStream(java.lang.String)
 	 */
 	@Override
-	public InputStream retrieveAsStream(String resource) {
-		return byteArrayToStream(contents.get(resource));
+	public InputStream retrieve(String resource) {
+		if(Strings.isValid(resource)) {
+			ByteArrayOutputStream stream = contents.get(resource);
+			if(stream != null) {
+				return new ByteArrayInputStream(stream.toByteArray());
+			}
+		}
+		return null;
 	}	
-	
-	/**
-	 * @see org.dihedron.patterns.cache.Storage#retrieveAsByteArray(java.lang.String)
-	 */
-	@Override
-	public byte[] retrieveAsByteArray(String resource) {
-		return contents.get(resource);
-	}
 	
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#delete(org.dihedron.core.regex.Regex)
@@ -155,9 +143,9 @@ public class MemoryStorage implements Storage {
 	public void delete(Regex regex) {
 		Set<String> resources = new HashSet<String>(contents.keySet());
 		for (String resource : resources) {
-
 			if(regex.matches(resource)){
 				logger.debug("removing resource '{}'", resource);
+				Streams.safelyClose(contents.get(resource));
 				contents.remove(resource);
 			}
 		}
@@ -172,9 +160,11 @@ public class MemoryStorage implements Storage {
 		for (String string : resources) {
 			if(caseSensitive && string.equals(resource)) {
 				logger.debug("removing resource '{}'", resource);
+				Streams.safelyClose(contents.get(resource));
 				contents.remove(resource);
 			} else if(!caseSensitive && string.equalsIgnoreCase(resource)){
 				logger.debug("removing resource '{}'", resource);
+				Streams.safelyClose(contents.get(resource));
 				contents.remove(resource);				
 			} else {
 				logger.trace("keeping resource '{}'", resource);
@@ -188,21 +178,9 @@ public class MemoryStorage implements Storage {
 	@Override
 	public void clear() {
 		logger.debug("clearing storage");
-		contents.clear();
-	}	
-
-	/**
-	 * Converts a byte array into a stream.
-	 *  
-	 * @param data
-	 *   the byte array.
-	 * @return
-	 *   the InputStream.
-	 */
-	private static InputStream byteArrayToStream(byte[] data) {
-		if(data != null) {
-			return new ByteArrayInputStream(data);
+		for(String resource : contents.keySet()) {
+			Streams.safelyClose(contents.get(resource));
 		}
-		return null;
+		contents.clear();
 	}	
 }
