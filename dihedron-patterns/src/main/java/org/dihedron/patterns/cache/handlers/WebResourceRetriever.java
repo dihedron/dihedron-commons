@@ -105,11 +105,7 @@ public class WebResourceRetriever implements CacheMissHandler {
 		InputStream stream = null;
 		try {
 			logger.debug("opening connection...");
-			if(proxy != null) {
-				stream = url.openConnection(proxy).getInputStream();
-			} else {
-				stream = url.openConnection().getInputStream();
-			}
+			stream = url.openConnection(proxy != null ? proxy : Proxy.NO_PROXY).getInputStream();
 			if(stream == null) {
 				logger.error("error opening stream");
 			} else {

@@ -42,7 +42,6 @@ public class CacheTest {
 		Cache cache = new Cache(new MemoryStorage());
 		assertTrue(cache.isEmpty());
 		
-
 		
 		CacheMissHandler handler = new FileRetriever(new File("src/test/resources/test.pdf"));
 		cache.get("google_1", handler);
