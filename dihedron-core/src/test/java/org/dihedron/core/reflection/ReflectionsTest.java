@@ -97,8 +97,7 @@ public class ReflectionsTest {
 		
 		@SuppressWarnings("unused")
 		@SafeVarargs
-		public void annotated() {
-			
+		public final void annotated(Object... objects) {			
 		}
 	}
 	
