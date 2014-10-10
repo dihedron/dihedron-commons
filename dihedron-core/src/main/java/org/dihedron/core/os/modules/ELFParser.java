@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.core.os;
+package org.dihedron.core.os.modules;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +24,12 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.dihedron.core.os.ImageFile.Addressing;
-import org.dihedron.core.os.ImageFile.Endianness;
-import org.dihedron.core.os.ImageFile.Format;
-import org.dihedron.core.os.ImageFile.InstructionSet;
-import org.dihedron.core.os.ImageFile.OperatingSystem;
-import org.dihedron.core.os.ImageFile.Type;
+import org.dihedron.core.os.modules.ImageFile.Addressing;
+import org.dihedron.core.os.modules.ImageFile.Endianness;
+import org.dihedron.core.os.modules.ImageFile.Format;
+import org.dihedron.core.os.modules.ImageFile.InstructionSet;
+import org.dihedron.core.os.modules.ImageFile.OperatingSystem;
+import org.dihedron.core.os.modules.ImageFile.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class ELFParser extends ImageFileParser {
 	}
 
 	/**
-	 * @see org.dihedron.core.os.ImageFileParser#parse(java.io.RandomAccessFile)
+	 * @see org.dihedron.core.os.modules.ImageFileParser#parse(java.io.RandomAccessFile)
 	 */
 	@Override
 	public ImageFile parse(File file) throws IOException, ImageParseException {

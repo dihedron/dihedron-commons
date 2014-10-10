@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.core;
+package org.dihedron.core.os.modules;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.dihedron.core.os.ImageFile;
-import org.dihedron.core.os.ImageFile.Format;
-import org.dihedron.core.os.ImageFileParser;
-import org.dihedron.core.os.ImageParseException;
+import org.dihedron.core.os.modules.ImageFile;
+import org.dihedron.core.os.modules.ImageFileParser;
+import org.dihedron.core.os.modules.ImageParseException;
+import org.dihedron.core.os.modules.ImageFile.Format;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -76,6 +76,7 @@ public class TaskExecutor<T> {
 	 *   an optional list of observers that will be notified of the several phases 
 	 *   in a task execution life cycle. 
 	 */
+	@SafeVarargs
 	public TaskExecutor(ExecutorService executor, TaskObserver<T>... observers) {
 		this.executor = executor;
 		this.queue = new LinkedBlockingQueue<Integer>();
@@ -91,6 +92,7 @@ public class TaskExecutor<T> {
 	 * @return
 	 *   the object itself, to enable method chaining.
 	 */
+	@SafeVarargs
 	public final TaskExecutor<T> addObservers(TaskObserver<T>... observers) {
 		if(observers != null) {
 			for(TaskObserver<T> observer : observers) {
@@ -119,24 +121,26 @@ public class TaskExecutor<T> {
 	 * @return
 	 *   the corresponding set of futures.
 	 */
-	public List<Future<T>> execute(Task<T>... tasks) {
+	public List<Future<T>> execute(@SuppressWarnings("unchecked") Task<T> ... tasks) {
 		List<Future<T>> futures = new ArrayList<Future<T>>();
-		synchronized(queue) {
-			int i = 0;
-			for(Task<T> task : tasks) {
-				if(task !=  null) {
-					this.tasks.add(task);
-					TaskCallable<T> callable = new TaskCallable<T>(i++, queue, task);
-					for(TaskObserver<T> observer : observers) {
-						observer.onTaskStarting(task);
-					}
-					futures.add(executor.submit(callable));
-					for(TaskObserver<T> observer : observers) {
-						observer.onTaskStarted(task);
+		if(tasks != null) {
+			synchronized(queue) {
+				int i = 0;
+				for(Task<T> task : tasks) {
+					if(task !=  null) {
+						this.tasks.add(task);
+						TaskCallable<T> callable = new TaskCallable<T>(i++, queue, task);
+						for(TaskObserver<T> observer : observers) {
+							observer.onTaskStarting(task);
+						}
+						futures.add(executor.submit(callable));
+						for(TaskObserver<T> observer : observers) {
+							observer.onTaskStarted(task);
+						}
 					}
 				}
 			}
-		}		
+		}
 		return futures;
 	}
 	
@@ -216,7 +220,7 @@ public class TaskExecutor<T> {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public T waitForAny(List<Future<T>> futures, TaskObserver<T>... observers) throws InterruptedException, ExecutionException {
+	public T waitForAny(List<Future<T>> futures, @SuppressWarnings("unchecked") TaskObserver<T>... observers) throws InterruptedException, ExecutionException {
 		int count = futures.size();
 		while(count-- > 0) {
 			int id = queue.take();

@@ -16,12 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.core.os;
+package org.dihedron.core.os.modules;
 
 import java.io.File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A class representing an image file.
@@ -325,11 +322,6 @@ public class ImageFile {
 		 */
 		CORE		
 	}
-	
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = LoggerFactory.getLogger(ImageFile.class);
 
 	/**
 	 * The file system path of the physical image.

@@ -60,7 +60,6 @@ public final class Reflections {
 	 * @return
 	 *   the filtered set of fields from the given class and its super-classes.
 	 */
-	@SuppressWarnings("unchecked")
 	public static Set<Field> getInstanceFields(Class<?> clazz, Filter<Field> filter) {
 		return getFields(clazz, 
 				new And<Field>(
@@ -99,7 +98,6 @@ public final class Reflections {
 	 * @return
 	 *   the set of fields from the given class and its super-classes.
 	 */
-	@SuppressWarnings("unchecked")
 	public static Set<Field> getClassFields(Class<?> clazz, Filter<Field> filter) {
 		return getFields(clazz, 
 				new And<Field>(
@@ -136,7 +134,6 @@ public final class Reflections {
 	 * @return
 	 *   the filtered set of methods from the given class and its super-classes.
 	 */
-	@SuppressWarnings("unchecked")
 	public static Set<Method> getInstanceMethods(Class<?> clazz, Filter<Method> filter) {
 		return getMethods(clazz, 
 				new And<Method>(
@@ -175,7 +172,6 @@ public final class Reflections {
 	 * @return
 	 *   the filtered set of methods from the given class and its super-classes.
 	 */
-	@SuppressWarnings("unchecked")
 	public static Set<Method> getClassMethods(Class<?> clazz, Filter<Method> filter) {
 		return getMethods(clazz, 
 				new And<Method>(

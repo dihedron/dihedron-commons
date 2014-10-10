@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.core.os;
+package org.dihedron.core.os.modules;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +24,13 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.dihedron.core.os.ImageFile.Endianness;
-import org.dihedron.core.os.ImageFile.InstructionSet;
-import org.dihedron.core.os.ImageFile.OperatingSystem;
+import org.dihedron.core.formatters.BitMask;
+import org.dihedron.core.os.modules.ImageFile.Addressing;
+import org.dihedron.core.os.modules.ImageFile.Endianness;
+import org.dihedron.core.os.modules.ImageFile.Format;
+import org.dihedron.core.os.modules.ImageFile.InstructionSet;
+import org.dihedron.core.os.modules.ImageFile.OperatingSystem;
+import org.dihedron.core.os.modules.ImageFile.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,7 +181,7 @@ public class PEParser extends ImageFileParser {
 		 */
 		private ProcessorFamily(int flags) {
 			this.flags = flags & 65535;
-			logger.trace("flags: 0x{}", String.format("%04X", flags));
+			logger.trace("flags: 0x{} - bitmask: {}", String.format("%04X", flags), BitMask.toBitMask(flags));
 		}
 		
 		/**
@@ -193,7 +197,7 @@ public class PEParser extends ImageFileParser {
 	}
 
 	/**
-	 * @see org.dihedron.core.os.ImageFileParser#parse(java.io.RandomAccessFile)
+	 * @see org.dihedron.core.os.modules.ImageFileParser#parse(java.io.RandomAccessFile)
 	 */
 	@Override
 	public ImageFile parse(File file) throws IOException, ImageParseException {
@@ -251,6 +255,7 @@ public class PEParser extends ImageFileParser {
 			long offset = ((long)ByteBuffer.wrap(dword).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().get()) & 0xFFFFFFFF;
 			logger.trace("dword = 0x{}{}{}{} -> offset {}", String.format("%02X", dword[0]), String.format("%02X", dword[1]), String.format("%02X", dword[2]), String.format("%02X", dword[3]), offset);
 			
+			module.setFormat(Format.PE);
 			module.setOperatingSystem(OperatingSystem.WINDOWS);
 			
 			//
@@ -294,7 +299,7 @@ public class PEParser extends ImageFileParser {
 				logger.trace("instruction set: unknown");
 				break;
 			case IMAGE_FILE_MACHINE_I386:
-				logger.trace("instruction set: i386");
+				logger.trace("instruction set: i386");				
 				module.setInstructionSet(InstructionSet.X86);
 				module.setEndianness(Endianness.LITTLE_ENDIAN);
 				break;
@@ -375,15 +380,15 @@ public class PEParser extends ImageFileParser {
 				break;
 				
 			case IMAGE_FILE_MACHINE_SH3DSP:
-				logger.trace("instruction set: SH3 DSP");			
+				logger.trace("instruction set: SH3 DSP (unsupported)");			
 				break;
 				
 			case IMAGE_FILE_MACHINE_SH4:
-				logger.trace("instruction set: SH4");			
+				logger.trace("instruction set: SH4 (unsupported)");			
 				break;
 				
 			case IMAGE_FILE_MACHINE_SH5:
-				logger.trace("instruction set: SH5");			
+				logger.trace("instruction set: SH5 (unsupported)");			
 				break;
 
 			case IMAGE_FILE_MACHINE_THUMB:
@@ -403,19 +408,29 @@ public class PEParser extends ImageFileParser {
 			int characteristics = (int)ByteBuffer.wrap(word).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get() & 0x0000FFFF;
 			logger.trace("characteristics: {} {} (0x{})", String.format("%02X", word[0]), String.format("%02X", word[1]), String.format("%04X", characteristics));	
 			
-			logger.trace("characteristics             : {}", toBitMask(characteristics));
-			logger.trace("IMAGE_FILE_EXECUTABLE_IMAGE : {}", toBitMask(IMAGE_FILE_EXECUTABLE_IMAGE));
-			logger.trace("IMAGE_FILE_SYSTEM           : {}", toBitMask(IMAGE_FILE_SYSTEM));
-			logger.trace("IMAGE_FILE_DLL              : {}", toBitMask(IMAGE_FILE_DLL));
+			logger.trace("characteristics             : {}", BitMask.toBitMask(characteristics));
+			logger.trace("IMAGE_FILE_EXECUTABLE_IMAGE : {}", BitMask.toBitMask((int)IMAGE_FILE_EXECUTABLE_IMAGE));
+			logger.trace("IMAGE_FILE_SYSTEM           : {}", BitMask.toBitMask((int)IMAGE_FILE_SYSTEM));
+			logger.trace("IMAGE_FILE_DLL              : {}", BitMask.toBitMask((int)IMAGE_FILE_DLL));
+			logger.trace("IMAGE_FILE_32BIT_MACHINE    : {}", BitMask.toBitMask((int)IMAGE_FILE_32BIT_MACHINE));			
 			
-			if((characteristics & IMAGE_FILE_EXECUTABLE_IMAGE) > 0) {
-				logger.trace("file is an EXE");
+			if((characteristics & IMAGE_FILE_32BIT_MACHINE) > 0) {
+				logger.trace("file is for 32-bits systems");
+				module.setAddressing(Addressing.SIZE_32);
+			} else {
+				logger.trace("file is for 64-bits systems");
+				module.setAddressing(Addressing.SIZE_64);
 			}
-			if((characteristics & IMAGE_FILE_SYSTEM) > 0) {
-				logger.trace("file is a kernel module");
-			}
-			if((characteristics & IMAGE_FILE_DLL) > 0) {
+			
+			
+			if((characteristics & IMAGE_FILE_DLL) > 0 || file.getName().toLowerCase().endsWith(".dll")) {
 				logger.trace("file is a DLL");
+				module.setType(Type.SHARED);
+			} else if((characteristics & IMAGE_FILE_EXECUTABLE_IMAGE) > 0) {
+				logger.trace("file is an EXE");
+				module.setType(Type.EXECUTABLE);
+			} else if((characteristics & IMAGE_FILE_SYSTEM) > 0) {
+				logger.trace("file is a kernel module");
 			}
 			
 			
@@ -587,23 +602,6 @@ public class PEParser extends ImageFileParser {
 	 * A constant indicating that the image is a DLL file. While it is an executable file, it cannot be run directly.
 	 */
 	private static final short IMAGE_FILE_DLL = 0x2000;
-		
-	
-	private static String toBitMask(long bitmask) {
-		StringBuilder buffer = new StringBuilder();
-		long bit = 1;
-		for(int i = 0; i < 64; ++i) {
-			if(i != 0 && i % 4 == 0) {
-				buffer.append(" ");
-			}
-			if((bit & bitmask) == bit) {
-				buffer.append("1");
-			} else {
-				buffer.append("0");
-			}
-			bit = bit << 1;				
-		}
-		return buffer.toString();
-	}
+
 	
 }

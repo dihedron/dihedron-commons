@@ -48,6 +48,7 @@ public abstract class Filter<T> {
 	 * @return
 	 *   a filtered set of elements.
 	 */
+	@SafeVarargs
 	public static <T> Collection<T> apply(Filter<T> filter, T ... elements) {
 		List<T> list = new ArrayList<T>();
 		if(elements != null) {
