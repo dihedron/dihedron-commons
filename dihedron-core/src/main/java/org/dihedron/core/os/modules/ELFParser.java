@@ -24,6 +24,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.dihedron.core.formatters.BitMask;
 import org.dihedron.core.os.modules.ImageFile.Addressing;
 import org.dihedron.core.os.modules.ImageFile.Endianness;
 import org.dihedron.core.os.modules.ImageFile.Format;
@@ -144,7 +145,7 @@ public class ELFParser extends ImageFileParser {
 				module.setOperatingSystem(OperatingSystem.OPENBSD);
 				break;
 			}
-			logger.trace("operating system: '{}'", module.getOperatingSystem());
+			logger.trace("operating system: '{}' ({})", module.getOperatingSystem(), BitMask.toBitMask(buffer[7]));
 			
 			// 
 			// 8 bytes: next come 8 bytes that further specify the API or are unused, we can safely skip them
@@ -177,7 +178,7 @@ public class ELFParser extends ImageFileParser {
 			System.arraycopy(buffer, 18, tmp2, 0, 2);
 
 			short is = ByteBuffer.wrap(tmp2).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get();
-			logger.trace("sghort for instrcution set is {}", is);
+			logger.trace("short for instruction set is {}", is);
 			switch(is) {
 			case 0x02:// 	SPARC
 				module.setInstructionSet(InstructionSet.SPARC);

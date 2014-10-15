@@ -37,7 +37,7 @@ public class ImageFile {
 		/**
 		 * The Extensible Linker Format (ELF).
 		 */
-		ELF("Extensible linker Format (ELF)"),
+		ELF("Extensible Linker Format (ELF)"),
 		
 		/**
 		 * The Portable Executable (PE) format.
@@ -165,7 +165,9 @@ public class ImageFile {
 	 */
 	public enum OperatingSystem {
 		/**
-		 * The UNIX System-V operating system.
+		 * The UNIX System-V operating system; this constants is often
+		 * used when no further indication is provided (e.g it may be
+		 * used on Linux machines).
 		 */
 		SYSTEM_V("System V"),
 		
