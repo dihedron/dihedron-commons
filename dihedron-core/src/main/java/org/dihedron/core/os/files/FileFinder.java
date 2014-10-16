@@ -34,6 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Finds files by recursively browsing a directory an looking for files matching
+ * a given name path.
+ * 
  * @author Andrea Funto'
  */
 public final class FileFinder {
@@ -42,10 +45,16 @@ public final class FileFinder {
 	 */
 	private final static Logger logger = LoggerFactory.getLogger(FileFinder.class);
 
+	/**
+	 * A class invokes as the visit proceeds; simply checks if the current item's
+	 * name matches a regular expression and if stores it in an internal list.
+	 *  
+	 * @author Andrea Funto'
+	 */
 	private static class FileFinderVisitor extends SimpleFileVisitor<Path> {
 
 		/**
-		 * The pattern to match agains file names.
+		 * The pattern to match against file names.
 		 */
 		private Regex regex;
 		

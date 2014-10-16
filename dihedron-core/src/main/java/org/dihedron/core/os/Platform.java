@@ -19,7 +19,10 @@
 package org.dihedron.core.os;
 
 /**
- * An enumeration of all (potentially) supported platforms.
+ * An enumeration of all (potentially) supported platforms; on 32 bits JVM 
+ * the platform will always be the 32 bits flavor, no matter whether the real
+ * operating ssystem is running on 32 or 64 bits. Thus it is safe to assume
+ * the native operations (e.g. loading a native library into the JVM)  
  * 
  * @author Andrea Funto'
  */
@@ -29,45 +32,45 @@ public enum Platform {
 	 * 32-bits Windows, or 32-bits JVM running on 64-bits Windows
 	 * operating systems.
 	 */
-	WINDOWS_32("win32"),
+	WINDOWS_32("win32", "Windows", 32),
 	
 	/**
 	 * 64-bit Windows.
 	 */
-	WINDOWS_64("win64"),  
+	WINDOWS_64("win64", "Windows", 64),  
 	
 	/**
 	 * 32-bit Linux, or 32-bit JVM running on 64-bits Linux
 	 * operating systems.
 	 */
-	LINUX_32("lnx32"),
+	LINUX_32("lnx32", "Linux", 32),
 	
 	/**
 	 * 64-bit Linux.
 	 */
-	LINUX_64("lnx64"),
+	LINUX_64("lnx64", "Linux", 64),
 	
 	/**
 	 * 32-bit MacOS X, or 32-bit JVM running on 64-bits MacOS X
 	 * operating systems.
 	 */	
-	MACOSX_32("mac32"),
+	MACOSX_32("mac32", "MacOS-X", 32),
 	
 	/**
 	 * 64-bit MacOS X.
 	 */
-	MACOSX_64("mac64"),
+	MACOSX_64("mac64", "MacOS-X", 64),
 	
 	/**
 	 * 32-bit Generic UNIX, or 32-bit JVM running on 64-bits UNIX
 	 * operating systems.
 	 */
-	UNIX_32("unix32"),
+	UNIX_32("unix32", "UNIX", 32),
 	
 	/**
 	 * 64-bit generic UNIX.
 	 */
-	UNIX_64("unix64");
+	UNIX_64("unix64", "UNIX", 64);
 	
 	/**
 	 * Tries to detect the current operating infrastructure. Note that this
@@ -140,17 +143,51 @@ public enum Platform {
 	}
 	
 	/**
+	 * Returns the label for the current operating system.
+	 * 
+	 * @return
+	 *   the label for the current operating system.
+	 */
+	public String getName() {
+		return this.name;
+	}
+	
+	/**
+	 * Returns the number of bits used by the JVM for addresses; it will
+	 * be 32 on 32-bits JVMs, no matter how many bits the underlying 
+	 * operating system runs on.
+	 * 
+	 * @return
+	 *   the number of bits used by the JVM for memory addresses.
+	 */
+	public int getArchitecture() {
+		return this.architecture;
+	}
+	
+	/**
 	 * Constructor.
 	 * 
 	 * @param code
 	 *   a short string representing the platform.
 	 */
-	private Platform(String code) {
+	private Platform(String code, String name, int architecture) {
 		this.code = code;
+		this.name = name;
+		this.architecture = architecture;
 	}
 	
 	/**
 	 * A short string representing the platform.
 	 */
 	private String code;
+	
+	/**
+	 * The label for the operating system (as seen by the JVM).
+	 */
+	private String name;
+	
+	/**
+	 * The number of bits used by the JVM architecture (32 or 64).
+	 */
+	private int architecture;
 }
