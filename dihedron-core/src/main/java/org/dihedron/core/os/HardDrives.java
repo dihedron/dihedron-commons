@@ -57,6 +57,7 @@ public final class HardDrives {
 		case WINDOWS_32:
 		case WINDOWS_64:
 			drives = listWindowsFileSystems();
+			break;
 		case LINUX_32:
 		case LINUX_64:
 		case UNIX_32:
@@ -105,13 +106,14 @@ public final class HardDrives {
 		
 		// we may want to get only some filesystem types
 		StringBuilder command = new StringBuilder("mount");
-		if(fstypes != null) {
+		if(fstypes != null && fstypes.length > 0) {
 			command.append(" -t ");
 			boolean first = true;
 			for(String fstype : fstypes) {
 				if(!first) {
-					command.append(",").append(fstype);
+					command.append(",");
 				}
+				command.append(fstype);
 				first = false;
 			}
 		}
