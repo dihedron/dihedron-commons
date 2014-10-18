@@ -95,7 +95,7 @@ public class URLStorageTest {
 		
 		URLStorage storage = new URLStorage(Proxy.NO_PROXY);
 	
-		InputStream input = storage.retrieve("http://intranethome/");
+		InputStream input = storage.retrieve("http://www.google.com/");
 		ByteArrayOutputStream output = new ByteArrayOutputStream(); 
 		Streams.copy(input, output);
 		String s = new String(output.toByteArray());
