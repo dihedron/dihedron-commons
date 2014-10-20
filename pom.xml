@@ -56,6 +56,7 @@
 		<module>./core</module>
 		<module>./patterns</module>
 		<module>./crypto</module>
+		<module>./httpd</module>
 	</modules>
 
 	<build>
