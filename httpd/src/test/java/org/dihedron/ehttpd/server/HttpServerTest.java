@@ -30,6 +30,7 @@ import org.dihedron.ehttpd.server.handlers.impl.VirtualDirectoryHandler;
 import org.dihedron.ehttpd.server.resources.FileStaticResource;
 import org.dihedron.ehttpd.server.session.FakeSessionGenerator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ public class HttpServerTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testHttpServerIntRequestDispatcher() {
 		
 		try {

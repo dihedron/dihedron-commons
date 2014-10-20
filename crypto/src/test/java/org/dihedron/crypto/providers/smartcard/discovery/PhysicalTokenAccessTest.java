@@ -54,6 +54,7 @@ import org.dihedron.crypto.KeyRing;
 import org.dihedron.crypto.certificates.Certificates;
 import org.dihedron.crypto.certificates.TrustAnchors;
 import org.dihedron.crypto.constants.SignatureAlgorithm;
+import org.dihedron.crypto.exceptions.CertificateVerificationException;
 import org.dihedron.crypto.exceptions.ProviderException;
 import org.dihedron.crypto.operations.sign.Signer;
 import org.dihedron.crypto.operations.sign.SignerFactory;
@@ -241,7 +242,9 @@ public class PhysicalTokenAccessTest {
 					}
 				}
 			}
-		}
+		} catch(CertificateVerificationException e) {
+			logger.warn("the certificate has expired or is not valid (CRL)");
+		} 
 	}	
 	
 	private SmartCardTraits getSmartCardTraits() throws IOException, ProviderException {

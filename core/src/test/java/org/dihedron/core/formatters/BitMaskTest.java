@@ -30,33 +30,34 @@ public class BitMaskTest {
 	 * The logger.
 	 */
 	private final static Logger logger = LoggerFactory.getLogger(BitMaskTest.class);
+	 
+	private final static int LOOPS = 16;
 
 	@Test
 	public void testByte() {
-		for(byte i = 0; i < Byte.MAX_VALUE; ++i) {
+		for(byte i = 0; i < LOOPS; ++i) {
 			logger.trace("byte {}: '{}'", i, BitMask.toBitMask(i));
 		}
 	}
 	
 	@Test	
 	public void testShort() {
-		for(short i = 0; i < Byte.MAX_VALUE; ++i) {
+		for(short i = 0; i < LOOPS; ++i) {
 			logger.trace("short {}: '{}'", i, BitMask.toBitMask(i));
 		}
 	}
 
 	@Test
 	public void testInt() {
-		for(int i = 0; i < Byte.MAX_VALUE; ++i) {
+		for(int i = 0; i < LOOPS; ++i) {
 			logger.trace("int {}: '{}'", i, BitMask.toBitMask(i));
 		}
 	}
 
 	@Test
 	public void testLong() {
-		for(long i = 0; i < Byte.MAX_VALUE; ++i) {
+		for(long i = 0; i < LOOPS; ++i) {
 			logger.trace("long {}: '{}'", i, BitMask.toBitMask(i));
 		}
 	}
-	
 }

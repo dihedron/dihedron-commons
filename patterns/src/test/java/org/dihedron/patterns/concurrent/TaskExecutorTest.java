@@ -45,13 +45,13 @@ public class TaskExecutorTest {
 	 */
 	private final static Logger logger = LoggerFactory.getLogger(TaskExecutorTest.class);
 
-	private static final int THREAD_POOL_SIZE = 50;
+	private static final int THREAD_POOL_SIZE = 10;
 	
 	private static final int NUMBER_OF_TASKS = 50;
 	
-	private static final int NUMBER_OF_TESTS = 10;
+	private static final int NUMBER_OF_TESTS = 2;
 	
-	private static final int MAX_MS_TO_WAIT = 20;
+	private static final int MAX_MS_TO_WAIT = 5;
 	
 	private Random random;
 	
@@ -71,7 +71,6 @@ public class TaskExecutorTest {
 		executor.shutdown();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testWaitForAll() {
 

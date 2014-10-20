@@ -41,7 +41,7 @@
 					<verify>true</verify>
 				</configuration>		        
       		</plugin>
-      		-->			
+      		-->
 		</plugins>
 	</build>
 	<dependencies>	
