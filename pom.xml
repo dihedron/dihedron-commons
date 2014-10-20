@@ -48,13 +48,14 @@
 		<log4j.version>1.2.17</log4j.version>
 		<junit.version>4.11</junit.version>
 		<javaee.version>6.0</javaee.version>
+		<bouncycastle.version>1.51</bouncycastle.version>
+		<itext.version>5.1.1</itext.version>
 	</properties>
 
 	<modules>
-		<module>./dihedron-core</module>
-		<module>./dihedron-patterns</module>
-		<module>./dihedron-activities-core</module>
-		<module>./dihedron-activities-adapters</module>
+		<module>./core</module>
+		<module>./patterns</module>
+		<module>./crypto</module>
 	</modules>
 
 	<build>
@@ -169,6 +170,16 @@
 				<artifactId>javaee-api</artifactId>  
 				<version>${javaee.version}</version>  
 			</dependency>  	
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk15on</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>					
+			<dependency>
+	  			<groupId>com.itextpdf</groupId>
+	  			<artifactId>itextpdf</artifactId>
+	  			<version>${itext.version}</version>
+			</dependency>			
 		</dependencies>
 	</dependencyManagement>
 	

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<parent>	
+		<groupId>org.dihedron.commons</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>dihedron-crypto</artifactId>
+	<packaging>jar</packaging>
+	<name>c. Cryptographic Support Classes</name>
+			
+	<description>Set of classes to support cryptography, including smart card detection, encryption, decryption and signing.</description>
+		
+	<build>
+		<plugins>
+     		<!-- 
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-jarsigner-plugin</artifactId>
+        		<version>1.2</version>
+        		<executions>
+          			<execution>
+            			<id>sign</id>
+            			<goals>
+              				<goal>sign</goal>
+            			</goals>
+          			</execution>
+		        </executions>
+				<configuration>
+					<keystore>${keystore.file}</keystore>
+					<storetype>${keystore.type}</storetype>
+					<alias>${keystore.alias}</alias>
+					<storepass>${keystore.password}</storepass>
+					<keypass>${key.password}</keypass>
+					<sigfile>dihedron</sigfile>
+					<signedjar>${project.build.directory}/signed/${project.build.finalName}.jar</signedjar>
+					<verify>true</verify>
+				</configuration>		        
+      		</plugin>
+      		-->			
+		</plugins>
+	</build>
+	<dependencies>	
+		<dependency>
+			<groupId>org.dihedron.commons</groupId>
+			<artifactId>dihedron-core</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.dihedron.commons</groupId>
+			<artifactId>dihedron-patterns</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcpkix-jdk15on</artifactId>
+		    <scope>compile</scope>
+		</dependency>	
+		
+		<dependency>
+  			<groupId>com.itextpdf</groupId>
+  			<artifactId>itextpdf</artifactId>
+  			<scope>compile</scope>
+		</dependency>
+		
+	</dependencies>
+</project>
