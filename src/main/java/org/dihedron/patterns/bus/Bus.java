@@ -85,16 +85,18 @@ public class Bus<M> {
 		observers.clear();
 		return this;
 	}
-
+	
 	/**
 	 * Broadcasts an event on the bus to all registered observers.
 	 * 
 	 * @param message
 	 *   the message to be broadcast.
+	 * @param args
+	 *   a set of optional untyped parameters.
 	 */
-	public Bus<M> broadcast(M message) {
-		return broadcast(null, message);
-	}
+	public Bus<M> broadcast(M message, Object ... args) {
+		return broadcast(null, message, args);
+	}	
 	
 	/**
 	 * Broadcasts an event on the bus to all registered observers.
@@ -103,15 +105,17 @@ public class Bus<M> {
 	 *   the message sender (pass in "this").
 	 * @param message
 	 *   the message to be broadcast.
+	 * @param args
+	 *   a set of optional untyped parameters.
 	 */
-	public Bus<M> broadcast(Object sender, M message) {
-		if(message != null) {
-			logger.trace("'{}' dispatching message:\n{}", sender != null ? sender : "<static>", message);
+	public Bus<M> broadcast(Object sender, M message, Object ... args) {
+		if(message != null) {			
+			logger.trace("'{}' dispatching message '{}' with arguments '{}'", sender != null ? sender : "<static>", message, args != null ? args : "[]");
 			for(BusObserver<M> observer : observers) {
 				logger.trace("dispatching to observer '{}'...", observer.getClass().getSimpleName()); 
-				observer.onMessage(sender, message);
+				observer.onMessage(sender, message, args);
 			}
 		}
 		return this;
-	}
+	}	
 }

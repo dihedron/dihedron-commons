@@ -29,6 +29,18 @@ public interface BusObserver<M> {
 	/**
 	 * A method invoked whenever the a new message is available on the internal 
 	 * message bus; this way of dispatching information around caters for loose
+	 * coupling among components.
+	 * 
+	 * @param message
+	 *   the actual message.
+	 * @param args
+	 *   a set of optional untyped arguments.
+	 */
+	void onMessage(M message, Object ... args);
+
+	/**
+	 * A method invoked whenever the a new message is available on the internal 
+	 * message bus; this way of dispatching information around caters for loose
 	 * coupling among components. This default implementation simply ignores the 
 	 * sender parameters; subclasses can always choose to override this method if 
 	 * they feel they need to be notified about the actual sender object.
@@ -37,16 +49,8 @@ public interface BusObserver<M> {
 	 *   the message sender; could be null if no sender was specified.
 	 * @param message
 	 *   the actual message.
+	 * @param args
+	 *   a set of optional untyped arguments.
 	 */
-	void onMessage(Object sender, M message);
-	
-	/**
-	 * A method invoked whenever the a new message is available on the internal 
-	 * message bus; this way of dispatching information around caters for loose
-	 * coupling among components.
-	 * 
-	 * @param message
-	 *   the actual message.
-	 */
-	void onMessage(M message);
+	void onMessage(Object sender, M message, Object ... args);
 }	

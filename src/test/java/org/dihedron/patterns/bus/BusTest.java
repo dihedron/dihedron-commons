@@ -19,7 +19,6 @@
 package org.dihedron.patterns.bus;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,10 +29,6 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Funto'
  */
 public class BusTest {
-	/**
-	 * The logger.
-	 */
-	private final static Logger logger = LoggerFactory.getLogger(BusTest.class);
 	
 	private enum TestMessage {
 		MESSAGE1,
@@ -69,8 +64,8 @@ public class BusTest {
 		 * @see org.dihedron.patterns.bus.BusObserver#onMessage(java.lang.Enum)
 		 */
 		@Override
-		public void onMessage(TestMessage message) {
-			logger.trace("received message: '{}'", message.name());
+		public void onMessage(TestMessage message, Object ... args) {
+			logger.trace("received message: '{}' (args: {})", message.name(), args);
 			if(message == value) {
 				count++;
 			}
@@ -112,13 +107,13 @@ public class BusTest {
 		observer3.resetCount();
 				
 		for(int i = 0; i < 10; ++i) {
-			bus.broadcast(TestMessage.MESSAGE1);
+			bus.broadcast(TestMessage.MESSAGE1, i);
 		}
 		for(int i = 0; i < 20; ++i) {
-			bus.broadcast(TestMessage.MESSAGE2);
+			bus.broadcast(TestMessage.MESSAGE2, i, "a string");
 		}
 		for(int i = 0; i < 30; ++i) {
-			bus.broadcast(TestMessage.MESSAGE3);
+			bus.broadcast(TestMessage.MESSAGE3, i, new Object());
 		}
 		
 		assertTrue(observer1.getCount() == 10);
@@ -136,13 +131,13 @@ public class BusTest {
 		observer3.resetCount();
 				
 		for(int i = 0; i < 10; ++i) {
-			bus.broadcast(this, TestMessage.MESSAGE1);
+			bus.broadcast(this, TestMessage.MESSAGE1, i);
 		}
 		for(int i = 0; i < 20; ++i) {
 			bus.broadcast(this, TestMessage.MESSAGE2);
 		}
 		for(int i = 0; i < 30; ++i) {
-			bus.broadcast(this, TestMessage.MESSAGE3);
+			bus.broadcast(this, TestMessage.MESSAGE3, i);
 		}
 		
 		assertTrue(observer1.getCount() == 10);
