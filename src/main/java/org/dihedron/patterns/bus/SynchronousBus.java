@@ -23,9 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class provides a single message bus to propagate information that's not 
- * model-specific around: all registered observers will be notified synchronously 
- * as soon as a new message is posted on the bus.
+ * A synchronous flavour of the message bus.
  * 
  *  @author Andrea Funto'
  */

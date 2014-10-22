@@ -310,7 +310,7 @@ public class LdapAdapter extends Transformation {
 		return result;
 	}
 	
-	private Map<String, String> makeEnvironment(ActivityContext context) {
+	public Map<String, String> makeEnvironment(ActivityContext context) {
 		if(environment == null) {
 			environment = new HashMap<String, String>();
 			environment.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory(context));
