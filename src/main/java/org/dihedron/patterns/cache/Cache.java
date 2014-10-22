@@ -114,8 +114,7 @@ public class Cache implements Iterable<String>{
 	}
 	
 	/**
-	 * Deletes all resource that match the given resource name 
-	 * criteria.
+	 * Deletes all resource that match the given resource name criteria.
 	 * 
 	 * @param resource
 	 *   the resource name.
@@ -132,8 +131,8 @@ public class Cache implements Iterable<String>{
 	}
 	
 	/**
-	 * Copies data from one resource to another, possibly replacing
-	 * the destination resource if one exists.
+	 * Copies data from one resource to another, possibly replacing the destination 
+	 * resource if one exists.
 	 * 
 	 * @param source
 	 *   the name of the source resource.
@@ -147,19 +146,12 @@ public class Cache implements Iterable<String>{
 			logger.error("invalid input parameters for copy from '{}' to '{}'", source, destination);
 			throw new CacheException("invalid input parameters (source: '" + source + "', destination: '" + destination + "')");
 		}
-		InputStream input = null;
-		OutputStream output = null;
-		try {
-			input = storage.retrieve(source);
-			output = storage.store(destination);
+		try (InputStream input = storage.retrieve(source); OutputStream output = storage.store(destination)) {
 			long copied = Streams.copy(input, output);
 			logger.trace("copied {} bytes from '{}' to '{}'", copied, source, destination);
 		} catch (IOException e) {
 			logger.error("error copying from '" + source + "' to '" + destination + "'", e);
 			throw new CacheException("error copying from '" + source + "' to '" + destination + "'", e);
-		} finally {
-			Streams.safelyClose(input);
-			Streams.safelyClose(output);
 		}
 		return this;
 	}
@@ -229,12 +221,8 @@ public class Cache implements Iterable<String>{
 				lookup:
 				for(CacheMissHandler handler : handlers) {
 					logger.trace("... attempting retrieval of '{}' using handler of class '{}'", resource, handler.getClass().getSimpleName());
-					InputStream input = null;
-					OutputStream output = null;
-					try {
-						input = handler.getAsStream();
+					try (InputStream input = handler.getAsStream(); OutputStream output = storage.store(resource)) {
 						if(input != null) {
-							output = storage.store(resource);
 							long copied = Streams.copy(input,  output);
 							logger.trace("... stored {} bytes for resource '{}'", copied, resource);
 							break lookup;
@@ -244,9 +232,6 @@ public class Cache implements Iterable<String>{
 						}
 					} catch (IOException e) {
 						logger.warn("I/O error trying to retrieve resource '" + resource + "' with handler of class '" + handler.getClass().getSimpleName() +"'", e);
-					} finally {
-						Streams.safelyClose(input);
-						Streams.safelyClose(output);
 					}					
 				}
 			}
