@@ -38,7 +38,7 @@ public class LibraryTest {
 	private static class MyLibrary extends Library {
 		
 		private MyLibrary() {
-			super("core");
+			super("commons");
 		}
 	}
 	
