@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.core;
+package org.dihedron;
 
 import org.dihedron.core.library.Library;
 import org.dihedron.core.library.Traits;
@@ -25,7 +25,7 @@ import org.dihedron.core.library.Traits;
 /**
  * @author Andrea Funto'
  */
-public class CoreLibrary extends Library {
+public class Commons extends Library {
 		
 	/**
 	 * Returns the value of the give trait.
@@ -36,27 +36,28 @@ public class CoreLibrary extends Library {
 	 *   the value of the trait.
 	 */
 	public static String valueOf(Traits trait) {
-		synchronized(CoreLibrary.class) {
+		synchronized(Commons.class) {
 			if(singleton == null) {
-				singleton = new CoreLibrary();
-			}}
+				singleton = new Commons();
+			}
+		}
 		return singleton.get(trait);
 	}
 	
 	/**
 	 * The name of the library.
 	 */
-	private static final String LIBRARY_NAME = "core";
+	private static final String LIBRARY_NAME = "commons";
 	
 	/**
 	 * The single instance.
 	 */
-	private static CoreLibrary singleton = new CoreLibrary();
+	private static Commons singleton = new Commons();
 
 	/**
 	 * Constructor.
 	 */
-	private CoreLibrary() {
+	private Commons() {
 		super(LIBRARY_NAME);
 	}
 }

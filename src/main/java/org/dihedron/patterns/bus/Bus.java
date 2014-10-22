@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.dihedron.patterns.bus.messages.BusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * 
  *  @author Andrea Funto'
  */
-public class Bus {
+public class Bus<M> {
 	
 	/** 
 	 * The logger. 
@@ -42,25 +41,28 @@ public class Bus {
 	private static final Logger logger = LoggerFactory.getLogger(Bus.class);
 
 	/** 
-	 * The singleton. 
-	 */
-	private static Bus SINGLETON = new Bus();
-
-	/** 
 	 * The message bus observers. 
 	 */
-	private Set<BusObserver> observers = Collections.synchronizedSet(new HashSet<BusObserver>());
+	private Set<BusObserver<M>> observers = Collections.synchronizedSet(new HashSet<BusObserver<M>>());
 
+	/**
+	 * Constructor.
+	 */
+	public Bus() {
+		logger.trace("BUS created");		
+	}
+	
 	/**
 	 * Adds an observer to this message bus.
 	 * 
 	 * @param observer
 	 *   the observer.
 	 */
-	public static void addObserver(BusObserver observer) {
+	public Bus<M> addObserver(BusObserver<M> observer) {
 		if(observer != null) {
-			Bus.getInstance().observers.add(observer);
+			observers.add(observer);
 		}
+		return this;
 	} 
 
 	/**
@@ -72,47 +74,44 @@ public class Bus {
 	 *   <code>true</code> if the object was in the set of registered observers,
 	 *   <code>false</code> otherwise.
 	 */
-	public static boolean removeObserver(BusObserver observer) {
-		return getInstance().observers.remove(observer);
+	public boolean removeObserver(BusObserver<M> observer) {
+		return observers.remove(observer);
 	}
 	
 	/**
 	 * Removes all observers from the set.
 	 */
-	public static void removeAllObservers() {
-		getInstance().observers.clear();
+	public Bus<M> removeAllObservers() {
+		observers.clear();
+		return this;
 	}
-	
+
 	/**
 	 * Broadcasts an event on the bus to all registered observers.
 	 * 
 	 * @param message
 	 *   the message to be broadcast.
 	 */
-	public static void broadcast(Object sender, BusMessage message) {
-		if(message != null) {
-			logger.trace("'{}' dispatching message:\n{}", sender != null ? sender : "<static>", message);
-			for(BusObserver observer : getInstance().observers) {
-				logger.trace("dispatching to observer '{}'...", observer.getClass().getSimpleName()); 
-				observer.onMessage(message);
-			}
-		}
+	public Bus<M> broadcast(M message) {
+		return broadcast(null, message);
 	}
-		
-	/**
-	 * Retrieves the single instance.
-	 * 
-	 * @return 
-	 *   the single instance.
-	 */
-	public static Bus getInstance() {		
-		return SINGLETON;
-	}	
 	
 	/**
-	 * Constructor.
+	 * Broadcasts an event on the bus to all registered observers.
+	 * 
+	 * @param sender
+	 *   the message sender (pass in "this").
+	 * @param message
+	 *   the message to be broadcast.
 	 */
-	Bus() {
-		logger.debug("BUS created");		
+	public Bus<M> broadcast(Object sender, M message) {
+		if(message != null) {
+			logger.trace("'{}' dispatching message:\n{}", sender != null ? sender : "<static>", message);
+			for(BusObserver<M> observer : observers) {
+				logger.trace("dispatching to observer '{}'...", observer.getClass().getSimpleName()); 
+				observer.onMessage(sender, message);
+			}
+		}
+		return this;
 	}
 }

@@ -16,47 +16,21 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dihedron.patterns;
 
-import org.dihedron.core.library.Library;
-import org.dihedron.core.library.Traits;
-
+package org.dihedron.patterns.bus;
 
 /**
+ * A bus observer that provides a default implementation for the callback method
+ * with a reference to the sender object.
+ * 
  * @author Andrea Funto'
  */
-public class PatternsLibrary extends Library {
-		
-	/**
-	 * Returns the value of the give trait.
-	 * 
-	 * @param trait
-	 *   the trait to retrieve.
-	 * @return
-	 *   the value of the trait.
-	 */
-	public static String valueOf(Traits trait) {
-		synchronized(PatternsLibrary.class) {
-			if(singleton == null) {
-				singleton = new PatternsLibrary();
-			}}
-		return singleton.get(trait);
-	}
+public abstract class DefaultBusObserver<M> implements BusObserver<M> {
 	
 	/**
-	 * The name of the library.
+	 * @see org.dihedron.patterns.bus.BusObserver#onMessage(java.lang.Object, java.lang.Object)
 	 */
-	private static final String LIBRARY_NAME = "pattern";
-	
-	/**
-	 * The single instance.
-	 */
-	private static PatternsLibrary singleton = new PatternsLibrary();
-
-	/**
-	 * Constructor.
-	 */
-	private PatternsLibrary() {
-		super(LIBRARY_NAME);
+	public void onMessage(Object sender, M message) {
+		onMessage(message);
 	}
-}
+}	

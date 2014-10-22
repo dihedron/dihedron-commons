@@ -19,20 +19,34 @@
 
 package org.dihedron.patterns.bus;
 
-import org.dihedron.patterns.bus.messages.BusMessage;
-
-public interface BusObserver {
+/**
+ * The base interface for all bus observers.
+ * 
+ * @author Andrea Funto'
+ */
+public interface BusObserver<M> {
 	
 	/**
 	 * A method invoked whenever the a new message is available on the internal 
 	 * message bus; this way of dispatching information around caters for loose
-	 * coupling among back-end worker components and front-end components; all
-	 * information regarding the model is passed around through the model itself, 
-	 * which implements another for of observer pattern: registering one's 
-	 * component as a bus listener is  a way to be informed of processing events.
+	 * coupling among components. This default implementation simply ignores the 
+	 * sender parameters; subclasses can always choose to override this method if 
+	 * they feel they need to be notified about the actual sender object.
+	 * 
+	 * @param sender
+	 *   the message sender; could be null if no sender was specified.
+	 * @param message
+	 *   the actual message.
+	 */
+	void onMessage(Object sender, M message);
+	
+	/**
+	 * A method invoked whenever the a new message is available on the internal 
+	 * message bus; this way of dispatching information around caters for loose
+	 * coupling among components.
 	 * 
 	 * @param message
-	 *   the actual event.
+	 *   the actual message.
 	 */
-	void onMessage(BusMessage event);
+	void onMessage(M message);
 }	
