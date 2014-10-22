@@ -74,9 +74,9 @@ public class BusTest {
 	}
 
 	/**
-	 * The bus under test.
+	 * The synchronous bus under test.
 	 */
-	private Bus<TestMessage> bus;
+	private Bus<TestMessage> synchronous;
 	
 	private TestObserver observer1;
 	private TestObserver observer2;
@@ -86,34 +86,35 @@ public class BusTest {
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
-		bus = new Bus<>();
+	public void setUp() throws Exception {		
 		observer1 = new TestObserver(TestMessage.MESSAGE1);
 		observer2 = new TestObserver(TestMessage.MESSAGE2);
 		observer3 = new TestObserver(TestMessage.MESSAGE3);
-		bus.addObserver(observer1);
-		bus.addObserver(observer2);
-		bus.addObserver(observer3);
+		
+		synchronous = new SynchronousBus<>();
+		synchronous.addObserver(observer1);
+		synchronous.addObserver(observer2);
+		synchronous.addObserver(observer3);
 	}
 
 	/**
 	 * Test method for {@link org.dihedron.patterns.bus.Bus#broadcast(java.lang.Enum)}.
 	 */
 	@Test
-	public void testBroadcastM() {
+	public void testSynchronousBroadcastMessage() {
 		
 		observer1.resetCount();
 		observer2.resetCount();
 		observer3.resetCount();
 				
 		for(int i = 0; i < 10; ++i) {
-			bus.broadcast(TestMessage.MESSAGE1, i);
+			synchronous.broadcast(TestMessage.MESSAGE1, i);
 		}
 		for(int i = 0; i < 20; ++i) {
-			bus.broadcast(TestMessage.MESSAGE2, i, "a string");
+			synchronous.broadcast(TestMessage.MESSAGE2, i, "a string");
 		}
 		for(int i = 0; i < 30; ++i) {
-			bus.broadcast(TestMessage.MESSAGE3, i, new Object());
+			synchronous.broadcast(TestMessage.MESSAGE3, i, new Object());
 		}
 		
 		assertTrue(observer1.getCount() == 10);
@@ -125,19 +126,19 @@ public class BusTest {
 	 * Test method for {@link org.dihedron.patterns.bus.Bus#broadcast(java.lang.Object, java.lang.Enum)}.
 	 */
 	@Test
-	public void testBroadcastObjectM() {
+	public void testSynchronousBroadcastSenderAndMessage() {
 		observer1.resetCount();
 		observer2.resetCount();
 		observer3.resetCount();
 				
 		for(int i = 0; i < 10; ++i) {
-			bus.broadcast(this, TestMessage.MESSAGE1, i);
+			synchronous.broadcast(this, TestMessage.MESSAGE1, i, i, i);
 		}
 		for(int i = 0; i < 20; ++i) {
-			bus.broadcast(this, TestMessage.MESSAGE2);
+			synchronous.broadcast(this, TestMessage.MESSAGE2, i, i, i);
 		}
 		for(int i = 0; i < 30; ++i) {
-			bus.broadcast(this, TestMessage.MESSAGE3, i);
+			synchronous.broadcast(this, TestMessage.MESSAGE3, i, i, i);
 		}
 		
 		assertTrue(observer1.getCount() == 10);

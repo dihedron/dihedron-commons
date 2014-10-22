@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * 
  *  @author Andrea Funto'
  */
-public class Bus<M> {
+public abstract class Bus<M> {
 	
 	/** 
 	 * The logger. 
@@ -43,7 +43,7 @@ public class Bus<M> {
 	/** 
 	 * The message bus observers. 
 	 */
-	private Set<BusObserver<M>> observers = Collections.synchronizedSet(new HashSet<BusObserver<M>>());
+	protected Set<BusObserver<M>> observers = Collections.synchronizedSet(new HashSet<BusObserver<M>>());
 
 	/**
 	 * Constructor.
@@ -108,14 +108,5 @@ public class Bus<M> {
 	 * @param args
 	 *   a set of optional untyped parameters.
 	 */
-	public Bus<M> broadcast(Object sender, M message, Object ... args) {
-		if(message != null) {			
-			logger.trace("'{}' dispatching message '{}' with arguments '{}'", sender != null ? sender : "<static>", message, args != null ? args : "[]");
-			for(BusObserver<M> observer : observers) {
-				logger.trace("dispatching to observer '{}'...", observer.getClass().getSimpleName()); 
-				observer.onMessage(sender, message, args);
-			}
-		}
-		return this;
-	}	
+	public abstract Bus<M> broadcast(Object sender, M message, Object ... args);
 }
