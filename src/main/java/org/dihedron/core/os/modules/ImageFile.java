@@ -1,24 +1,14 @@
 /**
- * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved.
- * 
- * This file is part of the Dihedron Common Utilities library ("Commons").
- *
- * "Commons" is free software: you can redistribute it and/or modify it under 
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation, either version 3 of the License, or (at your option) 
- * any later version.
- *
- * "Commons" is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License 
- * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
- */
+ * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
+ */ 
+
 package org.dihedron.core.os.modules;
 
 import java.io.File;
+
+import org.dihedron.core.os.Addressing;
+import org.dihedron.core.os.Endianness;
+import org.dihedron.core.os.OperatingSystem;
 
 /**
  * A class representing an image file.
@@ -73,179 +63,7 @@ public class ImageFile {
 		 */
 		private String label;		
 	}
-	
-	/**
-	 * The number of bits used for internal memory addressing by the processor.
-	 *  
-	 * @author Andrea Funto'
-	 */
-	public enum Addressing {
-		
-		/**
-		 * Memory addresses are 32-bits wide. 
-		 */
-		SIZE_32("32 bits"),
-		
-		/**
-		 * Memory addresses are 64-bits wide.
-		 */
-		SIZE_64("64 bits");
-		
-		/**
-		 * Constructor.
-		 *
-		 * @param label
-		 *   a user-friendly label for the number of bits.
-		 */
-		private Addressing(String label) {
-			this.label = label;
-		}
-		
-		/**
-		 * Returns a user-friendly representation of the number of bits.
-		 * 
-		 * @see java.lang.Enum#toString()
-		 */
-		public String toString() {
-			return label;
-		}
-		
-		/**
-		 * A user-friendly label for the number of bits.
-		 */
-		private String label;
-	}
-	
-	/**
-	 * The "endianness" of the architecture.
-	 * 
-	 * @author Andrea Funto'
-	 */
-	public enum Endianness {
-		
-		/**
-		 * The architecture is little-endian.
-		 */
-		LITTLE_ENDIAN("little endian"),
-		
-		/**
-		 * the architecture is big-endian.
-		 */
-		BIG_ENDIAN("big endian");
-		
-		/**
-		 * Constructor.
-		 *
-		 * @param label
-		 *   a user-friendly label for the endianness.
-		 */
-		private Endianness(String label) {
-			this.label = label;
-		}
-		
-		/**
-		 * Returns a user-friendly representation of the endianness.
-		 * 
-		 * @see java.lang.Enum#toString()
-		 */
-		public String toString() {
-			return label;
-		}
-		
-		/**
-		 * A user-friendly label for the endianness.
-		 */
-		private String label;		
-	}
-	
-	/**
-	 * The set of supported operating systems.
-	 * 
-	 * @author Andrea Funto'
-	 */
-	public enum OperatingSystem {
-		/**
-		 * The UNIX System-V operating system; this constants is often
-		 * used when no further indication is provided (e.g it may be
-		 * used on Linux machines).
-		 */
-		SYSTEM_V("System V"),
-		
-		/**
-		 * The HP-UX operating system.
-		 */
-		HPUX("HP-UX"),
-		
-		/**
-		 * The NetBSD operating system.
-		 */
-		NETBSD("NetBSD"),
-		
-		/**
-		 * The Linux operating system.
-		 */
-		LINUX("Linux"),
-		
-		/**
-		 * The Oracle/Sun Solaris operating system.
-		 */
-		SOLARIS("Sun Solaris"),
-		
-		/**
-		 * The IBM AIX operating system.
-		 */
-		AIX("IBM AIX"),
-		
-		/**
-		 * The Irix operating system.
-		 */
-		IRIX("Irix"),
-		
-		/**
-		 * The FreeBSD operating system.
-		 */
-		FREEBSD("FreeBSD"),
-		
-		/**
-		 * The OpenBSD operating system.
-		 */
-		OPENBSD("OpenBSD"),
-		
-		/**
-		 * The Microsoft Windows operating system.
-		 */
-		WINDOWS("Microsoft Windows"),
-		
-		/**
-		 * The Apple MacOS X operating system.
-		 */
-		MACOSX("Apple MacOS X");
-		
-		/**
-		 * Constructor.
-		 *
-		 * @param label
-		 *   the textual label for the given operating system.
-		 */
-		private OperatingSystem(String label) {
-			this.label = label;
-		}
-		
-		/**
-		 * Returns the enumeration value as a string (its associated label).
-		 * 
-		 * @see java.lang.Enum#toString()
-		 */
-		public String toString() {
-			return this.label;
-		}
-		
-		/**
-		 * A textual laabel for the operating system.
-		 */
-		private String label;
-	}
-	
+				
 	/**
 	 * The target instruction set for the binary module.
 	 *  

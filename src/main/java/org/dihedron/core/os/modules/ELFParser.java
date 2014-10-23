@@ -1,21 +1,7 @@
 /**
- * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved.
- * 
- * This file is part of the Dihedron Common Utilities library ("Commons").
- *
- * "Commons" is free software: you can redistribute it and/or modify it under 
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation, either version 3 of the License, or (at your option) 
- * any later version.
- *
- * "Commons" is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License 
- * along with "Commons". If not, see <http://www.gnu.org/licenses/>.
- */
+ * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
+ */ 
+
 package org.dihedron.core.os.modules;
 
 import java.io.File;
@@ -25,11 +11,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import org.dihedron.core.formatters.BitMask;
-import org.dihedron.core.os.modules.ImageFile.Addressing;
-import org.dihedron.core.os.modules.ImageFile.Endianness;
+import org.dihedron.core.os.Addressing;
+import org.dihedron.core.os.Endianness;
+import org.dihedron.core.os.OperatingSystem;
 import org.dihedron.core.os.modules.ImageFile.Format;
 import org.dihedron.core.os.modules.ImageFile.InstructionSet;
-import org.dihedron.core.os.modules.ImageFile.OperatingSystem;
 import org.dihedron.core.os.modules.ImageFile.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

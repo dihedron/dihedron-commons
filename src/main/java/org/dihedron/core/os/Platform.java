@@ -1,28 +1,17 @@
 /**
- * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved.
- * 
- * This file is part of the Crypto library ("Crypto").
- *
- * Crypto is free software: you can redistribute it and/or modify it under 
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation, either version 3 of the License, or (at your option) 
- * any later version.
- *
- * Crypto is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Crypto. If not, see <http://www.gnu.org/licenses/>.
- */
+ * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
+ */ 
+
 package org.dihedron.core.os;
 
 /**
- * An enumeration of all (potentially) supported platforms; on 32 bits JVM 
- * the platform will always be the 32 bits flavor, no matter whether the real
- * operating ssystem is running on 32 or 64 bits. Thus it is safe to assume
- * the native operations (e.g. loading a native library into the JVM)  
+ * An enumeration of all (potentially) supported Java Virtual Machine platforms; 
+ * on 32 bits JVMs the platform will always be the 32 bits flavour, no matter 
+ * whether the underlying operating system is running on 32 or 64 bits. Thus it 
+ * is safe to assume the native operations (e.g. loading a native library into 
+ * the JVM) will succeed if the address size of the binary module to load matches 
+ * that of the platform, not that of the underlying operating system (e.g. loading
+ * a 32 bits DLL on a 32 bits JVM running on Windows 64 bits will succeed).  
  * 
  * @author Andrea Funto'
  */
@@ -32,45 +21,42 @@ public enum Platform {
 	 * 32-bits Windows, or 32-bits JVM running on 64-bits Windows
 	 * operating systems.
 	 */
-	WINDOWS_32("win32", "Windows", 32),
+	WINDOWS_32("win32", OperatingSystem.WINDOWS, Addressing.SIZE_32),
 	
 	/**
 	 * 64-bit Windows.
 	 */
-	WINDOWS_64("win64", "Windows", 64),  
+	WINDOWS_64("win64", OperatingSystem.WINDOWS, Addressing.SIZE_64),  
 	
 	/**
-	 * 32-bit Linux, or 32-bit JVM running on 64-bits Linux
-	 * operating systems.
+	 * 32-bit Linux, or 32-bit JVM running on 64-bits Linux operating systems.
 	 */
-	LINUX_32("lnx32", "Linux", 32),
+	LINUX_32("lnx32", OperatingSystem.LINUX, Addressing.SIZE_32),
 	
 	/**
 	 * 64-bit Linux.
 	 */
-	LINUX_64("lnx64", "Linux", 64),
+	LINUX_64("lnx64", OperatingSystem.LINUX, Addressing.SIZE_64),
 	
 	/**
-	 * 32-bit MacOS X, or 32-bit JVM running on 64-bits MacOS X
-	 * operating systems.
+	 * 32-bit MacOS X, or 32-bit JVM running on 64-bits MacOS X operating systems.
 	 */	
-	MACOSX_32("mac32", "MacOS-X", 32),
+	MACOSX_32("mac32", OperatingSystem.MACOSX, Addressing.SIZE_32),
 	
 	/**
 	 * 64-bit MacOS X.
 	 */
-	MACOSX_64("mac64", "MacOS-X", 64),
+	MACOSX_64("mac64", OperatingSystem.MACOSX, Addressing.SIZE_64),
 	
 	/**
-	 * 32-bit Generic UNIX, or 32-bit JVM running on 64-bits UNIX
-	 * operating systems.
+	 * 32-bit Generic UNIX, or 32-bit JVM running on 64-bits UNIX operating systems.
 	 */
-	UNIX_32("unix32", "UNIX", 32),
+	UNIX_32("unix32", OperatingSystem.UNIX, Addressing.SIZE_32),
 	
 	/**
 	 * 64-bit generic UNIX.
 	 */
-	UNIX_64("unix64", "UNIX", 64);
+	UNIX_64("unix64", OperatingSystem.UNIX, Addressing.SIZE_64);
 	
 	/**
 	 * Tries to detect the current operating infrastructure. Note that this
@@ -143,13 +129,13 @@ public enum Platform {
 	}
 	
 	/**
-	 * Returns the label for the current operating system.
+	 * Returns the current operating system.
 	 * 
 	 * @return
-	 *   the label for the current operating system.
+	 *   the current operating system.
 	 */
-	public String getName() {
-		return this.name;
+	public OperatingSystem getOperatingSystem() {
+		return this.operatingSystem;
 	}
 	
 	/**
@@ -160,8 +146,8 @@ public enum Platform {
 	 * @return
 	 *   the number of bits used by the JVM for memory addresses.
 	 */
-	public int getArchitecture() {
-		return this.architecture;
+	public Addressing getAddressing() {
+		return this.addressing;
 	}
 	
 	/**
@@ -169,11 +155,15 @@ public enum Platform {
 	 * 
 	 * @param code
 	 *   a short string representing the platform.
+	 * @param operatingSystem
+	 *   the operating system flavour.
+	 * @param addressing
+	 *   the size of the memory addresses (32 or 64 bits).
 	 */
-	private Platform(String code, String name, int architecture) {
+	private Platform(String code, OperatingSystem operatingSystem, Addressing addressing) {
 		this.code = code;
-		this.name = name;
-		this.architecture = architecture;
+		this.operatingSystem = operatingSystem;
+		this.addressing = addressing;
 	}
 	
 	/**
@@ -184,10 +174,10 @@ public enum Platform {
 	/**
 	 * The label for the operating system (as seen by the JVM).
 	 */
-	private String name;
+	private OperatingSystem operatingSystem;
 	
 	/**
 	 * The number of bits used by the JVM architecture (32 or 64).
 	 */
-	private int architecture;
+	private Addressing addressing;
 }
