@@ -40,7 +40,7 @@ public class ObservableTest {
 	private Observable<String> synchronous = new SynchronousObservable<>();
 	
 	/**
-	 * The asynchornous observer.
+	 * The asynchronous observer.
 	 */
 	private Observable<String> asynchronous = new AsynchronousObservable<>();
 	
