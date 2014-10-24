@@ -36,7 +36,7 @@
 	
 	<licenses>
 		<license>
-			<comments>Copyright (C) Andrea Funtò 2011-2014 - All rights reserved</comments>
+			<comments>Copyright (C) Andrea Funtò 2012-2014 - All rights reserved</comments>
 			<name>GNU Lesser General Public License ver. 3 or later</name>
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
@@ -73,7 +73,7 @@
 				<configuration>
 					<bottom>
             <![CDATA[
-              Copyright &copy; 2011-2014 Andrea Funt&ograve;. See <a href="{@docRoot}/doc-files/license.html">here</a> for terms and conditions.
+              Copyright &copy; 2012-2014 Andrea Funt&ograve;. See <a href="{@docRoot}/doc-files/license.html">here</a> for terms and conditions.
             ]]>
 					</bottom>
 				</configuration>

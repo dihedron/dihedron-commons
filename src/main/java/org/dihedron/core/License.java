@@ -142,7 +142,7 @@ public @interface License {
      * @return
      *   the copyright holder.
      */
-    String copyright() default "Copyright (c) 2011-2014 Andrea Funto'";
+    String copyright() default "Copyright (c) 2012-2014 Andrea Funto'";
     
     /**
      * The type of license, among the {@link License.Type} enumeration values.
