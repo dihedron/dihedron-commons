@@ -8,11 +8,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.junit.Test;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class FileFinderTest {
 
 	@Test

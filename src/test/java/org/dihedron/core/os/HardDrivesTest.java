@@ -5,6 +5,7 @@ package org.dihedron.core.os;
 
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class HardDrivesTest {
 	/**
 	 * The logger.

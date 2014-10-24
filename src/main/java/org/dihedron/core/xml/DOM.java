@@ -8,6 +8,7 @@ package org.dihedron.core.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,6 +17,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Andrea Funto'
  */
+@License
 public final class DOM {
 	
 	public static List<Element> getChildrenByTagName(Document document, String name) {

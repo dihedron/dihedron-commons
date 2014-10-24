@@ -4,10 +4,13 @@
 
 package org.dihedron.core.library;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public enum Traits {
 	
 	/**

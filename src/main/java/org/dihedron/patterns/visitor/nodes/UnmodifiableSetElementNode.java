@@ -5,11 +5,13 @@ package org.dihedron.patterns.visitor.nodes;
 
 import java.util.Set;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.visitor.VisitorException;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class UnmodifiableSetElementNode extends AbstractNode {
 	
 	/**

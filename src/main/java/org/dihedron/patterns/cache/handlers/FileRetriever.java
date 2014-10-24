@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.cache.CacheException;
 import org.dihedron.patterns.cache.CacheMissHandler;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class FileRetriever implements CacheMissHandler {
 	
 	/** 

@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.experimental.pipeline.impl;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.experimental.pipeline.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class Log<T> implements Filter<T> {
 	
 	/**

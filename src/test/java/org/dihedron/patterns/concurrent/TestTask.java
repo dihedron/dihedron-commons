@@ -3,6 +3,7 @@
  */ 
 package org.dihedron.patterns.concurrent;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class TestTask implements Task<String> {
 	
 	/**

@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dihedron.core.License;
+
 /**
  * @author Andrea Funto'
  */
+@License
 public class $<S> {
 
 	/**

@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import org.dihedron.core.License;
 import org.dihedron.core.strings.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class Reflector {
 
 	/**

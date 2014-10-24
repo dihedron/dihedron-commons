@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.dihedron.core.streams.Streams;
 import org.dihedron.patterns.cache.CacheException;
@@ -21,6 +22,7 @@ import org.junit.Test;
 /**
  * @author Andrea Funto'
  */
+@License
 public class MemoryStorageTest {
 
 	/**

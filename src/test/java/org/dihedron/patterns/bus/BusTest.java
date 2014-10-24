@@ -5,6 +5,7 @@ package org.dihedron.patterns.bus;
 
 import static org.junit.Assert.assertTrue;
 
+import org.dihedron.core.License;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class BusTest {
 	
 	private enum TestMessage {

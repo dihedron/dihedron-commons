@@ -9,12 +9,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class TypedVector<E> extends java.util.Vector<E> {
 	/**
 	 * Serial version id.

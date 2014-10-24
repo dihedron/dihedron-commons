@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 import javax.ejb.AsyncResult;
 import javax.ejb.Stateless;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.engine.ActivityCallable;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
 import org.dihedron.patterns.activities.types.ActivityData;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Funto'
  */
 @Stateless
+@License
 public class AsynchronousBean {
 	
 	private final static Logger logger = LoggerFactory.getLogger(AsynchronousBean.class);

@@ -4,12 +4,15 @@
 
 package org.dihedron.patterns.activities.engine;
 
+import org.dihedron.core.License;
+
 /**
  * An enumeration representing how the activity should behave with respect 
  * to its sub-activities completion.
  * 
  * @author Andrea Funto'
  */
+@License
 public enum WaitMode {
 	/**
 	 * Wait for all sub-activities to complete before returning.

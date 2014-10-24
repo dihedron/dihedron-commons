@@ -6,9 +6,12 @@ package org.dihedron.core.values;
 
 import java.awt.event.KeyEvent;
 
+import org.dihedron.core.License;
+
 /**
  * @author Andrea Funto'
  */
+@License
 public final class Characters {
 	
 	/**

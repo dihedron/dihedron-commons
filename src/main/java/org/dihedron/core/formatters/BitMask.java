@@ -4,10 +4,13 @@
 
 package org.dihedron.core.formatters;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public final class BitMask {
 
 	/**

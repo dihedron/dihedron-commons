@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.dihedron.core.streams.Streams;
 import org.dihedron.patterns.cache.CacheException;
@@ -20,6 +21,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@License
 public class DiskStorageTest {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DiskStorageTest.class);

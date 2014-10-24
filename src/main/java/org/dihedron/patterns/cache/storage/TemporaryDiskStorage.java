@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.dihedron.patterns.cache.CacheException;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class TemporaryDiskStorage extends AbstractStorage {
 	
 	/** 

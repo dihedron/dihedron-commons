@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.cache.handlers.FileRetriever;
 import org.dihedron.patterns.cache.storage.MemoryStorage;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class CacheTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(CacheTest.class);

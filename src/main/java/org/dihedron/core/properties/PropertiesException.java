@@ -4,12 +4,15 @@
 
 package org.dihedron.core.properties;
 
+import org.dihedron.core.License;
+
 
 /**
  * Class of exceptions thrown by the {@code Properties} methods.
  * 
  * @author Andrea Funto'
  */
+@License
 public class PropertiesException extends Exception {
 
 	/**

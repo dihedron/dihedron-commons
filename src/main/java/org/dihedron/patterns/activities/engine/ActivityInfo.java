@@ -6,6 +6,7 @@ package org.dihedron.patterns.activities.engine;
 
 import java.io.Serializable;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.Activity;
 import org.dihedron.patterns.activities.ActivityContext;
 import org.dihedron.patterns.activities.types.ActivityData;
@@ -13,6 +14,7 @@ import org.dihedron.patterns.activities.types.ActivityData;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ActivityInfo implements Serializable {
 
 	/**

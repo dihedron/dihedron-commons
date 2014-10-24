@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 import org.dihedron.core.filters.compound.And;
 import org.dihedron.core.filters.compound.Not;
@@ -20,6 +21,7 @@ import org.dihedron.core.reflection.filters.IsStatic;
 /**
  * @author Andrea Funto'
  */
+@License
 public final class Reflections {
 
 	/**

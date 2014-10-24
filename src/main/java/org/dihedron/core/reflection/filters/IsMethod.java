@@ -7,11 +7,13 @@ package org.dihedron.core.reflection.filters;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class IsMethod<T extends Member> extends Filter<T> {
 
 	/**

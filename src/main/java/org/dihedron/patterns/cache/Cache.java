@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.dihedron.core.streams.Streams;
 import org.dihedron.core.strings.Strings;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class Cache implements Iterable<String>{
 	
 	/** 

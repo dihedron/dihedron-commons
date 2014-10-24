@@ -4,11 +4,14 @@
 
 package org.dihedron.core.os;
 
+import org.dihedron.core.License;
+
 /**
  * The number of bits used for internal memory addressing by the processor.
  * 
  * @author Andrea Funto'
  */
+@License
 public enum Addressing {
 
 	/**

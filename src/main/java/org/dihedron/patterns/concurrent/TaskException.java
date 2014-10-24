@@ -4,10 +4,13 @@
 
 package org.dihedron.patterns.concurrent;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class TaskException extends Exception {
 	/**
 	 * Serial version id.

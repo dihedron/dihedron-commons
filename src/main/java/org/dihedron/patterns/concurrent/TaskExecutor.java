@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class TaskExecutor<T> {
 	
 	/**

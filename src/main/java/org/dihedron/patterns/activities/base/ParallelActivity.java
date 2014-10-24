@@ -4,21 +4,22 @@
 
 package org.dihedron.patterns.activities.base;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.ActivityContext;
 import org.dihedron.patterns.activities.engine.ActivityEngineFactory;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
-import org.dihedron.patterns.activities.types.ActivityData;
 import org.dihedron.patterns.activities.types.Scalar;
-import org.dihedron.patterns.activities.types.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class ParallelActivity extends CompoundActivity {
 	
-//	private class DefaultAggregator extends AbstractAggregator {
+//@License
+//private class DefaultAggregator extends AbstractAggregator {
 //
 //		private ActivityData data;
 //		

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.observer.Observable;
 import org.dihedron.patterns.observer.Observer;
 
@@ -18,6 +19,7 @@ import org.dihedron.patterns.observer.Observer;
  * 
  * @author Andrea Funto'
  */
+@License
 public class AsynchronousObservable<E> implements Observable<E> {
 
 	public static final int DEFAULT_THREADPOOL_SIZE = 4; 
@@ -87,7 +89,8 @@ public class AsynchronousObservable<E> implements Observable<E> {
 	 * 
 	 * @author Andrea Funto'
 	 */
-	private class Handler implements Runnable {
+	@License
+private class Handler implements Runnable {
 		
 		/**
 		 * The source of the event.

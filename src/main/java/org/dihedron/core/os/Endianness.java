@@ -4,12 +4,15 @@
 
 package org.dihedron.core.os;
 
+import org.dihedron.core.License;
+
 
 /**
  * The "endianness" of the architecture.
  * 
  * @author Andrea Funto'
  */
+@License
 public enum Endianness {
 	
 	/**

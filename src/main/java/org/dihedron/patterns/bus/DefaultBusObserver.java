@@ -5,12 +5,15 @@
 
 package org.dihedron.patterns.bus;
 
+import org.dihedron.core.License;
+
 /**
  * A bus observer that provides a default implementation for the callback method
  * with a reference to the sender object.
  * 
  * @author Andrea Funto'
  */
+@License
 public abstract class DefaultBusObserver<M> implements BusObserver<M> {
 
 	/**

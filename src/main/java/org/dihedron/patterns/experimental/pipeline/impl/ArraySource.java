@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.experimental.pipeline.impl;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.experimental.pipeline.PipelineException;
 import org.dihedron.patterns.experimental.pipeline.ResettableProducer;
 
@@ -11,6 +12,7 @@ import org.dihedron.patterns.experimental.pipeline.ResettableProducer;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ArraySource<T> implements ResettableProducer<T>  {
 
 	/**

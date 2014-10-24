@@ -4,10 +4,13 @@
 
 package org.dihedron.patterns.experimental.pipeline;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public abstract class Linkable<T> {
 	
 	/**

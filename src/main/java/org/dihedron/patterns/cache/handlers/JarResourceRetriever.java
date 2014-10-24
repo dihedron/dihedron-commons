@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
+s * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
  */ 
 
 
@@ -7,6 +7,7 @@ package org.dihedron.patterns.cache.handlers;
 
 import java.io.InputStream;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.cache.CacheException;
 import org.dihedron.patterns.cache.CacheMissHandler;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class JarResourceRetriever implements CacheMissHandler {
 	
 	/** 

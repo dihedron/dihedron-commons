@@ -3,6 +3,8 @@
  */ 
 package org.dihedron.patterns;
 
+import org.dihedron.core.License;
+
 
 /**
  * Provides minimal abstraction over the Singleton pattern. It's not possible to 
@@ -11,6 +13,7 @@ package org.dihedron.patterns;
  *  
  * @author Andrea Funto'
  */
+@License
 public final class Singleton {
 
 	/**

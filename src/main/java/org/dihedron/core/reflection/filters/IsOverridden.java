@@ -8,11 +8,13 @@ import java.lang.reflect.Member;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class IsOverridden<T extends Member> extends Filter<T> {
 
 	/**

@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.activities.base;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.ActivityContext;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
 import org.dihedron.patterns.activities.types.ActivityData;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public abstract class AbstractSplitter extends AbstractActivity {
 	
 	/**

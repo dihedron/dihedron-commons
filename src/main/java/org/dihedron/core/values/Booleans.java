@@ -4,6 +4,7 @@
 
 package org.dihedron.core.values;
 
+import org.dihedron.core.License;
 import org.dihedron.core.strings.Strings;
 
 
@@ -12,6 +13,7 @@ import org.dihedron.core.strings.Strings;
  * 
  * @author Andrea Funto'
  */
+@License
 public final class Booleans {
 	
 	/**

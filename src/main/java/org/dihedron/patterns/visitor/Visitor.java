@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.visitor.factories.ModifiableNodeFactory;
 import org.dihedron.patterns.visitor.factories.UnmodifiableNodeFactory;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public final class Visitor implements Iterable<Node> {
 	
 	/**

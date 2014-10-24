@@ -8,6 +8,7 @@ package org.dihedron.patterns.cache.handlers;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.cache.CacheException;
 import org.dihedron.patterns.cache.CacheMissHandler;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class InMemoryByteArrayRetriever implements CacheMissHandler {
 
 	/** 

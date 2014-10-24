@@ -6,10 +6,13 @@ package org.dihedron.patterns.cache;
 
 import java.util.List;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class CacheException extends Exception {
 	
 	/**

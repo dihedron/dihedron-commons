@@ -7,6 +7,7 @@ package org.dihedron.patterns.activities.engine;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
 import org.dihedron.patterns.activities.types.ActivityData;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ActivityCallable implements Callable<ActivityData> {
 	
 	/**

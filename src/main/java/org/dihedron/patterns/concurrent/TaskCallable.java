@@ -8,6 +8,7 @@ package org.dihedron.patterns.concurrent;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
-class TaskCallable<T> implements Callable<T> {
+@License
+public class TaskCallable<T> implements Callable<T> {
 	
 	/**
 	 * The constant representing an unidentified task;

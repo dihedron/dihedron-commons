@@ -3,6 +3,7 @@
  */ 
 package org.dihedron;
 
+import org.dihedron.core.License;
 import org.dihedron.core.library.Library;
 import org.dihedron.core.library.Traits;
 
@@ -10,6 +11,7 @@ import org.dihedron.core.library.Traits;
 /**
  * @author Andrea Funto'
  */
+@License
 public class Commons extends Library {
 		
 	/**

@@ -3,6 +3,7 @@
  */ 
 package org.dihedron.patterns.observer.impl;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.observer.Observable;
 import org.dihedron.patterns.observer.Observer;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ObservableTest {
 	/**
 	 * The logger.
@@ -29,6 +31,7 @@ public class ObservableTest {
 	 */
 	private Observable<String> asynchronous = new AsynchronousObservable<>();
 	
+	@License
 	class TestObserver implements Observer<String> {
 
 		private int id;

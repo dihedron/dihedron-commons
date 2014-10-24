@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dihedron.core.License;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +19,11 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class VisitorTest {
 	
 	@SuppressWarnings("unused")
+	@License
 	private class MyInnerBean {
 		
 		private int number;
@@ -60,6 +63,7 @@ public class VisitorTest {
 	}
 	
 	@SuppressWarnings("unused")
+	@License
 	private class MyOuterBean {
 		
 		protected String p1 = "ciao";
@@ -89,7 +93,8 @@ public class VisitorTest {
 		}
 	}
 	
-	public class MySimpleTestBean {
+	@License
+public class MySimpleTestBean {
 		
 		private String myString = "before";
 		private int myInt = 5;

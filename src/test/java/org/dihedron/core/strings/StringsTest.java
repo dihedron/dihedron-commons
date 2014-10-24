@@ -6,12 +6,14 @@ package org.dihedron.core.strings;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.dihedron.core.License;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class StringsTest {
 
 	/**

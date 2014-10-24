@@ -6,9 +6,7 @@ package org.dihedron.core.os.modules;
 import java.io.File;
 import java.io.IOException;
 
-import org.dihedron.core.os.modules.ImageFile;
-import org.dihedron.core.os.modules.ImageFileParser;
-import org.dihedron.core.os.modules.ImageParseException;
+import org.dihedron.core.License;
 import org.dihedron.core.os.modules.ImageFile.Format;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,6 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ImageParserTest {
 	/**
 	 * The logger.

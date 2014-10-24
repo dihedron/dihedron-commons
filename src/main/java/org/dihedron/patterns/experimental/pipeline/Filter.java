@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.experimental.pipeline;
 
+import org.dihedron.core.License;
+
 
 /**
  * A consumer that does not change the type of elements it processes, and simply 
@@ -12,6 +14,7 @@ package org.dihedron.patterns.experimental.pipeline;
  * 
  * @author Andrea Funto'
  */
+@License
 public interface Filter<T> extends Consumer<T, T> {
 
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.naming.Context;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.ActivityContext;
 import org.dihedron.patterns.activities.base.Transformation;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class LdapAdapter extends Transformation {
 	
 	/**

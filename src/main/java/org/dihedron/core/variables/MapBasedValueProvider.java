@@ -6,9 +6,12 @@ package org.dihedron.core.variables;
 
 import java.util.Map;
 
+import org.dihedron.core.License;
+
 /**
  * @author Andrea Funto'
  */
+@License
 public class MapBasedValueProvider implements ValueProvider {
 
 	/**

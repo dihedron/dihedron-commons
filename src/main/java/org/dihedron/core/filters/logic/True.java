@@ -4,11 +4,13 @@
 
 package org.dihedron.core.filters.logic;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class True<T> extends Filter<T> {
 
 	/**

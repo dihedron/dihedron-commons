@@ -5,6 +5,8 @@
 
 package org.dihedron.core.variables;
 
+import org.dihedron.core.License;
+
 
 /**
  * This value provider can be used as a fallback mechanism to replace unbound 
@@ -12,6 +14,7 @@ package org.dihedron.core.variables;
  *  
  * @author Andrea Funto'
  */
+@License
 public class EmptyValueProvider implements ValueProvider {
 
 	/**

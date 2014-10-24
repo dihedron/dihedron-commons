@@ -4,10 +4,13 @@
 
 package org.dihedron.patterns.activities.exceptions;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class ActivityException extends Exception {
 
 	/**

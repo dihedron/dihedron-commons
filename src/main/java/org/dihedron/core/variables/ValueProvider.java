@@ -4,10 +4,13 @@
 
 package org.dihedron.core.variables;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public interface ValueProvider {
 	
 	/**

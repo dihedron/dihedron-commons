@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.activities;
 
+import org.dihedron.core.License;
+
 
 
 /**
@@ -12,6 +14,7 @@ package org.dihedron.patterns.activities;
  *  
  * @author Andrea Funto'
  */
+@License
 public interface ActivityContext {
 	
 	/**

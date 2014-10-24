@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.activities.base;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.Activity;
 import org.dihedron.patterns.activities.ActivityContext;
 import org.dihedron.patterns.activities.TypedVector;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class CompoundActivity extends Transformation {
 	
 	/**

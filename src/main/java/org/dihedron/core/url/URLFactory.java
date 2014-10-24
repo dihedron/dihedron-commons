@@ -8,6 +8,7 @@ package org.dihedron.core.url;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public final class URLFactory {
 	
 	/**

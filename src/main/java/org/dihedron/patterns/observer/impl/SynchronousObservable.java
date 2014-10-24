@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.observer.Observable;
 import org.dihedron.patterns.observer.Observer;
 
@@ -16,6 +17,7 @@ import org.dihedron.patterns.observer.Observer;
  * 
  * @author Andrea Funto'
  */
+@License
 public class SynchronousObservable<E> implements Observable<E> {
 
 	/**

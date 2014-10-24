@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.TypedVector;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
 import org.dihedron.patterns.activities.exceptions.TimedOutException;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
  *   
  * @author Andrea Funto'
  */
+@License
 public abstract class ParallelEngine implements ActivityEngine {
 	
 	/**

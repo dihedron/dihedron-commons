@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.functional;
 
+import org.dihedron.core.License;
+
 
 /**
  * The interface that must be implemented to iterate over collection elements in 
@@ -11,6 +13,7 @@ package org.dihedron.patterns.functional;
  * 
  * @author Andrea Funto'
  */
+@License
 public interface Fx<S, E> {
 	
 	/**

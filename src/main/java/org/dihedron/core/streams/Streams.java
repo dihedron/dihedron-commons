@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
+import org.dihedron.core.License;
 import org.dihedron.core.strings.Strings;
 import org.dihedron.core.url.URLFactory;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class Streams {
 	/**
 	 * The logger.

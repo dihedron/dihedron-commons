@@ -9,11 +9,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public interface Storage extends Iterable<String> {
 
 	/**

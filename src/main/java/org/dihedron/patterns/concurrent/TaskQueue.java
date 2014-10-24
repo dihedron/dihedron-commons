@@ -7,9 +7,11 @@ package org.dihedron.patterns.concurrent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@License
 public final class TaskQueue<T> {
 
 	/**

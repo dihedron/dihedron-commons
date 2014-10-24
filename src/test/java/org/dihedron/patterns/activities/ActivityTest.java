@@ -5,6 +5,7 @@ package org.dihedron.patterns.activities;
 
 import static org.junit.Assert.fail;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.base.ParallelActivity;
 import org.dihedron.patterns.activities.base.SequentialActivity;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ActivityTest {
 	/**
 	 * The logger.

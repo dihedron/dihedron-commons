@@ -9,6 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.dihedron.core.License;
+
 /**
  * Annotation used to identify objects that will be inspected during an object
  * visit; unless annotated, nested objects are treated as opaque types and not
@@ -40,6 +42,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME) 
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
+@License
 public @interface Visitable {
 		
 	/**

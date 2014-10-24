@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.activities;
 
+import org.dihedron.core.License;
+
 
 
 /**
@@ -11,6 +13,7 @@ package org.dihedron.patterns.activities;
  * 
  * @author Andrea Funto'
  */
+@License
 public class TypedScalar<E> implements Copyable {
 
 	/**

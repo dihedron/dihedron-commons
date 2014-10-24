@@ -6,12 +6,14 @@ package org.dihedron.core.reflection.filters;
 
 import java.lang.reflect.Member;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 import org.dihedron.core.regex.Regex;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class NameLike<T extends Member> extends Filter<T> {
 
 	/**

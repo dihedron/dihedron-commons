@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.activities.base;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.ActivityContext;
 import org.dihedron.patterns.activities.engine.SequentialEngine;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class SequentialActivity extends CompoundActivity {
 	/**
 	 * The logger.

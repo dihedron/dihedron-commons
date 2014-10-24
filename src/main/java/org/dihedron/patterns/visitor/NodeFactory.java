@@ -4,10 +4,11 @@
 package org.dihedron.patterns.visitor;
 
 import java.lang.reflect.Field;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.dihedron.core.License;
 
 /**
  * The common interface to all node factories; the factory will generate node 
@@ -16,6 +17,7 @@ import java.util.Set;
  * 
  * @author Andrea Funto'
  */
+@License
 public interface NodeFactory {
 	
 	/**

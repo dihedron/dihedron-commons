@@ -14,6 +14,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public final class Strings {
 	
 	/**

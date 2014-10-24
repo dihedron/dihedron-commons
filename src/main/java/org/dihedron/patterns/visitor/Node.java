@@ -3,12 +3,15 @@
  */ 
 package org.dihedron.patterns.visitor;
 
+import org.dihedron.core.License;
+
 
 /**
  * A class representing an object property, a node in the object graph.
  *  
  * @author Andrea Funto'
  */
+@License
 public interface Node {
 	
 	/**

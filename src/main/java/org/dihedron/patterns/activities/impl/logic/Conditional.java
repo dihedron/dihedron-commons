@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.activities.impl.logic;
 
+import org.dihedron.core.License;
 import org.dihedron.core.values.Booleans;
 import org.dihedron.patterns.activities.Activity;
 import org.dihedron.patterns.activities.ActivityContext;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
  *  
  * @author Andrea Funto'
  */
+@License
 public class Conditional extends Transformation {
 	
 	/**

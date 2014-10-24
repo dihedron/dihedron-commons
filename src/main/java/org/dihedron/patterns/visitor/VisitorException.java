@@ -4,10 +4,13 @@
 
 package org.dihedron.patterns.visitor;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class VisitorException extends Exception {
 	/**
 	 * Serial version id.

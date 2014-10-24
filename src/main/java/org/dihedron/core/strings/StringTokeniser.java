@@ -9,12 +9,15 @@ package org.dihedron.core.strings;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dihedron.core.License;
+
 /**
  * Provider a more flexible implementation of Java's StringTokenizer, allowing 
  * for other types of delimiters besides \r\t\n.
  * 
  * @author Andrea Funto'
  */
+@License
 public class StringTokeniser {
 		
 	/**

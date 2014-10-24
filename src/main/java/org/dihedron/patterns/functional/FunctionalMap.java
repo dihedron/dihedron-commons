@@ -8,12 +8,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.dihedron.core.License;
+
 /**
  * A map implementing and easy way to iterate over its elements in a 
  * pseudo-functional way.
  * 
  * @author Andrea Funto'
  */
+@License
 public class FunctionalMap<S, K, V> extends Functional<S> implements Map<K, V> {
 	
 	/**

@@ -3,10 +3,9 @@
  */ 
 package org.dihedron.core.library;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import org.dihedron.core.library.Traits;
-import org.dihedron.core.library.Library;
+import org.dihedron.core.License;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class LibraryTest {
 	/**
 	 * The logger.

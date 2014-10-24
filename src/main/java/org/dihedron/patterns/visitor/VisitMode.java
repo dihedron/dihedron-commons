@@ -3,12 +3,15 @@
  */ 
 package org.dihedron.patterns.visitor;
 
+import org.dihedron.core.License;
+
 /**
  * An enumeration representing whether the object properties must be accessed
  * in read only mode or in read/write mode.
  *  
  * @author Andrea Funto'
  */
+@License
 public enum VisitMode {
 	
 	/**

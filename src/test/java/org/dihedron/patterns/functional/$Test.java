@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.dihedron.patterns.functional.$;
-import org.dihedron.patterns.functional.Fx;
+import org.dihedron.core.License;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class $Test {
 	/**
 	 * The logger.
@@ -32,7 +32,8 @@ public class $Test {
 	
 	private final static int EVEN_TEST_INT = 2 * TEST_INT;
 	
-	private class Counters {
+	@License
+private class Counters {
 		
 		private int even = 0;
 		private int odd = 0;

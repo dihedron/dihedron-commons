@@ -5,12 +5,15 @@
 
 package org.dihedron.core.reflection;
 
+import org.dihedron.core.License;
+
 
 /**
  * Class of exceptions thrown by the {@code Reflector}.
  * 
  * @author Andrea Funto'
  */
+@License
 public class ReflectorException extends Exception {
 
 	/**

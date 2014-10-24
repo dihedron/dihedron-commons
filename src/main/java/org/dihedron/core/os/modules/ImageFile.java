@@ -6,6 +6,7 @@ package org.dihedron.core.os.modules;
 
 import java.io.File;
 
+import org.dihedron.core.License;
 import org.dihedron.core.os.Addressing;
 import org.dihedron.core.os.Endianness;
 import org.dihedron.core.os.OperatingSystem;
@@ -15,6 +16,7 @@ import org.dihedron.core.os.OperatingSystem;
  * 
  * @author Andrea Funto'
  */
+@License
 public class ImageFile {
 
 	/**
@@ -22,6 +24,7 @@ public class ImageFile {
 	 * 
 	 * @author Andrea Funto'
 	 */
+	@License
 	public enum Format {
 		
 		/**
@@ -69,6 +72,7 @@ public class ImageFile {
 	 *  
 	 * @author Andrea Funto'
 	 */
+	@License
 	public enum InstructionSet {
 		/**
 		 * The SPARC instruction set.
@@ -121,6 +125,7 @@ public class ImageFile {
 	 *  
 	 * @author Andrea Funto'
 	 */
+	@License
 	public enum Type {
 		/**
 		 * A relocatable object, e.g. a compiled library (".a") 

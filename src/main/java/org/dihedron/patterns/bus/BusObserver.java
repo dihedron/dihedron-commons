@@ -5,11 +5,14 @@
 
 package org.dihedron.patterns.bus;
 
+import org.dihedron.core.License;
+
 /**
  * The base interface for all bus observers.
  * 
  * @author Andrea Funto'
  */
+@License
 public interface BusObserver<M> {
 	
 	/**

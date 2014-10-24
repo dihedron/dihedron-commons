@@ -4,6 +4,8 @@
 
 package org.dihedron.core.os;
 
+import org.dihedron.core.License;
+
 /**
  * An enumeration of all (potentially) supported Java Virtual Machine platforms; 
  * on 32 bits JVMs the platform will always be the 32 bits flavour, no matter 
@@ -15,6 +17,7 @@ package org.dihedron.core.os;
  * 
  * @author Andrea Funto'
  */
+@License
 public enum Platform {
 	
 	/**

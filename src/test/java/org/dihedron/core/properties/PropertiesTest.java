@@ -3,13 +3,13 @@
  */ 
 package org.dihedron.core.properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.dihedron.core.properties.Properties;
-import org.dihedron.core.properties.PropertiesException;
+import org.dihedron.core.License;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class PropertiesTest {
 	/**
 	 * The logger.

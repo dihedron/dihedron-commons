@@ -6,9 +6,12 @@ package org.dihedron.patterns.cache;
 
 import java.io.InputStream;
 
+import org.dihedron.core.License;
+
 /**
  * @author Andrea Funto'
  */
+@License
 public interface CacheMissHandler {
 	
 	/**

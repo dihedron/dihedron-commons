@@ -5,6 +5,7 @@
 
 package org.dihedron.patterns.activities.types;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.Copyable;
 import org.dihedron.patterns.activities.TypedVector;
 
@@ -12,6 +13,7 @@ import org.dihedron.patterns.activities.TypedVector;
 /**
  * @author Andrea Funto'
  */
+@License
 public class Vector extends TypedVector<Object> implements ActivityData, Copyable {
 
 	/**

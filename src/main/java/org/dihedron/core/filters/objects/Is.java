@@ -4,11 +4,13 @@
 
 package org.dihedron.core.filters.objects;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class Is<T> extends Filter<T> {
 
 	private T reference;

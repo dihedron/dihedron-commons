@@ -4,12 +4,14 @@
 
 package org.dihedron.patterns.activities.adapters;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class LdapAdapterConfiguration {
 	
 	/**

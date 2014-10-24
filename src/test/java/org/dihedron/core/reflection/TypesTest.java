@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.dihedron.core.reflection.Types;
+import org.dihedron.core.License;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class TypesTest {
 	
 	@SuppressWarnings("unused")
@@ -32,11 +33,13 @@ public class TypesTest {
 			int parameter3) {		
 	}	
 	
-	private class SuperClass {
+	@License
+private class SuperClass {
 		
 	}
 	
-	private class SubClass extends SuperClass {
+	@License
+private class SubClass extends SuperClass {
 		
 	}
 	

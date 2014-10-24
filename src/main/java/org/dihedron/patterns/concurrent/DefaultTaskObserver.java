@@ -4,12 +4,15 @@
 
 package org.dihedron.patterns.concurrent;
 
+import org.dihedron.core.License;
+
 
 /**
  * A do-nothing implementation of the TaskObserver interface.
  * 
  * @author Andrea Funto'
  */
+@License
 public class DefaultTaskObserver<T> implements TaskObserver<T> {
 
 	/**

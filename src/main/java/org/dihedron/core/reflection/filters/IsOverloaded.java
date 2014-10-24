@@ -8,11 +8,13 @@ import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class IsOverloaded<T extends Member> extends Filter<T> {
 
 	private Map<String, Member> members = new HashMap<String, Member>();

@@ -10,6 +10,7 @@ import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.engine.ActivityCallable;
 import org.dihedron.patterns.activities.engine.ParallelEngine;
 import org.dihedron.patterns.activities.types.ActivityData;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Funto'
  */
 @ManagedBean
+@License
 public class AsynchronousBeanEngine extends ParallelEngine {
 
 	/**

@@ -6,6 +6,7 @@ package org.dihedron.patterns.activities.impl.strings;
 
 import java.util.Random;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.ActivityContext;
 import org.dihedron.patterns.activities.base.AbstractTransformation;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class PrintToStdOut extends AbstractTransformation {
 	
 	/**

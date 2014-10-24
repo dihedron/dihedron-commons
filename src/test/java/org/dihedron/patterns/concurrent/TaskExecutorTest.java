@@ -13,8 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.dihedron.patterns.concurrent.Task;
-import org.dihedron.patterns.concurrent.TaskExecutor;
+import org.dihedron.core.License;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class TaskExecutorTest {
 	/**
 	 * The logger.

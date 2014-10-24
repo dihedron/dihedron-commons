@@ -10,6 +10,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.dihedron.core.License;
 import org.dihedron.core.formatters.BitMask;
 import org.dihedron.core.os.Addressing;
 import org.dihedron.core.os.Endianness;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * on the IMAGE_NT_HEADERS structure.
  * @author Andrea Funto'
  */
+@License
 public class PEParser extends ImageFileParser {
 	
 	/**

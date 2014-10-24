@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.engine.ActivityCallable;
 import org.dihedron.patterns.activities.engine.ParallelEngine;
 import org.dihedron.patterns.activities.types.ActivityData;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
  * @author Andrea Funto'
  */
+@License
 public class CachedThreadPoolEngine extends ParallelEngine {
 	
 	/**

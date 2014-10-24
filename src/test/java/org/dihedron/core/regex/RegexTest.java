@@ -9,12 +9,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
-import org.dihedron.core.regex.Regex;
+import org.dihedron.core.License;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@License
 public class RegexTest {
 	
 //	private static final Logger logger = LoggerFactory.getLogger(RegexTest.class);

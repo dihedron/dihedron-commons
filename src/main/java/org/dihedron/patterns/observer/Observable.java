@@ -4,10 +4,13 @@
 
 package org.dihedron.patterns.observer;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public interface Observable<E> {
 	
 	/**

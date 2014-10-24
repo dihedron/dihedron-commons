@@ -15,6 +15,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public final class FileFinder {
 	/**
 	 * The logger.
@@ -47,7 +49,8 @@ public final class FileFinder {
 		/**
 		 * The list of files to be populated; it will will be filled as a
 		 * side effect (I know, this is not extra-clean, but this visitor 
-		 * is a private class and there's no multi-threading involved).
+		 * is a @License
+private class and there's no multi-threading involved).
 		 */
 		private List<File> files;
 		

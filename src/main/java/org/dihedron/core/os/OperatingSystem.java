@@ -4,12 +4,15 @@
 
 package org.dihedron.core.os;
 
+import org.dihedron.core.License;
+
 
 /**
  * The set of supported operating systems.
  * 
  * @author Andrea Funto'
  */
+@License
 public enum OperatingSystem {
 	/**
 	 * The UNIX System-V operating system; this constants is often

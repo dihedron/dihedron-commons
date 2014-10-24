@@ -3,14 +3,14 @@
  */ 
 package org.dihedron.patterns.concurrent;
 
-import org.dihedron.patterns.concurrent.Task;
-import org.dihedron.patterns.concurrent.TaskObserver;
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class TestObserver implements TaskObserver<String> {
 	/**
 	 * The logger.

@@ -4,12 +4,15 @@
 
 package org.dihedron.patterns.activities.exceptions;
 
+import org.dihedron.core.License;
+
 
 /**
  * An exception representing the fact that an asynchronous activity timed out.
  * 
  * @author Andrea Funto'
  */
+@License
 public class TimedOutException extends ActivityException {
 	
 	/**

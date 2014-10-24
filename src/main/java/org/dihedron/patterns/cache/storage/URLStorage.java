@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.dihedron.core.url.URLFactory;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class URLStorage extends ReadOnlyStorage {
 	/**
 	 * The logger.

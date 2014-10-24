@@ -5,12 +5,15 @@
 
 package org.dihedron.core.variables;
 
+import org.dihedron.core.License;
+
 
 /**
  * Returns the system property corresponding to the given variable name.
  * 
  * @author Andrea Funto'
  */
+@License
 public class SystemPropertyValueProvider implements ValueProvider {
 	
 	/**

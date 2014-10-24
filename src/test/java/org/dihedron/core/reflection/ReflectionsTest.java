@@ -10,8 +10,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.compound.Not;
-import org.dihedron.core.reflection.Reflections;
 import org.dihedron.core.reflection.filters.HasAnnotation;
 import org.dihedron.core.reflection.filters.IsOverloaded;
 import org.dihedron.core.reflection.filters.NameIs;
@@ -23,9 +23,11 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ReflectionsTest {
 	
-	private class A {
+	@License
+private class A {
 		
 		@SuppressWarnings("unused")
 		protected static final int counterA = 0;
@@ -45,7 +47,8 @@ public class ReflectionsTest {
 		}
 	}
 	
-	private class B extends A {
+	@License
+private class B extends A {
 		
 		@SuppressWarnings("unused")
 		protected static final int counterB = 0;

@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.activities.exceptions;
 
+import org.dihedron.core.License;
+
 
 /**
  * An exception representing the fact that one or more arguments to an activity 
@@ -11,6 +13,7 @@ package org.dihedron.patterns.activities.exceptions;
  * 
  * @author Andrea Funto'
  */
+@License
 public class InvalidArgumentException extends ActivityException {
 	
 	/**

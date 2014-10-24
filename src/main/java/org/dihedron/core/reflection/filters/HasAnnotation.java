@@ -8,11 +8,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class HasAnnotation<T extends Member> extends Filter<T> {
 
 	private Class<? extends Annotation> annotation;

@@ -9,11 +9,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.dihedron.core.License;
+
 /**
  * A list proving a way to iterate over its elements in a pseudo-functinal way.
  * 
  * @author Andrea Funto'
  */
+@License
 public class FunctionalList<S, E> extends Functional<S> implements List<E> {
 	
 	/**

@@ -7,11 +7,13 @@ package org.dihedron.core.filters.compound;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public abstract class CompoundFilter<T> extends Filter<T> {
 
 	/**

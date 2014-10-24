@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.activities.engine;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.TypedVector;
 import org.dihedron.patterns.activities.exceptions.ActivityException;
 import org.dihedron.patterns.activities.types.ActivityData;
@@ -18,6 +19,7 @@ import org.dihedron.patterns.activities.types.ActivityData;
  * 
  * @author Andrea Funto'
  */
+@License
 public interface ActivityEngine {
 	
 	/**

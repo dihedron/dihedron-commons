@@ -4,6 +4,7 @@
 
 package org.dihedron.patterns.activities.engine;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.engine.javase.FixedThreadPoolEngine;
 
 /**
@@ -13,6 +14,7 @@ import org.dihedron.patterns.activities.engine.javase.FixedThreadPoolEngine;
  *  
  * @author Andrea Funto'
  */
+@License
 public final class ActivityEngineFactory {
 	
 	/**

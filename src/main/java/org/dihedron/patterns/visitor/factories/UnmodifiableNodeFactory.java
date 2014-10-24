@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.visitor.Node;
 import org.dihedron.patterns.visitor.NodeFactory;
 import org.dihedron.patterns.visitor.nodes.UnmodifiableArrayElementNode;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class UnmodifiableNodeFactory implements NodeFactory {
 	/**
 	 * The logger.

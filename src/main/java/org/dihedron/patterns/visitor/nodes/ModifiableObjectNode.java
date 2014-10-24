@@ -5,11 +5,13 @@ package org.dihedron.patterns.visitor.nodes;
 
 import java.lang.reflect.Field;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.visitor.VisitorException;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class ModifiableObjectNode extends UnmodifiableObjectNode {
 
 	/**

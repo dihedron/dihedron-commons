@@ -10,6 +10,7 @@ import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 
+import org.dihedron.core.License;
 import org.dihedron.core.streams.Streams;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class URLStorageTest {
 	/**
 	 * The logger.

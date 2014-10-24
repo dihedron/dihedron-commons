@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
  * A {@link URLStreamHandler} that handles resources on the classpath.
  * For details, see http://stackoverflow.com/questions/861500/url-to-load-resources-from-the-classpath-in-java
  */
+@License
 public class ClassPathURLStreamHandler extends URLStreamHandler {
 	
     /** 

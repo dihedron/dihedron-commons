@@ -3,6 +3,7 @@
  */ 
 package org.dihedron.patterns.experimental.pipeline;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.experimental.pipeline.impl.ArraySource;
 import org.dihedron.patterns.experimental.pipeline.impl.Log;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class ProducerTest {
 	/**
 	 * The logger.

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.dihedron.core.License;
 import org.dihedron.core.regex.Regex;
 import org.dihedron.patterns.cache.Storage;
 
@@ -20,6 +21,7 @@ import org.dihedron.patterns.cache.Storage;
  * 
  * @author Andrea Funto'
  */
+@License
 public abstract class AbstractStorage implements Storage {
 
 	/**

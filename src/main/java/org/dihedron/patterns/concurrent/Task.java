@@ -4,11 +4,14 @@
 
 package org.dihedron.patterns.concurrent;
 
+import org.dihedron.core.License;
+
 /**
  * The interface all tasks must implement in order to be executed asynchronously.
  * 
  * @author Andrea Funto'
  */
+@License
 public interface Task<T> {	
 	
 	/**

@@ -5,12 +5,14 @@ package org.dihedron.patterns.activities.containers;
 
 import static org.junit.Assert.assertTrue;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.TypedVector;
 import org.junit.Test;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class TypedVectorTest {
 
 	/**

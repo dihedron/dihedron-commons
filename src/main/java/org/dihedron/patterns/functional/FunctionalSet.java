@@ -8,9 +8,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.dihedron.core.License;
+
 /**
  * @author Andrea Funto'
  */
+@License
 public class FunctionalSet<S, E> extends Functional<S> implements Set<E> {
 
 	/**

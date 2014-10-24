@@ -4,12 +4,15 @@
 
 package org.dihedron.patterns.activities.types;
 
+import org.dihedron.core.License;
+
 
 /**
  * Common marker interface for all data processed by activities.
  * 
  * @author Andrea Funto'
  */
+@License
 public interface ActivityData {
 
 }

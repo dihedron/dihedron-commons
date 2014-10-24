@@ -5,6 +5,7 @@ package org.dihedron.patterns.visitor.nodes;
 
 import java.lang.reflect.Field;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.visitor.Node;
 import org.dihedron.patterns.visitor.VisitorException;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public class AbstractNode implements Node {
 	/**
 	 * The logger.

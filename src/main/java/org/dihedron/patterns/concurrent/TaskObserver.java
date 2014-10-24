@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.concurrent;
 
+import org.dihedron.core.License;
+
 
 /**
  * The interface that all observers must implement in order to receive notifications
@@ -12,6 +14,7 @@ package org.dihedron.patterns.concurrent;
  * 
  * @author Andrea Funto'
  */
+@License
 public interface TaskObserver<T> {
 
 	/**

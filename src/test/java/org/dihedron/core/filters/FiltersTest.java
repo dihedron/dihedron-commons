@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
-import org.dihedron.core.filters.Filter;
+import org.dihedron.core.License;
 import org.dihedron.core.filters.compound.And;
 import org.dihedron.core.filters.compound.Not;
 import org.dihedron.core.filters.objects.Null;
@@ -18,6 +18,7 @@ import org.junit.Test;
 /**
  * @author Andrea Funto'
  */
+@License
 public class FiltersTest {
 	
 	/**

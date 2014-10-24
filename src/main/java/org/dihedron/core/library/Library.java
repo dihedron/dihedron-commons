@@ -7,6 +7,7 @@ package org.dihedron.core.library;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.dihedron.core.License;
 import org.dihedron.core.properties.Properties;
 import org.dihedron.core.properties.PropertiesException;
 import org.dihedron.core.streams.Streams;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
+@License
 public abstract class Library {
 	
 	/**

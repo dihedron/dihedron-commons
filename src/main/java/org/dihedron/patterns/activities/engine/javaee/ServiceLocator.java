@@ -7,6 +7,7 @@ package org.dihedron.patterns.activities.engine.javaee;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.dihedron.core.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Funto'
  */
+@License
 public class ServiceLocator {
 	/**
 	 * The logger.
@@ -27,7 +29,8 @@ public class ServiceLocator {
 	private InitialContext context;
 
 	/**
-	 * The private classholding the reference to the unique instance of
+	 * The @License
+private classholding the reference to the unique instance of
 	 * the ServiceLocator.
 	 * 
 	 * @author Andrea Funto'

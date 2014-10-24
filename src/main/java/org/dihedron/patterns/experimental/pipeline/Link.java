@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.experimental.pipeline;
 
+import org.dihedron.core.License;
+
 
 /**
  * An element representing a link between producer and consumer in a chain. 
@@ -12,6 +14,7 @@ package org.dihedron.patterns.experimental.pipeline;
  * 
  * @author Andrea Funto'
  */
+@License
 public class Link<S, T> {
 	
 	/**

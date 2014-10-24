@@ -5,11 +5,14 @@
 
 package org.dihedron.core.formatters;
 
+import org.dihedron.core.License;
+
 /**
  * Utility for printing a number as an hexadecimal string.
  * 
  * @author Andrea Funto'
  */
+@License
 public final class HexWriter {
 	
 	/**

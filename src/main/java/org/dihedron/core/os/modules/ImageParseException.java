@@ -4,10 +4,13 @@
 
 package org.dihedron.core.os.modules;
 
+import org.dihedron.core.License;
+
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class ImageParseException extends Exception {
 
 	/**

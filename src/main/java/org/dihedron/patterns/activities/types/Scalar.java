@@ -5,6 +5,7 @@
 
 package org.dihedron.patterns.activities.types;
 
+import org.dihedron.core.License;
 import org.dihedron.patterns.activities.Copyable;
 import org.dihedron.patterns.activities.TypedScalar;
 
@@ -14,6 +15,7 @@ import org.dihedron.patterns.activities.TypedScalar;
  * 
  * @author Andrea Funto'
  */
+@License
 public class Scalar extends TypedScalar<Object> implements ActivityData, Copyable {
 
 	/**

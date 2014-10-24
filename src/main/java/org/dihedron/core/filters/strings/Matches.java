@@ -4,12 +4,14 @@
 
 package org.dihedron.core.filters.strings;
 
+import org.dihedron.core.License;
 import org.dihedron.core.filters.Filter;
 import org.dihedron.core.regex.Regex;
 
 /**
  * @author Andrea Funto'
  */
+@License
 public class Matches extends Filter<String> {
 
 	/**

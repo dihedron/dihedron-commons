@@ -4,6 +4,8 @@
 
 package org.dihedron.patterns.activities;
 
+import org.dihedron.core.License;
+
 
 /**
  * An interface that exposes the {@link #clone()} method for cloneable classes.
@@ -12,6 +14,7 @@ package org.dihedron.patterns.activities;
  * 
  * @author Andrea Funto'
  */
+@License
 public interface Copyable extends Cloneable {
 	
 	/**
