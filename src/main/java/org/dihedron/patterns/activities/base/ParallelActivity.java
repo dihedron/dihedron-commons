@@ -43,11 +43,13 @@ public class ParallelActivity extends CompoundActivity {
 	/**
 	 * The logger.
 	 */
+	@SuppressWarnings("unused")
 	private final static Logger logger = LoggerFactory.getLogger(ParallelActivity.class);
 
 	/**
 	 * The object that will merge the results.
 	 */
+	@SuppressWarnings("unused")
 	private AbstractAggregator aggregator;
 		
 	/**

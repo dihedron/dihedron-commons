@@ -24,6 +24,7 @@ public class LdapQuery {
 	/**
 	 * The logger.
 	 */
+	@SuppressWarnings("unused")
 	private final static Logger logger = LoggerFactory.getLogger(LdapQuery.class);
 
 	/**

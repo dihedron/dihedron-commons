@@ -22,26 +22,31 @@ public class LdapAdapterConfiguration {
 	/**
 	 * The logger.
 	 */
+	@SuppressWarnings("unused")
 	private final static Logger logger = LoggerFactory.getLogger(LdapAdapterConfiguration.class);
 	
 	/**
 	 * The context of the query.
 	 */
+	@SuppressWarnings("unused")
 	private String searchBase;
 	
 	/**
 	 * The filter used in the query.
 	 */
+	@SuppressWarnings("unused")
 	private String searchFilter;
 	
 	/**
 	 * The host name of the LDAP server.
 	 */
+	@SuppressWarnings("unused")
 	private String server;
 	
 	/**
 	 * The port on which the LDAP server is listening.
 	 */
+	@SuppressWarnings("unused")
 	private int port = DEFAULT_LDAP_PORT;
 //	
 //	
