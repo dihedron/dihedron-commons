@@ -26,7 +26,7 @@ public class WebResourceRetriever implements CacheMissHandler {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(WebResourceRetriever.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebResourceRetriever.class);
 	
 	/** 
 	 * The URL to connect to. 

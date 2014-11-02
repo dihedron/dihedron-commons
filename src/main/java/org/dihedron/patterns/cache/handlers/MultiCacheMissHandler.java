@@ -26,7 +26,7 @@ public class MultiCacheMissHandler implements CacheMissHandler {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(MultiCacheMissHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(MultiCacheMissHandler.class);
 	
 	/** 
 	 * The list of handlers. 

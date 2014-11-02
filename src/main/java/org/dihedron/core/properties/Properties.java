@@ -38,7 +38,7 @@ public class Properties {
 	/**
 	 * The logger.
 	 */
-	private static Logger logger = LoggerFactory.getLogger(Properties.class);
+	private static final Logger logger = LoggerFactory.getLogger(Properties.class);
 
 	/**
 	 * The default character using for telling key and value apart.

@@ -35,7 +35,7 @@ public class Regex {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(Regex.class);
+	private static final Logger logger = LoggerFactory.getLogger(Regex.class);
 	
 	/** 
 	 * The actual regular expression. 
@@ -170,6 +170,16 @@ public class Regex {
 	@Override
 	public String toString() {
 		return regex;
+	}
+
+	/**
+	 * Checks if this regular expression has the same pattern as that of the given object.
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object other) {
+		return (other != null && other instanceof Regex && ((Regex)other).regex != null && ((Regex)other).regex.equals(regex)); 
 	}
 	
 	/**

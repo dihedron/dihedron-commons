@@ -33,7 +33,7 @@ public class ZipArchive {
 	/**
 	 * The logger.
 	 */
-	private static Logger logger = LoggerFactory.getLogger(ZipArchive.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZipArchive.class);
 
 	/**
 	 * Creates a new object, creating a ZipOutputStream on the

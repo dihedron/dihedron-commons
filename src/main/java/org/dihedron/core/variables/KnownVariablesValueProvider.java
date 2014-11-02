@@ -25,23 +25,24 @@ public class KnownVariablesValueProvider implements ValueProvider {
 	 */
 	@Override
 	public String onVariable(String variable) {
-		if(variable.equals("USERHOME")) {
+		switch(variable) {
+		case "USERHOME":
 			return System.getProperty("user.home");
-		} else if(variable.equals("WINDIR")) {
+		case "WINDIR":
 			return System.getenv("windir");
-		} else if(variable.equals("SYSTEMROOT")) {
+		case "SYSTEMROOT":
 			return System.getenv("SystemRoot");
-		} else if(variable.equals("COMMONPROGRAMFILES")) {
+		case "COMMONPROGRAMFILES":
 			return System.getenv("CommonProgramFiles");
-		} else if(variable.equals("PROGRAMFILES")) {
+		case "PROGRAMFILES":
 			return System.getenv("ProgramFiles");
-		} else if(variable.equals("TEMP")) {
+		case "TEMP":
 			return System.getenv("TEMP");
-		} else if(variable.equals("SYSTEMDRIVE")) {
+		case "SYSTEMDRIVE":
 			return System.getenv("SystemDrive");
-		} else if(variable.equals("USERPROFILE")) {
+		case "USERPROFILE":
 			return System.getenv("USERPROFILE");
-		} else if(variable.equals("APPDATA")) {
+		case "APPDATA":
 			return System.getenv("APPDATA");
 		}
 		return null;

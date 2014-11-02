@@ -37,7 +37,7 @@ public class MemoryStorage extends AbstractStorage {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(MemoryStorage.class);
+	private static final Logger logger = LoggerFactory.getLogger(MemoryStorage.class);
 	
 	/** 
 	 * A map containing all cache resources. 

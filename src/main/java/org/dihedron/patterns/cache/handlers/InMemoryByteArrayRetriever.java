@@ -26,7 +26,7 @@ public class InMemoryByteArrayRetriever implements CacheMissHandler {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(InMemoryByteArrayRetriever.class);
+	private static final Logger logger = LoggerFactory.getLogger(InMemoryByteArrayRetriever.class);
 	
 	/** 
 	 * The input stream mapping the buffered data. 

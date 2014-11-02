@@ -25,7 +25,7 @@ public class Cache implements Iterable<String>{
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(Cache.class);
+	private static final Logger logger = LoggerFactory.getLogger(Cache.class);
 
 	/** 
 	 * The underlying storage engine. 
