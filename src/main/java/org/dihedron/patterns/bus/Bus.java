@@ -46,6 +46,8 @@ public abstract class Bus<M> {
 	 * 
 	 * @param observer
 	 *   the observer.
+	 * @return
+	 *   the object itself, for method chaining.
 	 */
 	public Bus<M> addObserver(BusObserver<M> observer) {
 		if(observer != null) {
