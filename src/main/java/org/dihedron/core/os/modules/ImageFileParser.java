@@ -65,6 +65,8 @@ public abstract class ImageFileParser {
 			return new ELFParser();
 		case PE:
 			return new PEParser();
+		case MACH_O:
+			return null;
 		}
 		return null;
 	}

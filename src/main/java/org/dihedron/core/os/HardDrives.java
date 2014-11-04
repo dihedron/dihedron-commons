@@ -114,7 +114,7 @@ public final class HardDrives {
 	    String line = null;	    
 	    while((line = output.readLine()) != null) {
 	    	List<String[]> matches = regex.getAllMatches(line);
-	    	if(matches != null && matches.size() > 0) {
+	    	if(matches != null && !matches.isEmpty()) {
 	    		for(String [] group : matches) {
 	    			logger.trace("found file system '{}' mounted at '{}' (type '{}')", group[0], group[1], group[2]);
 	    			drives.add(new File(group[1])); 

@@ -29,7 +29,7 @@ public class Or extends AbstractAggregator {
 	 */
 	@Override
 	protected Scalar aggregate(ActivityContext context, Vector vector) throws ActivityException {
-		if(vector == null || vector.size() == 0) {
+		if(vector == null || vector.isEmpty()) {
 			return new Scalar(false);
 		}
 		boolean or = true;

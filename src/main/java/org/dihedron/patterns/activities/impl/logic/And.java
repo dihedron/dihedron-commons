@@ -30,7 +30,7 @@ public class And extends AbstractAggregator {
 	 */
 	@Override
 	protected Scalar aggregate(ActivityContext context, Vector vector) throws ActivityException {
-		if(vector == null || vector.size() == 0) {
+		if(vector == null || vector.isEmpty()) {
 			return new Scalar((Object)false);
 		}
 		boolean and = true;
