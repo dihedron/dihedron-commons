@@ -78,7 +78,7 @@ public abstract class Transformation extends AbstractTransformation {
 			results = (Vector)engine.execute(infos);
 		} else {
 			results = new Vector();
-			if(vector.size() > 0) {
+			if(!vector.isEmpty()) {
 				logger.trace("running on a single element in the main thread");
 				Scalar scalar = vector.get(0) instanceof Scalar ? (Scalar)vector.get(0) : new Scalar(vector.get(0));
 				results.add(transform(context, scalar));

@@ -13,23 +13,6 @@ import org.dihedron.core.library.Traits;
  */
 @License
 public class Commons extends Library {
-		
-	/**
-	 * Returns the value of the give trait.
-	 * 
-	 * @param trait
-	 *   the trait to retrieve.
-	 * @return
-	 *   the value of the trait.
-	 */
-	public static String valueOf(Traits trait) {
-		synchronized(Commons.class) {
-			if(singleton == null) {
-				singleton = new Commons();
-			}
-		}
-		return singleton.get(trait);
-	}
 	
 	/**
 	 * The name of the library.
@@ -46,5 +29,22 @@ public class Commons extends Library {
 	 */
 	private Commons() {
 		super(LIBRARY_NAME);
+	}
+	
+	/**
+	 * Returns the value of the give trait.
+	 * 
+	 * @param trait
+	 *   the trait to retrieve.
+	 * @return
+	 *   the value of the trait.
+	 */
+	public static String valueOf(Traits trait) {
+		synchronized(Commons.class) {
+			if(singleton == null) {
+				singleton = new Commons();
+			}
+		}
+		return singleton.get(trait);
 	}
 }

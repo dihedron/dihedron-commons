@@ -75,27 +75,28 @@ public enum Platform {
 		String os = System.getProperty("os.name").toLowerCase();
 		String architecture = System.getProperty("os.arch");
 		if(os.indexOf("win") >= 0) {
-			if(architecture.equalsIgnoreCase("x86")) {
+			if("x86".equalsIgnoreCase(architecture)) {
 				return Platform.WINDOWS_32;
-			} else if(architecture.equalsIgnoreCase("x86_64") || architecture.equalsIgnoreCase("amd64")) {
+			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.WINDOWS_64;
 			}
 		} else if(os.indexOf("nux") >= 0) {
-			if(architecture.equalsIgnoreCase("x86")) {
+			if("x86".equalsIgnoreCase(architecture)) {
 				return Platform.LINUX_32;
-			} else if(architecture.equalsIgnoreCase("x86_64") || architecture.equalsIgnoreCase("amd64")) {
+			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.LINUX_64;
 			}			
 		} else if(os.indexOf("mac") >= 0) {
-			if(architecture.equalsIgnoreCase("x86")) {
+			if("x86".equalsIgnoreCase(architecture)) {
 				return Platform.MACOSX_32;
-			} else if(architecture.equalsIgnoreCase("x86_64") || architecture.equalsIgnoreCase("amd64")) {
+			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.MACOSX_64;
 			}			
 		} else if(os.indexOf("nix") >= 0) {
-			if(architecture.equalsIgnoreCase("x86")) {
+			// TODO: this is for fun! x86 on UNIX? are we joking?
+			if("x86".equalsIgnoreCase(architecture)) {
 				return Platform.UNIX_32;
-			} else if(architecture.equalsIgnoreCase("x86_64") || architecture.equalsIgnoreCase("amd64")) {
+			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.UNIX_64;
 			}			
 		}

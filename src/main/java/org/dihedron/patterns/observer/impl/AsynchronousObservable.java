@@ -22,6 +22,9 @@ import org.dihedron.patterns.observer.Observer;
 @License
 public class AsynchronousObservable<E> implements Observable<E> {
 
+	/**
+	 * The default size of the internal thread pool.
+	 */
 	public static final int DEFAULT_THREADPOOL_SIZE = 4; 
 	
 	/**

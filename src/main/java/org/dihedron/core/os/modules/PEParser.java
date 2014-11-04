@@ -13,6 +13,7 @@ import java.nio.ByteOrder;
 import org.dihedron.core.License;
 import org.dihedron.core.formatters.BitMask;
 import org.dihedron.core.os.Addressing;
+import org.dihedron.core.os.Constants;
 import org.dihedron.core.os.Endianness;
 import org.dihedron.core.os.OperatingSystem;
 import org.dihedron.core.os.modules.ImageFile.Format;
@@ -34,8 +35,28 @@ public class PEParser extends ImageFileParser {
 	/**
 	 * The logger.
 	 */
-	private final static Logger logger = LoggerFactory.getLogger(PEParser.class);
+	private static final Logger logger = LoggerFactory.getLogger(PEParser.class);
 
+	/** 
+	 * A constant indicating that the computer supports 32-bit words.
+	 */
+	private static final short IMAGE_FILE_32BIT_MACHINE  = 0x0100;
+
+	/**
+	 * A constant indicating that the file is executable (there are no unresolved external references).
+	 */
+	private static final short IMAGE_FILE_EXECUTABLE_IMAGE = 0x0002;
+
+	/**
+	 * A constant indicating that the image is a system file.
+	 */
+	private static final short IMAGE_FILE_SYSTEM =  0x1000;
+
+	/**
+	 * A constant indicating that the image is a DLL file. While it is an executable file, it cannot be run directly.
+	 */
+	private static final short IMAGE_FILE_DLL = 0x2000;	
+	
 	/**
 	 * An enumeration representing the processor families supported by Windows.
 	 * 
@@ -195,7 +216,7 @@ public class PEParser extends ImageFileParser {
 			ImageFile module = new ImageFile(file); 
 			
 			// the interesting parts of the headers are in the first kilobyte or so
-			byte[] buffer = new byte[1000];
+			byte[] buffer = new byte[(int)Constants.KILOBYTE];
 			image.readFully(buffer);
 			
 			//
@@ -225,10 +246,10 @@ public class PEParser extends ImageFileParser {
 			//	} IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;
 			
 			//
-			// 2 bytes at ofset 0x00: these are the magic number: "MZ" in ASCII
+			// 2 bytes at offset 0x00: these are the magic number: "MZ" in ASCII
 			//
-			byte [] word = new byte[2];
-			System.arraycopy(buffer, 0x00, word, 0, 2);
+			byte [] word = new byte[Constants.SIZE_OF_WORD];
+			System.arraycopy(buffer, 0x00, word, 0, word.length);
 			String mz = new String(word);
 			if(!mz.equals("MZ")) {
 				logger.error("error in IMAGE_DOS_HEADER: this is not a valid PE file");
@@ -238,8 +259,8 @@ public class PEParser extends ImageFileParser {
 			// 
 			// 4 bytes at offset 0x3C: this is the e_lfanew unsigned offset to the IMAGE_NT_HEADERS
 			//
-			byte [] dword = new byte[4];
-			System.arraycopy(buffer, 0x3C, dword, 0, 4);
+			byte [] dword = new byte[Constants.SIZE_OF_DWORD];
+			System.arraycopy(buffer, 0x3C, dword, 0, dword.length);
 			long offset = ((long)ByteBuffer.wrap(dword).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().get()) & 0xFFFFFFFF;
 			logger.trace("dword = 0x{}{}{}{} -> offset {}", String.format("%02X", dword[0]), String.format("%02X", dword[1]), String.format("%02X", dword[2]), String.format("%02X", dword[3]), offset);
 			
@@ -257,10 +278,10 @@ public class PEParser extends ImageFileParser {
 			
 			//
 			// first get the signature and check that it is "PE\0\0"
-			System.arraycopy(buffer, (int)offset, word, 0, 2);
+			System.arraycopy(buffer, (int)offset, word, 0, word.length);
 			String pe = new String(word);
 			logger.trace("IMAGE_NT_HEADERS signature: '{}'", pe);
-			System.arraycopy(buffer, (int)offset + 2, word, 0, 2);
+			System.arraycopy(buffer, (int)offset + 2, word, 0, word.length);
 			if(!pe.equals("PE") || !(word[0] == 0) || !(word[1] == 0)) {
 				logger.error("error in IMAGE_NT_HEADERS: this is not a valid PE file");
 				throw new ImageParseException("This is not a valid PE module (no 'PE\\0\\0' signature found in IMAGE_NT_HEADERS)");
@@ -279,7 +300,7 @@ public class PEParser extends ImageFileParser {
 			//		WORD  Characteristics;
 			// } IMAGE_FILE_HEADER, *PIMAGE_FILE_HEADER;
 			
-			System.arraycopy(buffer, (int)offset + 4, word, 0, 2);
+			System.arraycopy(buffer, (int)offset + 4, word, 0, word.length);
 			int machine = (int)ByteBuffer.wrap(word).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get() & 0x0000FFFF;
 			logger.trace("machine: 0x{}{} (0x{})", String.format("%02X", word[0]), String.format("%02X", word[1]), String.format("%04X", machine));			
 			switch(ProcessorFamily.fromFlags(machine)) {
@@ -392,7 +413,7 @@ public class PEParser extends ImageFileParser {
 			//
 			// 2 bytes: the characteristics 
 			//
-			System.arraycopy(buffer, (int)offset + 24, word, 0, 2);
+			System.arraycopy(buffer, (int)offset + 24, word, 0, word.length);
 			int characteristics = (int)ByteBuffer.wrap(word).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get() & 0x0000FFFF;
 			logger.trace("characteristics: {} {} (0x{})", String.format("%02X", word[0]), String.format("%02X", word[1]), String.format("%04X", characteristics));	
 			
@@ -421,175 +442,7 @@ public class PEParser extends ImageFileParser {
 				logger.trace("file is a kernel module");
 			}
 			
-			
-			
-			/*
-			if(magic.equals("0x7F") && pe.equals("ELF")) {
-				logger.trace("this is an ELF image");
-				module.setFormat(Format.ELF);
-			} else {
-				logger.error("this file does not represent a valid ELF image");
-				throw new ImageParseException("File does not represent a valid ELF image (invalid magic number).");
-			}
-			
-			//
-			// 1 byte: next comes the number of bits, '1' stands for 32, '2' for 64
-			//
-			if(buffer[4] == 1) {
-				logger.trace("image is for 32 bits architectures");
-				module.setAddressing(Addressing.SIZE_32);
-			} else if(buffer[4] == 2) {
-				logger.trace("image is for 64 bits architectures");
-				module.setAddressing(Addressing.SIZE_64);				
-			}
-
-			//
-			// 1 byte: next comes the endianness, '1' stands for "little-endian", '2' for "big-endian"
-			//
-			if(buffer[5] == 1) {
-				logger.trace("image is for little-endian architectures");
-				module.setEndianness(Endianness.LITTLE_ENDIAN);
-			} else if(buffer[4] == 2) {
-				logger.trace("image is for big-endian architectures");
-				module.setEndianness(Endianness.BIG_ENDIAN);		
-			}
-			
-			// 
-			// 1 byte: next comes a byte that is used to state whether this file complies with the
-			// original specification of ELF; we're not interested in it (buffer[6]) and we skip it
-			//
-			
-			//
-			// 1 byte: the supported operating system family 
-			//
-			switch(buffer[7]) {
-			case 0x00:
-				module.setOperatingSystem(OperatingSystem.SYSTEM_V);
-				break;
-			case 0x01:
-				module.setOperatingSystem(OperatingSystem.HPUX);
-				break;
-			case 0x02:
-				module.setOperatingSystem(OperatingSystem.NETBSD);
-				break;
-			case 0x03:
-				module.setOperatingSystem(OperatingSystem.LINUX);
-				break;
-			case 0x06:
-				module.setOperatingSystem(OperatingSystem.SOLARIS);
-				break;
-			case 0x07:
-				module.setOperatingSystem(OperatingSystem.AIX);
-				break;
-			case 0x08:
-				module.setOperatingSystem(OperatingSystem.IRIX);
-				break;
-			case 0x09:
-				module.setOperatingSystem(OperatingSystem.FREEBSD);
-				break;				
-			case 0x0C:
-				module.setOperatingSystem(OperatingSystem.OPENBSD);
-				break;
-			}
-			logger.trace("operating system: '{}'", module.getOperatingSystem());
-			
-			// 
-			// 8 bytes: next come 8 bytes that further specify the API or are unused, we can safely skip them
-			//
-			
-			//
-			// 2 bytes: next a specification of the type of executable image: 1, 2, 3, 4 specify whether 
-			// the object is relocatable, executable, shared, or core, respectively.
-			//
-			switch(buffer[16]) {
-			case 1:
-				module.setType(Type.RELOCATABLE);
-				break;
-			case 2:
-				module.setType(Type.EXECUTABLE);
-				break;
-			case 3:
-				module.setType(Type.SHARED);
-				break;
-			case 4:
-				module.setType(Type.CORE);
-				break;
-			}
-			logger.trace("binary module type is '{}'", module.getType());
-			
-			//
-			// 2 bytes: the target instruction set
-			//
-			byte [] tmp2 = new byte[3];
-			System.arraycopy(buffer, 18, tmp2, 0, 2);
-
-			short is = ByteBuffer.wrap(tmp2).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get();
-			logger.trace("sghort for instrcution set is {}", is);
-			switch(is) {
-			case 0x02:// 	SPARC
-				module.setInstructionSet(InstructionSet.SPARC);
-				break;
-			case 0x03:
-				module.setInstructionSet(InstructionSet.X86);
-				break;
-			case 0x08:
-				module.setInstructionSet(InstructionSet.MIPS);
-				break;
-			case 0x14:
-				module.setInstructionSet(InstructionSet.POWERPC);
-				break;
-			case 0x28:
-				module.setInstructionSet(InstructionSet.ARM);
-				break;	
-			case 0x2A:
-				module.setInstructionSet(InstructionSet.SUPERH);
-				break;
-			case 0x32:
-				module.setInstructionSet(InstructionSet.IA_64);
-				break;
-			case 0x3E:
-				module.setInstructionSet(InstructionSet.X86_64);
-				break;
-			case 0xB7:
-				module.setInstructionSet(InstructionSet.AARCH64);
-				break;
-			}
-			logger.trace("instruction set: '{}'", module.getInstructionSet());
-			
-	//		StringBuilder sb = new StringBuilder();
-	//		sb.append(b)
-	//	    for (byte b : bytes) {
-	//	        sb.append(String.format("%02X ", b));
-	//	    }					
-	//		for(int i = 0; i < 4; ++i) {
-	//			logger.debug("magic[{}] = '{}'", i, magic[i]);
-	//		}
-	 */
-
-			
 			return module;
 		}		
 	}
-			
-	/** 
-	 * A constant indicating that the computer supports 32-bit words.
-	 */
-	private static final short IMAGE_FILE_32BIT_MACHINE  = 0x0100;
-
-	/**
-	 * A constant indicating that the file is executable (there are no unresolved external references).
-	 */
-	private static final short IMAGE_FILE_EXECUTABLE_IMAGE = 0x0002;
-
-	/**
-	 * A constant indicating that the image is a system file.
-	 */
-	private static final short IMAGE_FILE_SYSTEM =  0x1000;
-
-	/**
-	 * A constant indicating that the image is a DLL file. While it is an executable file, it cannot be run directly.
-	 */
-	private static final short IMAGE_FILE_DLL = 0x2000;
-
-	
 }

@@ -92,7 +92,7 @@ public abstract class ParallelEngine implements ActivityEngine {
 	@Override
 	public Vector execute(TypedVector<ActivityInfo> infos) throws ActivityException {
 
-		if(infos != null && infos.size() > 0) {
+		if(infos != null && !infos.isEmpty()) {
 			logger.trace("executing {} activities...", infos.size());
 			int i = 0;
 			TypedVector<Future<ActivityData>> futures = new TypedVector<Future<ActivityData>>();
