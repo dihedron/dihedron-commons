@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,7 +44,7 @@ public class Properties {
 	/**
 	 * The default character using for telling key and value apart.
 	 */	
-	public final static String DEFAULT_SEPARATOR = "=";
+	public static final String DEFAULT_SEPARATOR = "=";
 	
 	/**
 	 * A constant indicating whether the properties can be modified.
@@ -159,14 +160,8 @@ public class Properties {
 	 * @throws PropertiesException 
 	 */
 	public void load(File file, String separator) throws IOException, PropertiesException {
-		FileInputStream stream = null;
-		try {
-			stream = new FileInputStream(file);
+		try (InputStream stream = new FileInputStream(file)){
 			load(stream, separator);
-		} finally {
-			if(stream != null) {
-				stream.close();
-			}
 		}
 	}
 
@@ -193,10 +188,8 @@ public class Properties {
 	 * @throws PropertiesException 
 	 */
 	public void load(InputStream stream, String separator) throws IOException, PropertiesException {
-		DataInputStream in = null;
-		try {
-			in = new DataInputStream(stream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		 
+		try(DataInputStream data = new DataInputStream(stream); Reader reader = new InputStreamReader(data); BufferedReader br = new BufferedReader(reader)) {
 			String line;
 			StringBuilder buffer = new StringBuilder();
 			while ((line = br.readLine()) != null)   {
@@ -216,27 +209,21 @@ public class Properties {
 				}
 				line = buffer.toString().trim();
 				buffer.setLength(0);
-				if(line.length() > 0) {
-					int index = line.lastIndexOf(separator);
-					if(index != -1) {
-						String key = line.substring(0, index).trim();
-						String value = line.substring(index + separator.length()).trim();
-						if(key.equals("@")) {
-							logger.debug("including and overriding values defined so far with file '{}'", value);
-							load(value, separator);
-						} else {
-							logger.debug("adding '{}' => '{}'", key, value);
-							this.put(key.trim(), value.trim());
-						}
+				int index = -1;
+				if(line.length() > 0 && (index = line.lastIndexOf(separator)) != -1) {
+					String key = line.substring(0, index).trim();
+					String value = line.substring(index + separator.length()).trim();
+					if("@".equals(key)) {
+						logger.debug("including and overriding values defined so far with file '{}'", value);
+						load(value, separator);
+					} else {
+						logger.debug("adding '{}' => '{}'", key, value);
+						this.put(key.trim(), value.trim());
 					}
 				}
 			}
 			if(buffer.length() > 0) {
 				logger.warn("multi-line property '{}' is not properly terminated", buffer);
-			}
-		} finally {
-			if(in != null) {
-				in.close();
 			}
 		}
 	}	
@@ -254,7 +241,7 @@ public class Properties {
 		if(isLocked()) {
 			throw new PropertiesException("properties map is locked, its contents cannot be altered.");
 		}				
-		assert(properties != null);
+		assert properties != null;
 		for(Entry<String, String> entry : properties.entrySet()) {
 			this.put(entry.getKey(), entry.getValue());
 		}
@@ -290,7 +277,7 @@ public class Properties {
 	 * @param key
 	 *   the key of the property to set.
 	 * @param value
-	 *   the value of the proeprty to set.
+	 *   the value of the property to set.
 	 * @return
 	 *   the previous value associated with the key, or null if no such value
 	 *   was present in the map.
