@@ -3,15 +3,15 @@
  */ 
 package org.dihedron.patterns.http;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.security.SecureRandom;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import org.dihedron.core.strings.Strings;
 import org.dihedron.patterns.http.HttpParameter.Type;
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
-public abstract class HttpRequest {
+public class HttpRequest {
 	
 	/**
 	 * The logger.
@@ -51,14 +51,13 @@ public abstract class HttpRequest {
 	/**
 	 * The request parameters' map.
 	 */
-	private Map<String, HttpParameter> parameters = new HashMap<>();
+	private Set<HttpParameter> parameters = new HashSet<>();
 	
 	/**
 	 * Boundary value between parameters in multipart/form-data.
 	 */
-	private String boundary = "--" + new BigInteger(130, random).toString(32);;
-	
-	
+	private String boundary = "--" + new BigInteger(130, random).toString(32);
+		
 	/**
 	 * Constructor.
 	 *
@@ -101,27 +100,19 @@ public abstract class HttpRequest {
 	 * 
 	 * @return
 	 *   the destination URL of this request.
+	 * @throws HttpClientException
+	 *   if the parameters of a GET request contain a "FILE" type parameter, which 
+	 *   cannot be serialised as a set of ampersand-joined key/value strings.  
 	 * @throws MalformedURLException
-	 *   if the destination URL cannot be parsed. 
-	 * @throws UnsupportedEncodingException 
+	 *   if the string representation of the URL cannot be parsed.  
 	 */
-	URL getURL() throws MalformedURLException, UnsupportedEncodingException {
-		if(method == HttpMethod.GET) {
-			StringBuilder buffer = new StringBuilder();
-			for(Entry<String, HttpParameter> parameter : parameters.entrySet()) {
-				if(parameter.getValue().getType() == Type.FILE) {
-					logger.error("parameters in GET request cannot be of type FILE");
-					throw new MalformedURLException("Parameters in GET request cannot be of type 'FILE'");
-				}
-				buffer.append(buffer.length() > 0 || url.contains("?") ? "&" : "?");
-				buffer
-					.append(URLEncoder.encode(parameter.getKey(), "UTF-8"))
-					.append("=")
-					.append(URLEncoder.encode(parameter.getValue().toString(), "UTF-8"));
-			}
-			return new URL(url + buffer.toString());
+	URL getURL() throws HttpClientException, MalformedURLException {
+		String buffer = url;
+		if(method == HttpMethod.GET) {  
+			buffer = url + (url.contains("?") ? "&" : "?") + HttpParameter.concatenate(parameters);
 		}
-		return new URL(url);
+		logger.trace("real request URL: '{}'", buffer);
+		return new URL(buffer);
 	}
 	
 	/**
@@ -157,12 +148,12 @@ public abstract class HttpRequest {
 	 * @return
 	 *   the object itself, for method chaining.
 	 */
-	public HttpRequest setHeader(String header, String value) {
+	public HttpRequest withHeader(String header, String value) {
 		if(Strings.isValid(header)) {
 			if(Strings.isValid(value)) {
 				headers.put(header,  value);
 			} else {
-				resetHeader(header);
+				withoutHeader(header);
 			}			
 		}
 		return this;
@@ -176,7 +167,7 @@ public abstract class HttpRequest {
 	 * @return
 	 *  the object itself, for method chaining.
 	 */
-	public HttpRequest resetHeader(String header) {
+	public HttpRequest withoutHeader(String header) {
 		if(headers.containsKey(header)) {
 			headers.remove(header);
 		}
@@ -187,9 +178,9 @@ public abstract class HttpRequest {
 	 * Returns the map of request parameters.
 	 * 
 	 * @return
-	 *   the map of request parameters.
+	 *   the set of request parameters.
 	 */
-	Map<String, HttpParameter> getParameters() {
+	Collection<HttpParameter> getParameters() {
 		return parameters;
 	}	
 
@@ -205,13 +196,11 @@ public abstract class HttpRequest {
 	 * @return
 	 *   the object itself, for method chaining.
 	 */
-	public HttpRequest setParameter(String parameter, HttpParameter value) {
-		if(Strings.isValid(parameter)) {
-			if(value != null) {
-				parameters.put(parameter,  value);
-			} else {
-				resetParameter(parameter);
-			}			
+	public HttpRequest withParameter(HttpParameter parameter) {
+		if(parameter != null) {
+			parameters.add(parameter);
+		} else {
+			withoutParameter(parameter);			
 		}
 		return this;
 	}
@@ -224,9 +213,28 @@ public abstract class HttpRequest {
 	 * @return
 	 *  the object itself, for method chaining.
 	 */
-	public HttpRequest resetParameter(String parameter) {
-		if(parameters.containsKey(parameter)) {
-			parameters.remove(parameter);
+	public HttpRequest withoutParameter(String parameter) {
+		if(Strings.isValid(parameter)) {
+			for(HttpParameter p : parameters) {
+				if(parameter.equals(p.getName())) {
+					parameters.remove(p);
+				}
+			}
+		}
+		return this;
+	}
+	
+	/**
+	 * Resets the value of the given parameter.
+	 * 
+	 * @param parameter
+	 *   the parameter to reset.
+	 * @return
+	 *  the object itself, for method chaining.
+	 */
+	public HttpRequest withoutParameter(HttpParameter parameter) {
+		if(parameter != null) {
+			return withoutParameter(parameter.getName());
 		}
 		return this;
 	}	
@@ -240,8 +248,8 @@ public abstract class HttpRequest {
 	 *   whether the request contains FILE parameters.
 	 */
 	boolean isMultiPartFormData() {
-		for(Entry<String, HttpParameter> parameter : parameters.entrySet()) {
-			if(parameter.getValue().getType() == Type.FILE) {
+		for(HttpParameter parameter : parameters) {
+			if(parameter.getType() == Type.FILE) {
 				return true;
 			}
 		}

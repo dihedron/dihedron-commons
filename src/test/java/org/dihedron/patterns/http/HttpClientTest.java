@@ -3,8 +3,7 @@
  */ 
 package org.dihedron.patterns.http;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -19,10 +18,22 @@ public class HttpClientTest {
 	 */
 	private final static Logger logger = LoggerFactory.getLogger(HttpClientTest.class);
 
+	private final static String GET_URL = "http://localhost/websign/index.html"; 
+	private final static String POST_URL = "http://localhost/websign/form.php";
+	
 	@Test
-	public void test() throws MalformedURLException {
-		URL url = new URL("http://www.google.com/search?q=dihedron");
-		logger.trace("url: '{}'", url);
+	public void test() throws IOException, HttpClientException {
+		
+		HttpClient client = new HttpClient();
+		HttpRequest get = new HttpRequest(HttpMethod.GET, GET_URL)
+			.withParameter(new HttpTextParameter("param1", "value1"))
+			.withParameter(new HttpTextParameter("param3", "value  2"));
+		try(HttpResponse response = client.perform(get)) {
+			logger.trace("response data: \n{}", response);
+		}
+		
+		HttpRequest post = new HttpRequest(HttpMethod.POST, POST_URL);
+		
 //		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 //		
 //		connection.setRequestMethod("GET");

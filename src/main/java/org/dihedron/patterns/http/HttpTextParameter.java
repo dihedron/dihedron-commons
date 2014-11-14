@@ -24,8 +24,8 @@ public class HttpTextParameter extends HttpParameter {
 	 * @param value
 	 *   the value of the HTTP parameter.
 	 */
-	public HttpTextParameter(Type type, String name, Object value) {
-		super(type, name);
+	public HttpTextParameter(String name, Object value) {
+		super(Type.TEXT, name);
 		this.value = value;
 	}	
 	

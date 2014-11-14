@@ -8,9 +8,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import org.dihedron.core.License;
+
 /**
  * @author Andrea Funto'
  */
+@License
 public class HttpFileParameter extends HttpParameter {
 
 	/**
@@ -31,8 +34,6 @@ public class HttpFileParameter extends HttpParameter {
 	/**
 	 * Constructor.
 	 *
-	 * @param type
-	 *   the type of the HTTP parameter.
 	 * @param name
 	 *   the name of the HTTP parameter.
 	 * @param filename
@@ -44,15 +45,13 @@ public class HttpFileParameter extends HttpParameter {
 	 * @throws FileNotFoundException
 	 *   if the File corresponds to no existing object on disk. 
 	 */
-	public HttpFileParameter(Type type, String name, String filename, String contentType, File file) throws FileNotFoundException {
-		this(type, name, filename, contentType, new FileInputStream(file));
+	public HttpFileParameter(String name, String filename, String contentType, File file) throws FileNotFoundException {
+		this(name, filename, contentType, new FileInputStream(file));
 	}
 	
 	/**
 	 * Constructor.
 	 *
-	 * @param type
-	 *   the type of the HTTP parameter.
 	 * @param name
 	 *   the name of the HTTP parameter.
 	 * @param filename
@@ -62,8 +61,8 @@ public class HttpFileParameter extends HttpParameter {
 	 * @param stream
 	 *   an input stream from which the file can be read.
 	 */
-	public HttpFileParameter(Type type, String name, String filename, String contentType, InputStream stream) {
-		super(type, name);
+	public HttpFileParameter(String name, String filename, String contentType, InputStream stream) {
+		super(Type.FILE, name);
 		this.filename = filename;
 		this.contentType = contentType;
 		this.stream = stream;
