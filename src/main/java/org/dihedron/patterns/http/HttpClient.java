@@ -165,6 +165,6 @@ public class HttpClient {
 			// do nothing
 		}
 		
-		return new HttpResponse(connection.getInputStream());
+		return new HttpResponse(connection);
 	}
 }

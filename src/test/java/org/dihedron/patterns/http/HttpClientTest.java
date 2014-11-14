@@ -26,11 +26,14 @@ public class HttpClientTest {
 		
 		HttpClient client = new HttpClient();
 		HttpRequest get = new HttpRequest(HttpMethod.GET, GET_URL)
+			.withHeader("User-Agent", "MyUserAgent")
+			.withHeader("Accept-Language", "en-US,en;q=0.5")
 			.withParameter(new HttpTextParameter("param1", "value1"))
 			.withParameter(new HttpTextParameter("param3", "value  2"));
-		try(HttpResponse response = client.perform(get)) {
-			logger.trace("response data: \n{}", response);
-		}
+		HttpResponse response = client.perform(get);
+		logger.trace("content-type: '{}'", response.getContentType());
+		logger.trace("response data: \n{}", response);
+		
 		
 		HttpRequest post = new HttpRequest(HttpMethod.POST, POST_URL);
 		
@@ -38,7 +41,7 @@ public class HttpClientTest {
 //		
 //		connection.setRequestMethod("GET");
 //		connection.setRequestProperty("User-Agent", "MyUserAgent");
-//		connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+//		connection.setRequestProperty;
 //		
 //		int code = connection.getResponseCode();
 //		String message = connection.getResponseMessage();

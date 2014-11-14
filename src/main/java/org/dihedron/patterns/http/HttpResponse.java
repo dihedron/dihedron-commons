@@ -6,6 +6,8 @@ package org.dihedron.patterns.http;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
+import java.security.Permission;
 
 import org.dihedron.core.streams.Streams;
 import org.slf4j.Logger;
@@ -14,25 +16,62 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
-public class HttpResponse implements AutoCloseable {
+public class HttpResponse {
+	
 	/**
 	 * The logger.
 	 */
 	private final static Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 	
 	/**
-	 * The input stream returned by the client upon a request. 
+	 * The URL connection returned by the client upon an HTTP request. 
 	 */
-	private InputStream stream;
+	private URLConnection connection;
 	
 	/**
 	 * Constructor.
 	 *
-	 * @param stream
-	 *   the input stream returned by the client upon an HTTP request.
+	 * @param connection
+	 *   the URL connection returned by the client upon an HTTP request.
 	 */
-	HttpResponse(InputStream stream) {
-		this.stream = stream;
+	HttpResponse(URLConnection connection) {
+		this.connection = connection;
+	}
+	
+	public String getContentEncoding() {
+		return connection.getContentEncoding();
+	}
+		
+	public int getContentLength() {
+		return connection.getContentLength();
+	}
+	
+	public String getContentType() {
+		return connection.getContentType();
+	}
+	
+	public long getDate() {
+		return connection.getDate();
+	}
+	
+	public long getExpiration() {
+		return connection.getExpiration();
+	}
+	
+	public long getLastModified() {
+		return connection.getLastModified();
+	}
+	
+	public Permission getPermission() throws IOException {
+		return connection.getPermission();
+	}
+	
+	public Object getContent() throws IOException {
+		return connection.getContent();
+	}
+	
+	public InputStream getInputStream() throws IOException {
+		return connection.getInputStream();
 	}
 	
 	/**
@@ -42,8 +81,8 @@ public class HttpResponse implements AutoCloseable {
 	 */
 	@Override
 	public String toString() {
-		try(ByteArrayOutputStream output = new ByteArrayOutputStream()) { 
-			Streams.copy(stream, output);
+		try(InputStream input = connection.getInputStream(); ByteArrayOutputStream output = new ByteArrayOutputStream()) { 
+			Streams.copy(input, output);
 			String data = new String(output.toByteArray());
 			logger.trace("response data:\n{}", data);
 			return data;
@@ -51,16 +90,5 @@ public class HttpResponse implements AutoCloseable {
 			logger.error("error reading response data from stream", e);
 		}
 		return null;
-	}
-
-	/**
-	 * @throws IOException 
-	 * @see java.lang.AutoCloseable#close()
-	 */
-	@Override
-	public void close() throws IOException {
-		if(stream != null) {
-			stream.close();
-		}		
 	}	
 }
