@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
+import org.dihedron.core.License;
+
 /**
  * An input stream returning a random sequence of non-negative integer values.
  * 
  * @author Andrea Funto'
  */
+@License
 public class RandomInputStream extends InputStream {
 	
 	/**

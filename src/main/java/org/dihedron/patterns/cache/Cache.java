@@ -244,7 +244,7 @@ public class Cache implements Iterable<String>{
 	 *   will point.
 	 * @return
 	 *   an output stream ; the caller will write its data into it, and then 
-	 *   will flush and close it one it's done writing data.
+	 *   will flush and close it once it's done writing data.
 	 * @throws CacheException
 	 */
 	public OutputStream put(String resource) throws CacheException {
