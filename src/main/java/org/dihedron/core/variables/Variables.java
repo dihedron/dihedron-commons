@@ -79,7 +79,7 @@ public final class Variables {
 		Set<String> unboundVariables = new HashSet<String>();
 		
 		boolean oneVariableBound = true;
-		while(oneVariableBound && (variables = regex.getAllMatches(replaceText)).size() > 0) {
+		while(oneVariableBound && !(variables = regex.getAllMatches(replaceText)).isEmpty()) {
 			oneVariableBound = false;			
 			logger.trace("analysing text: '{}'", replaceText);
 			for(String[] groups : variables) {

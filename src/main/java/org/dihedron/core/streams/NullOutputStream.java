@@ -6,11 +6,14 @@ package org.dihedron.core.streams;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.dihedron.core.License;
+
 /**
  * An output stream that writes to nowhere.
  * 
  * @author Andrea Funto'
  */
+@License
 public class NullOutputStream extends OutputStream {
 
 	/**

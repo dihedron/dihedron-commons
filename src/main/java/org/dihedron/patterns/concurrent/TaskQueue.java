@@ -26,10 +26,8 @@ public final class TaskQueue<T> {
 	 * @param observer
 	 */
 	public static void addObserver(TaskObserver<?> observer) {
-		if(observer != null) {
-			if(tls.get().observers == null) {
-				tls.get().observers = new ArrayList<TaskObserver<?>>();
-			}
+		if(observer != null && tls.get().observers == null) {
+			tls.get().observers = new ArrayList<TaskObserver<?>>();
 		}
 		tls.get().observers.add(observer);
 	}
@@ -75,11 +73,6 @@ public final class TaskQueue<T> {
 			return new TaskQueue();
 		}
 	};
-
-//	/**
-//	 * The queue used to synchronise task execution.
-//	 */
-//	private BlockingQueue<Integer> queue;	
 	
 	/**
 	 * A set of observers which will be notified at various stages of the tasks
@@ -92,6 +85,5 @@ public final class TaskQueue<T> {
 	 * synchronisation of background tasks..
 	 */
 	private TaskQueue() {
-//		this.queue = new LinkedBlockingQueue<Integer>();
 	}
 }

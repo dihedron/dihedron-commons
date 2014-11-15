@@ -6,12 +6,15 @@ package org.dihedron.patterns.cache.storage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 
 import org.dihedron.core.License;
 import org.dihedron.core.streams.Streams;
+import org.dihedron.patterns.cache.Cache;
+import org.dihedron.patterns.cache.CacheException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,6 +37,8 @@ public class URLStorageTest {
 	private static final String USERNAME = "jdoe@acme.org";
 	private static final String PASSWORD = "trustn00n3";
 	
+	private static final String RESOURCE_URL = "http://www.google.com/";
+//	private static final String RESOURCE_URL = "http://localhost/websign/index.html";
 	
 	@Before
 	public void setUp() {
@@ -84,10 +89,38 @@ public class URLStorageTest {
 		
 		URLStorage storage = new URLStorage(Proxy.NO_PROXY);
 	
-		InputStream input = storage.retrieve("http://www.google.com/");
-		ByteArrayOutputStream output = new ByteArrayOutputStream(); 
-		Streams.copy(input, output);
-		String s = new String(output.toByteArray());
-		logger.trace("result:\n{}", s);
+		try(OutputStream os = storage.store(RESOURCE_URL)) {}
+		
+		try(InputStream input = storage.retrieve(RESOURCE_URL); ByteArrayOutputStream output = new ByteArrayOutputStream()) { 
+			Streams.copy(input, output);
+			String s = new String(output.toByteArray());
+			logger.trace("result:\n{}", s);
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testWithCache() throws CacheException, IOException {
+		Cache cache = new Cache(new URLStorage(Proxy.NO_PROXY));
+		
+		// NOTE: we have to do it like this because we do not want to store anything 
+		// into the cache, we are simply recoriding the URL of the remte resource
+		// so that the cache believes it has it in store already; when we'll
+		// try to retrieve the resource from the cache, the storage will actually
+		// go fetch it from the remote server: this is different from using the
+		// handler to grab the resource, because that mechanism will actually
+		// perform the web request only once, up-front, and will then store the
+		// (potentially huge amount of) data into the local cache, assuming there
+		// is a memory storage or a disk storage. By doing like this, we are
+		// tricking the cache into believing it has already a local copy, but it 
+		// has not, so the load on the local memory is kept to 0 at the expense 
+		// of a little delay in acquiring the resource when needed. 
+		try(OutputStream os = cache.put(RESOURCE_URL)) {}
+		
+		try(InputStream input = cache.get(RESOURCE_URL); ByteArrayOutputStream output = new ByteArrayOutputStream()) { 
+			Streams.copy(input, output);
+			String s = new String(output.toByteArray());
+			logger.trace("result:\n{}", s);
+		}		
 	}
 }

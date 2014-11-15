@@ -49,25 +49,15 @@ public abstract class Library {
 	 */
 	protected Library(String name) {
 		this.name = name;
-		InputStream stream = null;
-		try {
-			String path = PROPERTIES_FILE.replaceAll("\\$\\{library\\}", name);
-			logger.trace("loading from '{}'", path);
-			stream = Streams.fromURL(path);
+		
+		String path = PROPERTIES_FILE.replaceAll("\\$\\{library\\}", name);
+		logger.trace("loading from '{}'", path);
+		try(InputStream stream = Streams.fromURL(path)){
 			properties.load(stream);
 		} catch (IOException e) {
 			logger.error("error loading library properties from input stream", e);
 		} catch (PropertiesException e) {
 			logger.error("error loading library properties from input stream", e);
-		} finally {
-			if(stream != null) {
-				try {
-					stream.close();
-					stream = null;
-				} catch(IOException e) {
-					logger.error("error closing library properties stream", e);
-				}
-			}
 		}		
 	}
 	

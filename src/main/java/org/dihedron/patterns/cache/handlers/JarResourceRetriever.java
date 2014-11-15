@@ -25,7 +25,7 @@ public class JarResourceRetriever implements CacheMissHandler {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(JarResourceRetriever.class);
+	private static final Logger logger = LoggerFactory.getLogger(JarResourceRetriever.class);
 	
 	/** 
 	 * A class in the same package as the resource. 

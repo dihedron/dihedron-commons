@@ -26,7 +26,7 @@ public class MultiCacheMissHandler implements CacheMissHandler {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(MultiCacheMissHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(MultiCacheMissHandler.class);
 	
 	/** 
 	 * The list of handlers. 
@@ -114,7 +114,7 @@ public class MultiCacheMissHandler implements CacheMissHandler {
 			}
 		}
 		
-		if(exceptions.size() > 0) {
+		if(!exceptions.isEmpty()) {
 			logger.warn("failure, resource not found, and {} exceptions occurred", exceptions.size());
 			throw new CacheException("Resource not found", exceptions);
 		}

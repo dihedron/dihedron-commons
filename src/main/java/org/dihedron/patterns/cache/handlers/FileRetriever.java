@@ -25,7 +25,7 @@ public class FileRetriever implements CacheMissHandler {
 	/** 
 	 * The logger. 
 	 */
-	private static Logger logger = LoggerFactory.getLogger(FileRetriever.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileRetriever.class);
 	
 	/** 
 	 * The file. 

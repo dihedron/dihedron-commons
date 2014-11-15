@@ -22,6 +22,11 @@ public enum Traits {
 	 * The version of the library.
 	 */
 	VERSION("${library}.version"),
+	
+	/**
+	 * The build time stamp of the library.
+	 */
+	TIMESTAMP("${library}.timestamp"),
 
 	/**
 	 * The version of the library.

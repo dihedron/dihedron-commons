@@ -5,8 +5,6 @@
 package org.dihedron.patterns.activities.adapters;
 
 import org.dihedron.core.License;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
@@ -14,22 +12,21 @@ import org.slf4j.LoggerFactory;
 @License
 public class LdapQuery {
 	
+	/**
+	 * The query scope.
+	 * 
+	 * @author Andrea Funto'
+	 */
 	@License
 	public enum Scope {
 		BASE,
 		ONE,
 		SUBTREE
 	}
-	
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final static Logger logger = LoggerFactory.getLogger(LdapQuery.class);
 
 	/**
 	 * The object at which to begin the search; no objects above the base DN 
-	 * are returned
+	 * are returned.
 	 */
 	private String base;
 	

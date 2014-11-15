@@ -201,7 +201,7 @@ public class LdapAdapter extends Transformation {
 	/**
 	 * The logger defined for this class.
 	 */
-	private static Logger logger = LoggerFactory.getLogger(LdapAdapter.class);
+	private static final Logger logger = LoggerFactory.getLogger(LdapAdapter.class);
 	
 //	/**
 //	 * This method performs the actual LDAP search

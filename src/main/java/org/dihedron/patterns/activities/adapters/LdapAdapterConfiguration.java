@@ -23,7 +23,7 @@ public class LdapAdapterConfiguration {
 	 * The logger.
 	 */
 	@SuppressWarnings("unused")
-	private final static Logger logger = LoggerFactory.getLogger(LdapAdapterConfiguration.class);
+	private static final Logger logger = LoggerFactory.getLogger(LdapAdapterConfiguration.class);
 	
 	/**
 	 * The context of the query.
