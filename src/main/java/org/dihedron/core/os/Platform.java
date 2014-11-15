@@ -5,6 +5,8 @@
 package org.dihedron.core.os;
 
 import org.dihedron.core.License;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An enumeration of all (potentially) supported Java Virtual Machine platforms; 
@@ -62,6 +64,11 @@ public enum Platform {
 	UNIX_64("unix64", OperatingSystem.UNIX, Addressing.SIZE_64);
 	
 	/**
+	 * The logger
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Platform.class);
+	
+	/**
 	 * Tries to detect the current operating infrastructure. Note that this
 	 * might be different from the actual operating system, e.g. when running
 	 * a 32-bits Java Virtual Machine on a 64-bits operating system: in this
@@ -74,27 +81,29 @@ public enum Platform {
 	public static Platform getCurrent() {
 		String os = System.getProperty("os.name").toLowerCase();
 		String architecture = System.getProperty("os.arch");
+		logger.trace("detecting current LVM platform based on OS '{}' and architecture '{}'", os, architecture);
 		if(os.indexOf("win") >= 0) {
-			if("x86".equalsIgnoreCase(architecture)) {
+			if("x86".equalsIgnoreCase(architecture) || "i386".equalsIgnoreCase(architecture)) {
 				return Platform.WINDOWS_32;
 			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.WINDOWS_64;
 			}
 		} else if(os.indexOf("nux") >= 0) {
-			if("x86".equalsIgnoreCase(architecture)) {
+			if("x86".equalsIgnoreCase(architecture) || "i386".equalsIgnoreCase(architecture)) {
+				// "x86" for ordinary intel desktop processors; atom reports "i386" instead
 				return Platform.LINUX_32;
 			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.LINUX_64;
 			}			
 		} else if(os.indexOf("mac") >= 0) {
-			if("x86".equalsIgnoreCase(architecture)) {
+			if("x86".equalsIgnoreCase(architecture) || "i386".equalsIgnoreCase(architecture)) {
 				return Platform.MACOSX_32;
 			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.MACOSX_64;
 			}			
 		} else if(os.indexOf("nix") >= 0) {
 			// TODO: this is for fun! x86 on UNIX? are we joking?
-			if("x86".equalsIgnoreCase(architecture)) {
+			if("x86".equalsIgnoreCase(architecture) || "i386".equalsIgnoreCase(architecture)) {
 				return Platform.UNIX_32;
 			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.UNIX_64;
