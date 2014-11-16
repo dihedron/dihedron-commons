@@ -90,7 +90,7 @@ public enum Platform {
 			}
 		} else if(os.indexOf("nux") >= 0) {
 			if("x86".equalsIgnoreCase(architecture) || "i386".equalsIgnoreCase(architecture)) {
-				// "x86" for ordinary intel desktop processors; atom reports "i386" instead
+				// "x86" for ordinary intel processors; atom reports "i386" instead
 				return Platform.LINUX_32;
 			} else if("x86_64".equalsIgnoreCase(architecture) || "amd64".equalsIgnoreCase(architecture)) {
 				return Platform.LINUX_64;

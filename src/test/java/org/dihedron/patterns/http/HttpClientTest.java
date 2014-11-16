@@ -21,23 +21,33 @@ public class HttpClientTest {
 	private final static Logger logger = LoggerFactory.getLogger(HttpClientTest.class);
 
 	private final static String GET_URL = "http://localhost/websign/index.html"; 
-	private final static String POST_URL = "http://localhost/websign/form.php";
+	private final static String POST_URL = "http://localhost/upload/upload.php";
 	
 	@Test
 	public void test() throws IOException, HttpClientException {
 		
+		
 		HttpClient client = new HttpClient();
+		
+		/*
 		HttpRequest get = new HttpRequest(HttpMethod.GET, GET_URL)
 			.withHeader("User-Agent", "MyUserAgent")
 			.withHeader("Accept-Language", "en-US,en;q=0.5")
 			.withParameter(new HttpTextParameter("param1", "value1"))
-			.withParameter(new HttpTextParameter("param3", "value  2"));
+			.withParamer(new HttpTextParameter("param3", "value  2"));
 		HttpResponse response = client.perform(get);
 		logger.trace("content-type: '{}'", response.getContentType());
 		logger.trace("response data: \n{}", response);
+		*/
 		
-		
-		HttpRequest post = new HttpRequest(HttpMethod.POST, POST_URL);
+		HttpRequest post = new HttpRequest(HttpMethod.POST, POST_URL)
+			.withHeader("User-Agent", "MyUserAgent")
+			.withHeader("Accept-Language", "en-US,en;q=0.5")
+			.withParameter(new HttpTextParameter("param1", "value1"))
+			.withParameter(new HttpTextParameter("param3", "value  2"));
+		HttpResponse response = client.perform(post);
+		logger.trace("content-type: '{}'", response.getContentType());
+		logger.trace("response data: \n{}", response);
 		
 //		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 //		

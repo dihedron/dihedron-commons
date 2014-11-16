@@ -5,6 +5,7 @@ package org.dihedron.patterns.http;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
@@ -12,6 +13,7 @@ import java.util.Map.Entry;
 
 import org.dihedron.core.License;
 import org.dihedron.core.streams.Streams;
+import org.dihedron.core.streams.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +91,8 @@ public class HttpClient {
 			}
 			
 			connection.setDoOutput(true);
-			try(DataOutputStream stream = new DataOutputStream(connection.getOutputStream())) {
+//			try(DataOutputStream stream = new DataOutputStream(connection.getOutputStream())) {
+			try(OutputStream stream = new TeeOutputStream(new DataOutputStream(connection.getOutputStream()), System.out)) {
 				if(request.isMultiPartFormData()) {
 					//
 					// multipart/form-encoded format is:
