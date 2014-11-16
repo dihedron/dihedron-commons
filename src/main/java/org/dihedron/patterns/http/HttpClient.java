@@ -4,16 +4,16 @@
 package org.dihedron.patterns.http;
 
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.Map.Entry;
 
 import org.dihedron.core.License;
+import org.dihedron.core.streams.MirroringOutputStream;
 import org.dihedron.core.streams.Streams;
-import org.dihedron.core.streams.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,8 @@ public class HttpClient {
 	/**
 	 * The [0x0D 0x0A] byte sequence representing a new line in HTTP parlance.
 	 */
-	private static final byte [] NEWLINE = {0x0D, 0x0A};
+//	private static final byte [] NEWLINE = { 0x0D, 0x0A };
+	private static final String NEWLINE = "\r\n";
 	
 	/**
 	 * The optional proxy address.
@@ -91,8 +92,9 @@ public class HttpClient {
 			}
 			
 			connection.setDoOutput(true);
+			try(MirroringOutputStream mirror = new MirroringOutputStream(connection.getOutputStream(), new FileOutputStream("/data/devtools/repositories/git/websign/target/request.dat")); DataOutputStream stream = new DataOutputStream(mirror)) {
 //			try(DataOutputStream stream = new DataOutputStream(connection.getOutputStream())) {
-			try(OutputStream stream = new TeeOutputStream(new DataOutputStream(connection.getOutputStream()), System.out)) {
+//			try(@SuppressWarnings("resource") TeeOutputStream stream = new TeeOutputStream().with(new DataOutputStream(connection.getOutputStream())).with(System.err, false)) {
 				if(request.isMultiPartFormData()) {
 					//
 					// multipart/form-encoded format is:
@@ -120,26 +122,25 @@ public class HttpClient {
 					// --AaB03x--
 					// ==========================						
 					for(HttpParameter parameter : request.getParameters()) {
-						stream.writeBytes(request.getBoundary());
-						stream.write(NEWLINE);
+						stream.writeBytes("--" + request.getBoundary());
+						stream.writeBytes(NEWLINE);
 						switch(parameter.getType()) {
 						case TEXT:
-							stream.writeBytes("Content-Disposition: form-data; name=\"" + parameter.getName() + "\"");
-							stream.write(NEWLINE);
-							stream.write(NEWLINE);
-							stream.writeBytes(parameter.toString());
+							stream.writeBytes("Content-Disposition: form-data; name=\"" + parameter.getName() + "\"" + NEWLINE);
+							stream.writeBytes(NEWLINE);
+							stream.writeBytes(((HttpTextParameter)parameter).getValue().toString() + NEWLINE);
 							break;
 						case FILE:
-							stream.writeBytes("Content-Disposition: form-data; name=\"" + parameter.getName() + "\"; filename=\"" + ((HttpFileParameter)parameter).getFileName() + "\"");
-							stream.write(NEWLINE);
-							stream.write(NEWLINE);
+							stream.writeBytes("Content-Disposition: form-data; name=\"" + parameter.getName() + "\"; filename=\"" + ((HttpFileParameter)parameter).getFileName() + "\"" + NEWLINE);
+							stream.writeBytes("Content-Type: " + ((HttpFileParameter)parameter).getContentType() + NEWLINE);
+							stream.writeBytes("Content-Transfer-Encoding: binary" + NEWLINE);
+							stream.writeBytes(NEWLINE);
 							Streams.copy(((HttpFileParameter)parameter).getInputStream(), stream);
-							stream.write(NEWLINE);
+							stream.writeBytes(NEWLINE);
 							break;						
 						}
 					}					
-					stream.writeBytes(request.getBoundary());
-					stream.writeBytes("--");;
+					stream.writeBytes("--" + request.getBoundary() + "--");
 //					stream.write(NEWLINE);
 				} else {
 					//
@@ -155,8 +156,8 @@ public class HttpClient {
 					// ==========================						
 					//
 					String values = HttpParameter.concatenate(request.getParameters());
-					stream.write(NEWLINE);
-					stream.write(NEWLINE);
+//					stream.write(NEWLINE);
+//					stream.write(NEWLINE);
 					stream.writeBytes(values);
 //					stream.write(NEWLINE);
 				}

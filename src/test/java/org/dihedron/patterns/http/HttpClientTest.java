@@ -3,6 +3,7 @@
  */ 
 package org.dihedron.patterns.http;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.dihedron.core.License;
@@ -44,9 +45,14 @@ public class HttpClientTest {
 			.withHeader("User-Agent", "MyUserAgent")
 			.withHeader("Accept-Language", "en-US,en;q=0.5")
 			.withParameter(new HttpTextParameter("param1", "value1"))
-			.withParameter(new HttpTextParameter("param3", "value  2"));
+			.withParameter(new HttpTextParameter("param3", "value  2"))
+			.withParameter(new HttpFileParameter("file01", "icon01.png", "image/png", new File("src/test/resources/org/dihedron/commons/images/icon01.png")))
+			.withParameter(new HttpFileParameter("file02", "icon02.png", "image/png", new File("src/test/resources/org/dihedron/commons/images/icon02.png")))
+			.withParameter(new HttpFileParameter("file03", "icon03.png", "image/png", new File("src/test/resources/org/dihedron/commons/images/icon03.png")))
+			.withParameter(new HttpFileParameter("file04", "icon04.png", "image/png", new File("src/test/resources/org/dihedron/commons/images/icon04.png")));
 		HttpResponse response = client.perform(post);
-		logger.trace("content-type: '{}'", response.getContentType());
+		logger.trace("content-type: {}", response.getContentType());
+		logger.trace("=======================================================================");
 		logger.trace("response data: \n{}", response);
 		
 //		HttpURLConnection connection = (HttpURLConnection)url.openConnection();

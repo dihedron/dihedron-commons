@@ -56,7 +56,7 @@ public class HttpRequest {
 	/**
 	 * Boundary value between parameters in multipart/form-data.
 	 */
-	private String boundary = "--" + new BigInteger(130, random).toString(32);
+	private String boundary = new BigInteger(130, random).toString(32);
 		
 	/**
 	 * Constructor.

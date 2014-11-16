@@ -90,11 +90,11 @@ public class Streams {
 			byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 			int read = 0;
 			while((read = input.read(buffer)) > 0) {
-				logger.trace("read {} bytes from input stream", read);
+//				logger.trace("read {} bytes from input stream", read);
 				total += read;
 				output.write(buffer, 0, read);
 			}
-			logger.trace("total of {} bytes copied", total);
+//			logger.trace("total of {} bytes copied", total);
 			return total;
 		} finally {
 			if(autoclose) {
