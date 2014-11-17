@@ -4,7 +4,6 @@
 package org.dihedron.patterns.http;
 
 import java.io.DataOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -12,7 +11,6 @@ import java.net.URL;
 import java.util.Map.Entry;
 
 import org.dihedron.core.License;
-import org.dihedron.core.streams.MirroringOutputStream;
 import org.dihedron.core.streams.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,16 +83,17 @@ public class HttpClient {
 		}
 		
 		if(request.getMethod() == HttpMethod.POST) {
+			// add headers directly to the connection (we've already looped over
+			// headers in the request object, so it's too late to add headers now)
 			if(request.isMultiPartFormData()) {
-				request.withHeader("Content-type", "multipart/form-data, boundary=" + request.getBoundary());
+				connection.setRequestProperty("Content-type", "multipart/form-data, boundary=" + request.getBoundary());
 			} else {
-				request.withHeader("Content-type", "application/x-www-form-urlencoded"); 
+				connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 			}
-			
+						
 			connection.setDoOutput(true);
-			try(MirroringOutputStream mirror = new MirroringOutputStream(connection.getOutputStream(), new FileOutputStream("/data/devtools/repositories/git/websign/target/request.dat")); DataOutputStream stream = new DataOutputStream(mirror)) {
-//			try(DataOutputStream stream = new DataOutputStream(connection.getOutputStream())) {
-//			try(@SuppressWarnings("resource") TeeOutputStream stream = new TeeOutputStream().with(new DataOutputStream(connection.getOutputStream())).with(System.err, false)) {
+//			try(MirrorOutputStream mirror = new MirrorOutputStream(connection.getOutputStream(), new FileOutputStream("target/request.dat")); DataOutputStream stream = new DataOutputStream(mirror)) {
+			try(DataOutputStream stream = new DataOutputStream(connection.getOutputStream())) {
 				if(request.isMultiPartFormData()) {
 					//
 					// multipart/form-encoded format is:
@@ -102,24 +101,30 @@ public class HttpClient {
 					// ========================
 					// POST /path/to/script.php HTTP/1.0
 					// Host: example.com
-					// Content-type: multipart/form-data, boundary=AaB03x
-					// Content-Length: $requestlen
+					// Content-type: multipart/form-data, boundary=<RANDOM BOUNDARY>
+					// Content-Length: <REQUEST_LENGTH>
 					//
-					// --AaB03x
+					// --<RANDOM BOUNDARY>
 					// Content-Disposition: form-data; name="field1"
 					//
-					// $field1
-					// --AaB03x
+					// value1
+					// --<RANDOM BOUNDARY>
 					// Content-Disposition: form-data; name="field2"
 					//
-					// $field2
-					// --AaB03x
-					// Content-Disposition: form-data; name="userfile"; filename="$filename"
-					// Content-Type: $mimetype
+					// value2
+					// --<RANDOM BOUNDARY>
+					// Content-Disposition: form-data; name="file1"; filename="<NAME OF FILE 1>"
+					// Content-Type: <FILE 1 MIME TYPE>
 					// Content-Transfer-Encoding: binary
 					// 
-					// $binarydata
-					// --AaB03x--
+					// <FILE 1 BINARY DATA>
+					// --<RANDOM BOUNDARY>
+					// Content-Disposition: form-data; name="file2"; filename="<NAME OF FILE 2>"
+					// Content-Type: <FILE 2 MIME TYPE>
+					// Content-Transfer-Encoding: binary
+					// 
+					// <FILE 2 BINARY DATA>
+					// --<RANDOM BOUNDARY>--
 					// ==========================						
 					for(HttpParameter parameter : request.getParameters()) {
 						stream.writeBytes("--" + request.getBoundary());
@@ -141,7 +146,6 @@ public class HttpClient {
 						}
 					}					
 					stream.writeBytes("--" + request.getBoundary() + "--");
-//					stream.write(NEWLINE);
 				} else {
 					//
 					// plain old form format is:
@@ -150,16 +154,13 @@ public class HttpClient {
 					// POST /path/to/script.php HTTP/1.0
 					// Host: example.com
 					// Content-type: application/x-www-form-urlencoded
-					// Content-Length: $requestlen
+					// Content-Length: <CONTENT LENGTH>
 					//
 					// logfile=blabla&configfile=more+blabla&usercomment=hello&useremail=
 					// ==========================						
 					//
 					String values = HttpParameter.concatenate(request.getParameters());
-//					stream.write(NEWLINE);
-//					stream.write(NEWLINE);
 					stream.writeBytes(values);
-//					stream.write(NEWLINE);
 				}
 			
 				stream.flush();
