@@ -51,6 +51,7 @@ public abstract class Bus<M> {
 	 */
 	public Bus<M> addObserver(BusObserver<M> observer) {
 		if(observer != null) {
+			logger.info("adding observer of class '{}'", observer.getClass().getSimpleName());
 			observers.add(observer);
 		}
 		return this;
