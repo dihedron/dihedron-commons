@@ -81,7 +81,7 @@ public enum Platform {
 	public static Platform getCurrent() {
 		String os = System.getProperty("os.name").toLowerCase();
 		String architecture = System.getProperty("os.arch");
-		logger.trace("detecting current LVM platform based on OS '{}' and architecture '{}'", os, architecture);
+		logger.trace("detecting current JVM platform based on OS '{}' and architecture '{}'", os, architecture);
 		if(os.indexOf("win") >= 0) {
 			if("x86".equalsIgnoreCase(architecture) || "i386".equalsIgnoreCase(architecture)) {
 				return Platform.WINDOWS_32;

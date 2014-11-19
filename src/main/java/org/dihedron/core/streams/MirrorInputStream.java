@@ -61,7 +61,7 @@ public class MirrorInputStream extends FilterInputStream {
 	@Override
 	public int read() throws IOException {
 		int result = super.read();
-		mirror.write(result);
+		mirror.write((byte)result);
 		return result;
 	}
 
@@ -70,9 +70,7 @@ public class MirrorInputStream extends FilterInputStream {
 	 */
 	@Override
 	public int read(byte b[]) throws IOException {
-		int result = read(b, 0, b.length);
-		mirror.write(b);
-		return result;
+		return read(b, 0, b.length);
 	}
 
 	/**
@@ -81,7 +79,9 @@ public class MirrorInputStream extends FilterInputStream {
 	@Override
     public int read(byte b[], int off, int len) throws IOException {
     	int result = in.read(b, off, len);
-    	mirror.write(b, off, len);
+    	if(result != -1) {
+    		mirror.write(b, off, result);
+    	}
     	return result;
     }
 	
