@@ -61,18 +61,12 @@ public class MirrorInputStream extends FilterInputStream {
 	@Override
 	public int read() throws IOException {
 		int result = super.read();
-		mirror.write((byte)result);
+		if(result != -1) {
+			mirror.write((byte)result);
+		}
 		return result;
 	}
-
-	/**
-	 * @see java.io.FilterInputStream#read(byte[])
-	 */
-	@Override
-	public int read(byte b[]) throws IOException {
-		return read(b, 0, b.length);
-	}
-
+	
 	/**
 	 * @see java.io.FilterInputStream#read(byte[], int, int)
 	 */

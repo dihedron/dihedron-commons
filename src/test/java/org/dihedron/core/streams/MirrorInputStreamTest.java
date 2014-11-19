@@ -17,18 +17,19 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Funto'
  */
-public class MirrorInputStreamTest {
+public class MirrorInputStreamTest extends AbstractStreamsTest {
 	/**
 	 * The logger.
 	 */
 	private final static Logger logger = LoggerFactory.getLogger(MirrorInputStreamTest.class);
 
+	
 	/**
 	 * @throws IOException 
 	 */
 	@Test
 	public void testString() throws IOException {
-		String string = "this is a test string";
+		String string = makeString(1000);		
 		try(InputStream input = new ByteArrayInputStream(string.getBytes("UTF-8"));
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			MirrorInputStream mirror = new MirrorInputStream(input, output)) {
@@ -44,8 +45,8 @@ public class MirrorInputStreamTest {
 	 * @throws IOException 
 	 */
 	@Test
-	public void testBytes() throws IOException {
-		byte[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+	public void testByteArray() throws IOException {
+		byte[] array = makeByteArray(100000);//{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 		
 		try(InputStream input = new ByteArrayInputStream(array);
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -54,7 +55,7 @@ public class MirrorInputStreamTest {
 			byte [] copy = output.toByteArray();
 			logger.trace("copy: '{}'", copy);
 			for(int i = 0; i < array.length; ++i) {
-				assertTrue(copy[i] == i);
+				assertTrue(copy[i] == array[i]);
 			}
 		}
 	}

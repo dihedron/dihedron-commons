@@ -63,24 +63,6 @@ public class MirrorOutputStream extends FilterOutputStream {
     	super.write(b);
     	mirror.write(b);
     }
-
-	/**
-	 * @see java.io.FilterOutputStream#write(byte[])
-	 */
-	@Override
-    public void write(byte b[]) throws IOException {
-    	super.write(b);
-        mirror.write(b);
-    }
-
-	/**
-	 * @see java.io.FilterOutputStream#write(byte[], int, int)
-	 */
-	@Override
-    public void write(byte b[], int off, int len) throws IOException {
-    	super.write(b, off, len);
-    	mirror.write(b, off, len);
-    }
 	
 	/**
 	 * @see java.io.FilterOutputStream#flush()

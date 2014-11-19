@@ -3,10 +3,7 @@
  */ 
 package org.dihedron.core.streams;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.SecureRandom;
-import java.util.Random;
 
 import org.dihedron.core.License;
 
@@ -18,35 +15,22 @@ import org.dihedron.core.License;
  * @author Andrea Funto'
  */
 @License
-public class SecureRandomInputStream extends InputStream {
-	
-	/**
-	 * A constant representing the lack of bounds to the generated random values.
-	 */
-	public static final int NO_LIMIT = -1;
-
-	/**
-	 * The internal secure random number generator.
-	 */
-	private Random random = null; 
-	
-	/**
-	 * The upper bound to generated random values (by default, no limit).
-	 */
-	private int limit = NO_LIMIT; 
+public class SecureRandomInputStream extends RandomInputStream {
 	
 	/**
 	 * Default constructor.
 	 */
 	public SecureRandomInputStream() {
-		random = new SecureRandom();
-	}	
-
-	/**
-	 * @see java.io.InputStream#read()
-	 */
-	@Override
-	public int read() throws IOException {
-		return limit == NO_LIMIT ? random.nextInt() : random.nextInt(limit);
+		this(NO_LIMIT);
 	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param limit
+	 *   the upper limit to the value of the random values.
+	 */
+	public SecureRandomInputStream(int limit) {
+		super(new SecureRandom(), limit);
+	}	
 }

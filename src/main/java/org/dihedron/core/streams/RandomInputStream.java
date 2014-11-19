@@ -63,8 +63,32 @@ public class RandomInputStream extends InputStream {
 		random = new Random(seed);
 		this.limit = limit;
 	}
-	
 
+	/**
+	 * Constructor; initialises the internal random number generator using the 
+	 * provided generator.
+	 * 
+	 * @param random
+	 *   the random number generator.
+	 */
+	public RandomInputStream(Random random) {
+		this(random, NO_LIMIT);
+	}
+	
+	/**
+	 * Constructor; initialises the internal random number generator using the 
+	 * provided generator.
+	 * 
+	 * @param random
+	 *   the random number generator.
+	 * @param limit
+	 *   the upper limit to the generated values.
+	 */
+	public RandomInputStream(Random random, int limit) {
+		this.random = random;
+		this.limit = limit;
+	}	
+	
 	/**
 	 * @see java.io.InputStream#read()
 	 */
