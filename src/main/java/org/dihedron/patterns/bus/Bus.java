@@ -67,6 +67,7 @@ public abstract class Bus<M> {
 	 *   <code>false</code> otherwise.
 	 */
 	public boolean removeObserver(BusObserver<M> observer) {
+		logger.trace("removing observer {}", observer.getClass().getSimpleName());
 		return observers.remove(observer);
 	}
 	
@@ -74,6 +75,7 @@ public abstract class Bus<M> {
 	 * Removes all observers from the set.
 	 */
 	public Bus<M> removeAllObservers() {
+		logger.trace("removing all observers");
 		observers.clear();
 		return this;
 	}
