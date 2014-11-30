@@ -225,16 +225,18 @@ public class BusTest {
 	 * Test method for {@link org.dihedron.patterns.bus.Bus#send(java.lang.Object)}.
 	 */
 	@Test
-	@Ignore
+//	@Ignore
 //	http://stackoverflow.com/questions/3545623/how-to-implement-priorityblockingqueue-with-threadpoolexecutor-and-custom-tasks
 	public void testSendOnAsynchronousBusWithPriority() {
+		
+		logger.trace("------------------ SEND ON ASYNCHRONOUS BUS WITH PRIORITY ------------------");
 		
 		BlockingQueue<Runnable> queue = new PriorityBlockingQueue<Runnable>(20, new PriorityComparator());
 
 	    ExecutorService service = new ThreadPoolExecutor(1, 2, 10, TimeUnit.SECONDS, queue);
 	    
 		AtomicInteger counter = new AtomicInteger(0);
-		try(Bus<Message> bus = new AsynchronousBus<>(service)) {
+		try(Bus<Message> bus = new PrioritisedAsynchronousBus<>(service)) {
 			bus
 				.addDestination(new TestDestination(0, counter))
 				.addDestination(new TestDestination(1, counter))

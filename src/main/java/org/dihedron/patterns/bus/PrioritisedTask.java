@@ -22,7 +22,7 @@ class PrioritisedTask<M> extends Task<M> implements Comparable<PrioritisedTask<M
 	 * @param message
 	 *   the message to dispatch.
 	 */
-	private PrioritisedTask(Destination<M> destination, M message) {
+	PrioritisedTask(Destination<M> destination, M message) {
 		super(destination, message);
 	}
 	
