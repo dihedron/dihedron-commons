@@ -166,7 +166,7 @@ public class TaskExecutor<T> {
 	 * 
 	 * @param futures
 	 *   the list of futures to wait for.
-	 * @param observers
+	 * @param destinations
 	 *   an optional set of observers.
 	 * @return
 	 *   the list of results, once all tasks are done.
