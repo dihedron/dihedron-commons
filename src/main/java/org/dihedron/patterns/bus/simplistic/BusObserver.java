@@ -3,7 +3,7 @@
  */ 
 
 
-package org.dihedron.patterns.bus;
+package org.dihedron.patterns.bus.simplistic;
 
 import org.dihedron.core.License;
 

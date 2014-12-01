@@ -3,7 +3,7 @@
  */ 
 
 
-package org.dihedron.patterns.bus;
+package org.dihedron.patterns.bus.simplistic;
 
 import org.dihedron.core.License;
 
@@ -17,7 +17,7 @@ import org.dihedron.core.License;
 public abstract class DefaultBusObserver<M> implements BusObserver<M> {
 
 	/**
-	 * @see org.dihedron.patterns.bus.BusObserver#onMessage(java.lang.Object, java.lang.Object, java.lang.Object[])
+	 * @see org.dihedron.patterns.bus.simplistic.BusObserver#onMessage(java.lang.Object, java.lang.Object, java.lang.Object[])
 	 */
 	public void onMessage(Object sender, M message, Object ... args) {
 		onMessage(message, args);

@@ -1,13 +1,12 @@
-/**
+/*
  * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
  */ 
 
-
 package org.dihedron.patterns.bus;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.dihedron.core.License;
 import org.slf4j.Logger;
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  *  @author Andrea Funto'
  */
 @License
-public abstract class Bus<M> {
+public abstract class Bus<M> implements AutoCloseable {
 	
 	/** 
 	 * The logger. 
@@ -30,77 +29,83 @@ public abstract class Bus<M> {
 	private static final Logger logger = LoggerFactory.getLogger(Bus.class);
 
 	/** 
-	 * The message bus observers. 
+	 * The destinations of bus messages. 
 	 */
-	protected Set<BusObserver<M>> observers = Collections.synchronizedSet(new HashSet<BusObserver<M>>());
-
-	/**
-	 * Constructor.
-	 */
-	public Bus() {
-		logger.trace("BUS created");		
-	}
+	protected Collection<Destination<M>> destinations = 
+			//Collections.synchronizedSet(new HashSet<Destination<M>>());
+			Collections.synchronizedList(new ArrayList<Destination<M>>());
 	
 	/**
-	 * Adds an observer to this message bus.
+	 * Adds a destination to this message bus.
 	 * 
-	 * @param observer
-	 *   the observer.
+	 * @param destination
+	 *   the destination of bus messages.
 	 * @return
 	 *   the object itself, for method chaining.
 	 */
-	public Bus<M> addObserver(BusObserver<M> observer) {
-		if(observer != null) {
-			logger.info("adding observer of class '{}'", observer.getClass().getSimpleName());
-			observers.add(observer);
+	public Bus<M> addDestination(Destination<M> destination) {
+		if(destination != null) {
+			logger.info("adding destination of class '{}'", destination.getClass().getSimpleName());
+			destinations.add(destination);
 		}
 		return this;
 	} 
 
 	/**
-	 * Removes the given object from the set of registered observers.
+	 * Removes the given object from the set of registered destinations.
 	 * 
-	 * @param observer
-	 *   the observer to be removed.
+	 * @param destination
+	 *   the destination to be removed.
 	 * @return
-	 *   <code>true</code> if the object was in the set of registered observers,
-	 *   <code>false</code> otherwise.
+	 *   {@code true} if the object was in the set of registered destinations,
+	 *   {@code false} otherwise.
 	 */
-	public boolean removeObserver(BusObserver<M> observer) {
-		logger.trace("removing observer {}", observer.getClass().getSimpleName());
-		return observers.remove(observer);
+	public boolean removeDestination(Destination<M> destination) {
+		logger.trace("removing destination {}", destination.getClass().getSimpleName());
+		return destinations.remove(destination);
 	}
 	
 	/**
-	 * Removes all observers from the set.
+	 * Removes all destinations from the bus.
+	 * 
+	 * @return
+	 *   the object itself, for method chaining.
 	 */
-	public Bus<M> removeAllObservers() {
-		logger.trace("removing all observers");
-		observers.clear();
+	public Bus<M> removeAllDestinations() {
+		logger.trace("removing all destinations");
+		destinations.clear();
 		return this;
 	}
 	
 	/**
-	 * Broadcasts an event on the bus to all registered observers.
+	 * Broadcasts an event on the bus to all registered destinations; the sender 
+	 * waits until all destinations have been notified.
 	 * 
 	 * @param message
 	 *   the message to be broadcast.
-	 * @param args
-	 *   a set of optional untyped parameters.
+	 * @return
+	 *   the object itself, for method chaining.
 	 */
-	public Bus<M> broadcast(M message, Object ... args) {
-		return broadcast(null, message, args);
-	}	
+	public abstract Bus<M> send(M message);
+
+	/**
+	 * Broadcasts an event on the bus to all registered destinations; the sender 
+	 * is freed immediately and the bus takes charge of the message, which will 
+	 * be delivered at a later time and in a different (possibly not shared) 
+	 * thread context.
+	 * 
+	 * @param message
+	 *   the message to be broadcast.
+	 * @return
+	 *   the object itself, for method chaining.
+	 */
+	public abstract Bus<M> post(M message);	
 	
 	/**
-	 * Broadcasts an event on the bus to all registered observers.
-	 * 
-	 * @param sender
-	 *   the message sender (pass in "this").
-	 * @param message
-	 *   the message to be broadcast.
-	 * @param args
-	 *   a set of optional untyped parameters.
+	 * @see java.lang.AutoCloseable#close()
 	 */
-	public abstract Bus<M> broadcast(Object sender, M message, Object ... args);
+	@Override
+	public void close() {
+		// do nothing, sub-classes will implement if needed.
+	}
 }
