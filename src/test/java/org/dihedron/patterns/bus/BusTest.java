@@ -19,7 +19,7 @@ import org.dihedron.patterns.bus.Bus;
 import org.dihedron.patterns.bus.Destination;
 import org.dihedron.patterns.bus.Prioritised;
 import org.dihedron.patterns.bus.PriorityComparator;
-import org.dihedron.patterns.bus.SynchronousBus2;
+import org.dihedron.patterns.bus.SynchronousBus;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -115,7 +115,7 @@ public class BusTest {
 	public void testSendOnSynchronousBus() {
 		logger.trace("------------------ SEND ON SYNCHRONOUS BUS ------------------");
 		AtomicInteger counter = new AtomicInteger(0);
-		try(Bus<Message> bus = new SynchronousBus2<>()) {
+		try(Bus<Message> bus = new SynchronousBus<>()) {
 			bus.addDestination(new TestDestination(0, counter));
 			bus.addDestination(new TestDestination(1, counter));
 			bus.addDestination(new TestDestination(2, counter));
@@ -170,7 +170,7 @@ public class BusTest {
 	public void testPostOnSynchronousBus() throws InterruptedException {
 		logger.trace("------------------ POST ON SYNCHRONOUS BUS ------------------");
 		AtomicInteger counter = new AtomicInteger(0);
-		try(Bus<Message> bus = new SynchronousBus2<>()) {
+		try(Bus<Message> bus = new SynchronousBus<>()) {
 			bus.addDestination(new TestDestination(0, counter));
 			bus.addDestination(new TestDestination(1, counter));
 			bus.addDestination(new TestDestination(2, counter));
@@ -226,8 +226,8 @@ public class BusTest {
 	 * Test method for {@link org.dihedron.patterns.bus.Bus#send(java.lang.Object)}.
 	 */
 	@Test
-//	@Ignore
-//	http://stackoverflow.com/questions/3545623/how-to-implement-priorityblockingqueue-with-threadpoolexecutor-and-custom-tasks
+	@Ignore
+	//	http://stackoverflow.com/questions/3545623/how-to-implement-priorityblockingqueue-with-threadpoolexecutor-and-custom-tasks
 	public void testSendOnAsynchronousBusWithPriority() {
 		
 		logger.trace("------------------ SEND ON ASYNCHRONOUS BUS WITH PRIORITY ------------------");
