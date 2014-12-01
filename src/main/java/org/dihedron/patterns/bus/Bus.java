@@ -45,24 +45,43 @@ public abstract class Bus<M> implements AutoCloseable {
 	 */
 	public Bus<M> addDestination(Destination<M> destination) {
 		if(destination != null) {
-			logger.info("adding destination of class '{}'", destination.getClass().getSimpleName());
+			logger.info("adding destination '{}' of class '{}'", destination.getId(), destination.getClass().getSimpleName());
 			destinations.add(destination);
 		}
 		return this;
-	} 
-
+	}
+	
+	/**
+	 * Removes the given destinations from the set of those registered on this bus.
+	 * 
+	 * @param destination
+	 *   the destination to remove.
+	 * @return
+	 *   {@code true} if the object was in the set of registered destinations,
+	 *   and thus removed, {@code false} otherwise.
+	 */
+	public boolean removeDestination(Destination<M> destination) {
+		return destinations.remove(destination);		
+	}
+	
 	/**
 	 * Removes the given object from the set of registered destinations.
 	 * 
-	 * @param destination
-	 *   the destination to be removed.
+	 * @param id
+	 *   the unique id of the destination to be removed.
 	 * @return
 	 *   {@code true} if the object was in the set of registered destinations,
-	 *   {@code false} otherwise.
+	 *   and thus removed, {@code false} otherwise.
 	 */
-	public boolean removeDestination(Destination<M> destination) {
-		logger.trace("removing destination {}", destination.getClass().getSimpleName());
-		return destinations.remove(destination);
+	public boolean removeDestination(String id) {
+		logger.trace("removing destination {}", id);
+		for(Destination<M> destination : destinations) {
+			if(destination.getId().equals(id)) {
+				destinations.remove(destination);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

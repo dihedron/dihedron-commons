@@ -16,23 +16,25 @@ import org.slf4j.LoggerFactory;
  *   
  * @author Andrea Funto'
  */
-public class UIDestinationAdapter<M> implements Destination<M> {
+public class UserInterfaceDestination<M> extends FilterDestination<M> {
 	/**
 	 * The logger.
 	 */
-	private final static Logger logger = LoggerFactory.getLogger(UIDestinationAdapter.class);
-
-	/**
-	 * The adapted destination
-	 */
-	private Destination<M> destination;
+	private final static Logger logger = LoggerFactory.getLogger(UserInterfaceDestination.class);
 	
 	/**
 	 * Constructor.
-	 *
+	 * 
+	 * @param destination
+	 *   the filtered destination.
 	 */
-	public UIDestinationAdapter(Destination<M> destination) {
-		this.destination = destination;
+	public UserInterfaceDestination(Destination<M> destination) {
+		super(destination);
+	}
+	
+	@Override
+	public String getId() {
+		return "UserInterface@" + destination.getId();
 	}
 
 	/**

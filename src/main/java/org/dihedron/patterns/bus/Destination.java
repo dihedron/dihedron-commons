@@ -15,6 +15,14 @@ import org.dihedron.core.License;
 public interface Destination<M> {
 	
 	/**
+	 * Returns the unique identified of a destination.
+	 * 
+	 * @return
+	 *   the unique identifier of a destination.
+	 */
+	String getId();
+	
+	/**
 	 * A method invoked whenever the a new message is available on the internal 
 	 * message bus; this way of dispatching information around caters for loose
 	 * coupling among components.

@@ -88,6 +88,11 @@ public class BusTest {
 		}
 		
 		@Override
+		public String getId() {
+			return toString();
+		}
+		
+		@Override
 		public String toString() {
 			return "DESTINATION[" + id +"]";
 		}
@@ -111,12 +116,11 @@ public class BusTest {
 		logger.trace("------------------ SEND ON SYNCHRONOUS BUS ------------------");
 		AtomicInteger counter = new AtomicInteger(0);
 		try(Bus<Message> bus = new SynchronousBus2<>()) {
-			bus
-				.addDestination(new TestDestination(0, counter))
-				.addDestination(new TestDestination(1, counter))
-				.addDestination(new TestDestination(2, counter))
-				.addDestination(new TestDestination(3, counter))
-				.addDestination(new TestDestination(4, counter));
+			bus.addDestination(new TestDestination(0, counter));
+			bus.addDestination(new TestDestination(1, counter));
+			bus.addDestination(new TestDestination(2, counter));
+			bus.addDestination(new TestDestination(3, counter));
+			bus.addDestination(new TestDestination(4, counter));
 			
 			bus
 				.send(Message.HALLO)
@@ -140,12 +144,11 @@ public class BusTest {
 		
 		AtomicInteger counter = new AtomicInteger(0);
 		try(Bus<Message> bus = new AsynchronousBus<>()) {
-			bus
-				.addDestination(new TestDestination(0, counter))
-				.addDestination(new TestDestination(1, counter))
-				.addDestination(new TestDestination(2, counter))
-				.addDestination(new TestDestination(3, counter))
-				.addDestination(new TestDestination(4, counter));
+			bus.addDestination(new TestDestination(0, counter));
+			bus.addDestination(new TestDestination(1, counter));
+			bus.addDestination(new TestDestination(2, counter));
+			bus.addDestination(new TestDestination(3, counter));
+			bus.addDestination(new TestDestination(4, counter));
 			
 			bus
 				.send(Message.HALLO)
@@ -168,12 +171,11 @@ public class BusTest {
 		logger.trace("------------------ POST ON SYNCHRONOUS BUS ------------------");
 		AtomicInteger counter = new AtomicInteger(0);
 		try(Bus<Message> bus = new SynchronousBus2<>()) {
-			bus
-				.addDestination(new TestDestination(0, counter))
-				.addDestination(new TestDestination(1, counter))
-				.addDestination(new TestDestination(2, counter))
-				.addDestination(new TestDestination(3, counter))
-				.addDestination(new TestDestination(4, counter));
+			bus.addDestination(new TestDestination(0, counter));
+			bus.addDestination(new TestDestination(1, counter));
+			bus.addDestination(new TestDestination(2, counter));
+			bus.addDestination(new TestDestination(3, counter));
+			bus.addDestination(new TestDestination(4, counter));
 			
 			bus
 				.post(Message.HALLO)
@@ -200,12 +202,11 @@ public class BusTest {
 		
 		AtomicInteger counter = new AtomicInteger(0);
 		try(Bus<Message> bus = new AsynchronousBus<>()) {
-			bus
-				.addDestination(new TestDestination(0, counter))
-				.addDestination(new TestDestination(1, counter))
-				.addDestination(new TestDestination(2, counter))
-				.addDestination(new TestDestination(3, counter))
-				.addDestination(new TestDestination(4, counter));
+			bus.addDestination(new TestDestination(0, counter));
+			bus.addDestination(new TestDestination(1, counter));
+			bus.addDestination(new TestDestination(2, counter));
+			bus.addDestination(new TestDestination(3, counter));
+			bus.addDestination(new TestDestination(4, counter));
 			
 			bus
 				.post(Message.HALLO)
@@ -237,12 +238,11 @@ public class BusTest {
 	    
 		AtomicInteger counter = new AtomicInteger(0);
 		try(Bus<Message> bus = new PrioritisedAsynchronousBus<>(service)) {
-			bus
-				.addDestination(new TestDestination(0, counter))
-				.addDestination(new TestDestination(1, counter))
-				.addDestination(new TestDestination(2, counter))
-				.addDestination(new TestDestination(3, counter))
-				.addDestination(new TestDestination(4, counter));
+			bus.addDestination(new TestDestination(0, counter));
+			bus.addDestination(new TestDestination(1, counter));
+			bus.addDestination(new TestDestination(2, counter));
+			bus.addDestination(new TestDestination(3, counter));
+			bus.addDestination(new TestDestination(4, counter));
 			
 			bus
 				.send(Message.HALLO)
