@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.dihedron.ui.OverlayIcon;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class OverlayIconTest {
 //	}
 
 	/**
-	 * Test method for {@link org.dihedron.core.ui.OverlayIcon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)}.
+	 * Test method for {@link org.dihedron.ui.OverlayIcon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)}.
 	 */
 	@Test
 	public void testPaintIconComponentGraphicsIntInt() {
