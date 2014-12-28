@@ -53,7 +53,7 @@ public final class Colors {
 					g = Integer.parseInt(matches[10]);
 					b = Integer.parseInt(matches[11]);						
 				}
-				if(r <= 255 && g <= 255 && b <= 255) {
+				if(0 <= r && r <= 255 && 0 <= g && g <= 255 && 0 <= b && b <= 255) {
 					return new Color(r, g, b);
 				}
 			}
