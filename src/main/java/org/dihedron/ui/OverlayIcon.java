@@ -1,7 +1,7 @@
-/**
+/*
  * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
  */ 
-package org.dihedron.core.ui;
+package org.dihedron.ui;
 
 import java.awt.Component;
 import java.awt.Graphics;
