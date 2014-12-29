@@ -115,6 +115,17 @@ public interface Storage extends Iterable<String> {
 	InputStream retrieve(String resource);
 	
 	/**
+	 * Returns the size of the given resource is available in the storage, -1
+	 * otherwise.
+	 * 
+	 * @param resource
+	 *   the name of the resource.
+	 * @return
+	 *   the size of the resource (in bytes) if found, -1 otherwise.
+	 */
+	long retrieveSize(String resource);
+	
+	/**
 	 * Removes all resources matching the given regular expression from the storage.
 	 * 
 	 * @param regex

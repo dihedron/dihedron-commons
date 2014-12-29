@@ -132,6 +132,18 @@ public class URLStorage extends AbstractStorage {
 		}
 		return stream;
 	}
+	
+	/**
+	 * This implementation would not be able to retrieve the actual web resource 
+	 * size without fully downloading it, so it returns -1 as if there were no 
+	 * such resource in cache.
+	 * 
+	 * @see org.dihedron.patterns.cache.Storage#retrieveSize(java.lang.String)
+	 */
+	@Override
+	public long retrieveSize(String resource) {
+		return -1;
+	}
 
 	/**
 	 * This method actually does nothing to store the binary data, it returns a 

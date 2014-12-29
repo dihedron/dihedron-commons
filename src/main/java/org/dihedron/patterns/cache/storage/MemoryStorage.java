@@ -22,6 +22,7 @@ import org.dihedron.core.regex.Regex;
 import org.dihedron.core.streams.Streams;
 import org.dihedron.core.strings.Strings;
 import org.dihedron.patterns.cache.CacheException;
+import org.dihedron.patterns.cache.CacheOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class MemoryStorage extends AbstractStorage {
 	/** 
 	 * A map containing all cache resources. 
 	 */
-	private Map<String, ByteArrayOutputStream> contents = Collections.synchronizedMap(new HashMap<String, ByteArrayOutputStream>());
+	private Map<String, CacheOutputStream<ByteArrayOutputStream>> contents = Collections.synchronizedMap(new HashMap<String, CacheOutputStream<ByteArrayOutputStream>>());
 	
 	/**
 	 * Constructor.
@@ -85,13 +86,6 @@ public class MemoryStorage extends AbstractStorage {
 		} else {
 			matched.addAll(contents.keySet());
 		}
-		
-//		if(matched.size() > 0){
-//			String [] result = new String[matched.size()];
-//			return matched.toArray(result);			
-//		} else {
-//			return new String[0];
-//		}
 		return matched.toArray(new String[0]);
 	}	
 
@@ -103,7 +97,7 @@ public class MemoryStorage extends AbstractStorage {
 		if(Strings.isValid(resource)) {
 			Streams.safelyClose(contents.get(resource));
 			logger.debug("storing resource '{}'", resource);
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			CacheOutputStream<ByteArrayOutputStream> stream = new CacheOutputStream<ByteArrayOutputStream>(new ByteArrayOutputStream());
 			contents.put(resource, stream);
 			return stream; 
 		}
@@ -116,13 +110,27 @@ public class MemoryStorage extends AbstractStorage {
 	@Override
 	public InputStream retrieve(String resource) {
 		if(Strings.isValid(resource)) {
-			ByteArrayOutputStream stream = contents.get(resource);
+			CacheOutputStream<ByteArrayOutputStream> stream = contents.get(resource);
 			if(stream != null) {
-				return new ByteArrayInputStream(stream.toByteArray());
+				return new ByteArrayInputStream(stream.getWrappedStream().toByteArray());
 			}
 		}
 		return null;
 	}	
+	
+	/**
+	 * @see org.dihedron.patterns.cache.Storage#retrieveSize(java.lang.String)
+	 */
+	@Override
+	public long retrieveSize(String resource) {
+		if(Strings.isValid(resource)) {
+			CacheOutputStream<ByteArrayOutputStream> stream = contents.get(resource);
+			if(stream != null) {
+				return stream.getSize();
+			}
+		}
+		return -1;
+	}
 	
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#delete(org.dihedron.core.regex.Regex)

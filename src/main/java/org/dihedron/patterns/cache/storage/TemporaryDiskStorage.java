@@ -226,7 +226,7 @@ public class TemporaryDiskStorage extends AbstractStorage {
 	}
 	
 	/**
-	 * @see org.dihedron.patterns.cache.Storage#retrieveAsStream(java.lang.String)
+	 * @see org.dihedron.patterns.cache.Storage#retrieve(java.lang.String)
 	 */
 	@Override
 	public InputStream retrieve(String resource) {
@@ -238,6 +238,17 @@ public class TemporaryDiskStorage extends AbstractStorage {
 			logger.error("resource '{}' does not exist", resource);
 		}
 		return null;
+	}
+	
+	/**
+	 * @see org.dihedron.patterns.cache.Storage#retrieveSize(java.lang.String)
+	 */
+	@Override
+	public long retrieveSize(String resource) {
+		if(index.containsKey(resource)) {
+			return index.get(resource).length();
+		}
+		return -1;
 	}
 
 	/**

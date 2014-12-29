@@ -233,7 +233,7 @@ public class DiskStorage extends AbstractStorage {
 	}
 	
 	/**
-	 * @see org.dihedron.patterns.cache.Storage#retrieveAsStream(java.lang.String)
+	 * @see org.dihedron.patterns.cache.Storage#retrieve(java.lang.String)
 	 */
 	@Override
 	public InputStream retrieve(String resource) {
@@ -245,6 +245,18 @@ public class DiskStorage extends AbstractStorage {
 		return null;
 	}
 
+	/**
+	 * @see org.dihedron.patterns.cache.Storage#retrieveSize(java.lang.String)
+	 */
+	@Override
+	public long retrieveSize(String resource) {
+		File file = new File(directory, resource);
+		if(file.exists() && file.isFile()) {
+			return file.length();
+		} 
+		return -1;
+	}	
+	
 	/**
 	 * @see org.dihedron.patterns.cache.Storage#delete(org.dihedron.core.regex.Regex)
 	 */
@@ -340,5 +352,5 @@ public class DiskStorage extends AbstractStorage {
 		public boolean accept(File pathname) {
 			return accept(null, pathname.getName());
 		}		
-	}	
+	}
 }

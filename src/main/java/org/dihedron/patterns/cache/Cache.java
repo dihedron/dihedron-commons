@@ -184,13 +184,28 @@ public class Cache implements Iterable<String>{
 	}
 	
 	/**
+	 * Returns the size of the given resource.
+	 * 
+	 * @param resource
+	 *   the name of the resource; it must be a valid, non empty string.
+	 * @return
+	 *   the size of the resource if available, -1 otherwise.
+	 */
+	public long getSize(String resource) {
+		if(Strings.isValid(resource)) {
+			return storage.retrieveSize(resource);
+		}
+		return -1;
+	}
+	
+	/**
 	 * Retrieves a resource from the cache if it is in there; if
 	 * the <code>autoRefresh</code> flag is on, the cache will check
 	 * if the resource has not been refreshed during this session yet
 	 * and (if so) will retrieve it again.
 	 * 
 	 * @param resource
-	 *   the name of the resource.
+	 *   the name of the resource; it must be a valid, non empty string.
 	 * @param handlers
 	 *   an optional set of cache miss handler, which will be requested to 
 	 *   retrieve the resource, if missing; the handlers will be called in the 
@@ -202,29 +217,32 @@ public class Cache implements Iterable<String>{
 	 * @throws CacheException 
 	 */
 	public InputStream get(String resource, CacheMissHandler ... handlers) throws CacheException {
-		InputStream stream = storage.retrieve(resource);		
-		if(stream == null) {
-			logger.trace("cache miss for resource '{}'...", resource);
-			if(handlers != null) {				
-				lookup:
-				for(CacheMissHandler handler : handlers) {
-					logger.trace("... attempting retrieval of '{}' using handler of class '{}'", resource, handler.getClass().getSimpleName());
-					try (InputStream input = handler.getAsStream(); OutputStream output = storage.store(resource)) {
-						if(input != null) {
-							long copied = Streams.copy(input,  output);
-							logger.trace("... stored {} bytes for resource '{}'", copied, resource);
-							break lookup;
-						} else {
-							logger.trace("... resource '{}' not found", resource);
-							continue lookup;
-						}
-					} catch (IOException e) {
-						logger.warn("I/O error trying to retrieve resource '" + resource + "' with handler of class '" + handler.getClass().getSimpleName() +"'", e);
-					}					
+		InputStream stream = null;
+		if(Strings.isValid(resource)) {
+			stream = storage.retrieve(resource);		
+			if(stream == null) {
+				logger.trace("cache miss for resource '{}'...", resource);
+				if(handlers != null) {				
+					lookup:
+					for(CacheMissHandler handler : handlers) {
+						logger.trace("... attempting retrieval of '{}' using handler of class '{}'", resource, handler.getClass().getSimpleName());
+						try (InputStream input = handler.getAsStream(); OutputStream output = storage.store(resource)) {
+							if(input != null) {
+								long copied = Streams.copy(input,  output);
+								logger.trace("... stored {} bytes for resource '{}'", copied, resource);
+								break lookup;
+							} else {
+								logger.trace("... resource '{}' not found", resource);
+								continue lookup;
+							}
+						} catch (IOException e) {
+							logger.warn("I/O error trying to retrieve resource '" + resource + "' with handler of class '" + handler.getClass().getSimpleName() +"'", e);
+						}					
+					}
 				}
+				logger.trace("retrieving resource from storage");
+				stream = storage.retrieve(resource);			
 			}
-			logger.trace("retrieving resource from storage");
-			stream = storage.retrieve(resource);			
 		}
 		return stream;
 	}
@@ -241,13 +259,16 @@ public class Cache implements Iterable<String>{
 	 * 
 	 * @param resource
 	 *   the name of the new resource, to which the returned output stream 
-	 *   will point.
+	 *   will point; it must be a valid, non empty string.
 	 * @return
 	 *   an output stream ; the caller will write its data into it, and then 
 	 *   will flush and close it once it's done writing data.
 	 * @throws CacheException
 	 */
 	public OutputStream put(String resource) throws CacheException {
-		return storage.store(resource);
+		if(Strings.isValid(resource)) {
+			return storage.store(resource);
+		}
+		return null;
 	}
 }
