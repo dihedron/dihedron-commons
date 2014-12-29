@@ -1,6 +1,7 @@
-/**
- * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
- */ 
+/*
+ * Copyright (c) 2009-2014 Banca d'Italia. All rights reserved. See LICENSE for details.
+ */
+
 
 package org.dihedron.core.zip;
 
@@ -11,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -18,6 +20,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.dihedron.core.License;
+import org.dihedron.core.streams.Streams;
+import org.dihedron.core.strings.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +89,24 @@ public class ZipArchive {
 		stream.flush();
 		stream.close();
 	}
+	
+	
+	/**
+	 * Adds a file to the ZIP archive, given its content as an input stream.
+	 * 
+	 * @param zipEntry 
+	 *   name of the entry in the archive.
+	 * @param input 
+	 *   the stream from which data will be read to be added to the ZIP archive;
+	 *   the stream must be open and will not be closed once the operation is 
+	 *   complete, so it is up to the caller to release it.
+	 */
+	public void addFile(String zipEntry, InputStream input) throws IOException {
+		if(input != null) {
+			stream.putNextEntry(new ZipEntry(zipEntry));
+			Streams.copy(input, stream);
+		}
+	}
  
 	/**
 	 * Adds a file to the ZIP archive, given its content as an array of bytes.
@@ -121,22 +143,11 @@ public class ZipArchive {
 	 *   File object representing the file to be added to the archive.
 	 */
 	public void addFile(String zipEntry, File file) throws IOException {
-		String zipEntryName;
-		if(zipEntry == null || zipEntry.trim().length() == 0) {
-			zipEntryName = file.getName();
-		} else {
-			zipEntryName = zipEntry;
+		String zipEntryName = Strings.isValid(zipEntry) ? zipEntry : file.getName();
+		logger.debug("adding '{}' as '{}'", file.getName(), zipEntryName);
+		try(InputStream input = new FileInputStream(file)) {
+			addFile(zipEntryName, input);
 		}
-		logger.debug("adding " + file.getName() + " as " + zipEntryName);
-		long size = file.length();
-		byte[] data = new byte[(int)size];
-		FileInputStream fis = new FileInputStream(file);
-		if(fis.read(data) != size) {
-			logger.error("error reading data into buffer");
-		}
-		fis.close();
-		
-		addFile(zipEntryName, data);
 	}
 
 	/**
@@ -170,6 +181,9 @@ public class ZipArchive {
 			if(value instanceof byte[]) {
 				logger.debug("adding '{}' defined as byte[]", zipEntry);
 				addFile(zipEntry, (byte[])value);
+			} else if(value instanceof InputStream) {
+				logger.debug("adding '{}', defined as InputStream", zipEntry);
+				addFile(zipEntry, (InputStream)value);
 			} else if(value instanceof ByteArrayOutputStream) {
 				logger.debug("adding '{}', defined as ByteArrayOutputStream", zipEntry);
 				addFile(zipEntry, (ByteArrayOutputStream)value);
