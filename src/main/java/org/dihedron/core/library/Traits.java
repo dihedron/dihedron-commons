@@ -36,7 +36,12 @@ public enum Traits {
 	/**
 	 * The web site of the library.
 	 */
-	WEBSITE("${library}.website");
+	WEBSITE("${library}.website"),
+	
+	/**
+	 * The library license (GPL, EUPL, FreeBSD...).	
+	 */
+	LICENSE("${library}.license");
 
 	/**
 	 * Returns the key of the property for the given library.
