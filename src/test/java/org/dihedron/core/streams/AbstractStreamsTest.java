@@ -3,6 +3,8 @@
  */ 
 package org.dihedron.core.streams;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -27,5 +29,19 @@ public abstract class AbstractStreamsTest {
 		}
 		
 		return array;
+	}
+	
+	protected static void makeTestFile(File file, int size) throws IOException {
+		if(file != null && !file.exists()) {
+			try(FileOutputStream fos = new FileOutputStream(file)) {
+				for(int i = 0; i < size; ++i) {
+					fos.write((byte)0);
+				}
+			}
+		}
+	}
+	
+	public static void main(String [] args) throws IOException {
+		makeTestFile(new File("/tmp/test.dat"), 100 * 1024 * 1024);
 	}
 }
