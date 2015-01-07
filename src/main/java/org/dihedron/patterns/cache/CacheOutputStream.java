@@ -53,12 +53,32 @@ public class CacheOutputStream<T extends OutputStream> extends FilterOutputStrea
     	return size;
     }
 	
-	/**
+    /**
+     * @throws IOException 
+     * @see java.io.FilterOutputStream#write(byte[])
+     */
+    @Override
+    public void write(byte[] b) throws IOException {
+    	out.write(b);
+    	size += b.length;
+    }
+	
+    /**
 	 * @see java.io.FilterOutputStream#write(int)
 	 */
+    @Override
     public void write(int b) throws IOException {
     	out.write(b);
     	++size;
     }
-    
+
+    /**
+     * @throws IOException 
+     * @see java.io.FilterOutputStream#write(byte[], int, int)
+     */
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+    	out.write(b, off, len);
+    	size += len;
+    }  
 }
