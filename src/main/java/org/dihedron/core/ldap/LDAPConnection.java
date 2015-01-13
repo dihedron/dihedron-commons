@@ -139,67 +139,6 @@ public class LDAPConnection implements AutoCloseable {
 		}
 		return context;
 	}
-	
-//	public List<LDAPEntity> execute(LDAPQuery query) throws NamingException {
-//		List<LDAPEntity> entities = new ArrayList<>();
-//		
-//		DirContext context = null;
-//		try {
-//			context = new InitialDirContext(environment);
-//			SearchControls controls = new SearchControls();
-//			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-//			controls.setReturningAttributes(query.getAttributes());
-//			NamingEnumeration<SearchResult> results = context.search(query.getSearchBase(), query.getSearchFilter(), controls);
-//			
-//			if (results != null && results.hasMore()) {				
-//				
-//				SearchResult result = results.next();	
-//				
-//				LDAPEntity entity = new LDAPEntity(null);
-//				NamingEnumeration<? extends Attribute> attribs = result.getAttributes().getAll();
-//				while(attribs.hasMore()) {					
-//					Attribute attrib = attribs.nextElement();
-//					LDAPAttribute attribute = new LDAPAttribute(attrib.getID());
-//					NamingEnumeration<?> vals = attrib.getAll();
-//					while(vals.hasMore()) {
-//						Object val = vals.nextElement();						
-//						attribute.addValue(val);
-//					}
-//					entity.addAttribute(attribute);
-//				}
-//				entities.add(entity);
-//			} else {
-//				logger.warn("error retrieving data from Client server");
-//			}
-//			
-//		} finally {
-//			if(context != null) {
-//				context.close();
-//			}
-//		}
-//		
-//		return entities;
-//	}
-	
-	
-//	public static void main(String [] args) throws NamingException {
-//		LDAPServer server = new LDAPServer().setHost("utenze.bankit.it").setPort("389");
-//		Credentials credentials = new Credentials().setUsername("d093154").setPassword("d1n4m1co");
-//		LDAPQuery query = new PersonByLogin("d093154").setAttributes("title", "mail", "department");
-//		LDAPConnection client = new LDAPConnection(server, credentials);
-//		List<LDAPEntity> entities = client.execute(query);
-//		for(LDAPEntity entity : entities) {
-//			logger.trace("entity: '{}'", entity.getId());
-//			for(LDAPAttribute attribute : entity.getAttributes()) {
-//				logger.trace(" > attribute: '{}'", attribute.getName());
-//				for(Object value : attribute.getValues()) {
-//					logger.trace("   > value: '{}'", value);
-//				}
-//			}
-//		}
-//	}
-
-
 
 	/**
 	 * @throws NamingException 

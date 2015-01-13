@@ -15,6 +15,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.dihedron.core.License;
+import org.dihedron.core.strings.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,11 +30,13 @@ public abstract class LDAPQuery {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(LDAPQuery.class);
 	
-
+	/**
+	 * We're interested in all the attributes of the LDAP entity.
+	 */
 	public static final String[] ALL_ATTRIBUTES = { "*" };
 
 	/**
-	 * The default Client search starting point. 
+	 * The default client search starting point: must be specified! 
 	 */
 	private static final String DEFAULT_LDAP_SEARCH_BASE = "";
 
@@ -54,6 +57,9 @@ public abstract class LDAPQuery {
 	 *   the search base filter to use when performing the Client query.
 	 */
 	public String getSearchBase() {
+		if(!Strings.isValid(searchBase)) {
+			logger.warn("the search base is not valid: you may want to check your client code!");
+		}
 		return searchBase;
 	}
 	

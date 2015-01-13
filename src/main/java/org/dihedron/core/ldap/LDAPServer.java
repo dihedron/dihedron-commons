@@ -61,7 +61,4 @@ public class LDAPServer {
 		this.port = port;
 		return this;
 	}
-	
-	
-
 }
