@@ -1,0 +1,11 @@
+# Oracle 10 thin client driver configuration
+oracle.driver=oracle.jdbc.driver.OracleDriver
+oracle.address=jdbc:oracle:thin:@${host}:${port}:${instance}
+
+# DB/2 z/OS driver configuration
+db2zos.driver=com.ibm.db2.jcc.DB2Driver
+db2zos.address=jdbc:db2://${host}:${port}/${instance}
+
+# MySQL driver configuration
+mysql.driver=com.mysql.jdbc.Driver
+mysql.address=jdbc:mysql://${host}:${port}/${instance}
