@@ -36,9 +36,9 @@ public class Streams {
 	private static final Logger logger = LoggerFactory.getLogger(Streams.class);
 	
 	/**
-	 * Default size of the internal memory buffer (1 megabyte).
+	 * Default size of the internal memory buffer (16 megabyte).
 	 */
-	public static final int DEFAULT_BUFFER_SIZE = 1024 * 1024;
+	public static final int DEFAULT_BUFFER_SIZE = 16 * 1024 * 1024;
 	
 	/**
 	 * Copies all the bytes it can read from the input stream into the output
