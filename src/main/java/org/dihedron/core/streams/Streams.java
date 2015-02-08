@@ -288,4 +288,10 @@ public class Streams {
 			}
 		}
 	}
+	
+	/**
+	 * Private constructor to prevent construction.
+	 */
+	private Streams() {
+	}
 }
