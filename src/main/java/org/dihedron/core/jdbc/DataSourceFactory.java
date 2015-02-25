@@ -25,7 +25,7 @@ public class DataSourceFactory {
 			drivers.load(f1);
 			datasources.load(f2);
 
-		}catch (MalformedURLException e) {			
+		} catch (MalformedURLException e) {			
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -52,5 +52,4 @@ public class DataSourceFactory {
 		
 		return new DataSource(host, port, instance, driver, address);
 	}
-
 }

@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
+/*
+ * Copyright (c) 2012-2015, Andrea Funto'. All rights reserved. See LICENSE for details.
  */ 
 
 package org.dihedron.core.variables;
@@ -73,31 +73,33 @@ public final class Variables {
 	 */
 	public static final String replaceVariables(String text, boolean caseSensitive, ValueProvider... providers) {
 		String replaceText = text;
-		Regex regex = new Regex(VARIABLE_PATTERN, caseSensitive);
-		List<String[]> variables = null;
-		
-		Set<String> unboundVariables = new HashSet<String>();
-		
-		boolean oneVariableBound = true;
-		while(oneVariableBound && !(variables = regex.getAllMatches(replaceText)).isEmpty()) {
-			oneVariableBound = false;			
-			logger.trace("analysing text: '{}'", replaceText);
-			for(String[] groups : variables) {
-				String variable = groups[0];
-				logger.trace("... handling variable '{}'...", variable);
-				String value = null;
-				for(ValueProvider provider : providers) {
-					value = provider.onVariable(variable);
-					if(value != null) {
-						logger.trace("... replacing variable '{}' with value '{}'", variable, value);
-						replaceText = replaceText.replace("${" + variable +"}", value);
-						logger.trace("... text is now '{}'", replaceText);
-						oneVariableBound = true;
-						break;
+		if(providers != null) {		
+			Regex regex = new Regex(VARIABLE_PATTERN, caseSensitive);
+			List<String[]> variables = null;
+			
+			Set<String> unboundVariables = new HashSet<String>();
+			
+			boolean oneVariableBound = true;
+			while(oneVariableBound && !(variables = regex.getAllMatches(replaceText)).isEmpty()) {
+				oneVariableBound = false;			
+				logger.trace("analysing text: '{}'", replaceText);
+				for(String[] groups : variables) {
+					String variable = groups[0];
+					logger.trace("... handling variable '{}'...", variable);
+					String value = null;
+					for(ValueProvider provider : providers) {
+						value = provider.onVariable(variable);
+						if(value != null) {
+							logger.trace("... replacing variable '{}' with value '{}'", variable, value);
+							replaceText = replaceText.replace("${" + variable +"}", value);
+							logger.trace("... text is now '{}'", replaceText);
+							oneVariableBound = true;
+							break;
+						}
 					}
-				}
-				if(value == null) {
-					unboundVariables.add(variable);
+					if(value == null) {
+						unboundVariables.add(variable);
+					}
 				}
 			}
 		}
