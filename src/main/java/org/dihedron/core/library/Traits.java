@@ -1,7 +1,6 @@
-/**
- * Copyright (c) 2012-2014, Andrea Funto'. All rights reserved. See LICENSE for details.
+/*
+ * Copyright (c) 2012-2015, Andrea Funto'. All rights reserved. See LICENSE for details.
  */ 
-
 package org.dihedron.core.library;
 
 import org.dihedron.core.License;

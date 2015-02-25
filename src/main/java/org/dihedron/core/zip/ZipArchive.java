@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2009-2014 Banca d'Italia. All rights reserved. See LICENSE for details.
- */
+ * Copyright (c) 2012-2015, Andrea Funto'. All rights reserved. See LICENSE for details.
+ */ 
 
 
 package org.dihedron.core.zip;
