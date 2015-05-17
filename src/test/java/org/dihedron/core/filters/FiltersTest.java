@@ -26,7 +26,6 @@ public class FiltersTest {
 	 */
 	@Test
 	public void testAccept() {
-		@SuppressWarnings("unchecked")
 		Collection<String> result = Filter.apply(new And<String>(
 						new Not<String>(
 							new Null<String>()
@@ -42,7 +41,6 @@ public class FiltersTest {
 	 */
 	@Test
 	public void testReject() {
-		@SuppressWarnings("unchecked")
 		Collection<String> result = Filter.apply(
 					new Not<String>(
 						new And<String>(
@@ -62,7 +60,6 @@ public class FiltersTest {
 	 */
 	@Test
 	public void testPattern() {
-		@SuppressWarnings("unchecked")
 		Collection<String> result = Filter.apply(
 					new And<String>(
 						new Not<String>(
