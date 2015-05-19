@@ -71,6 +71,7 @@ public final class Variables {
 	 * @return
 	 *   the text with all variables bound.
 	 */
+	@SuppressWarnings("el-syntax")
 	public static final String replaceVariables(String text, boolean caseSensitive, ValueProvider... providers) {
 		String replaceText = text;
 		if(providers != null) {		
