@@ -6,7 +6,6 @@ package org.dihedron.patterns.bus;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -14,12 +13,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.dihedron.patterns.bus.AsynchronousBus;
-import org.dihedron.patterns.bus.Bus;
-import org.dihedron.patterns.bus.Destination;
-import org.dihedron.patterns.bus.Prioritised;
-import org.dihedron.patterns.bus.PriorityComparator;
-import org.dihedron.patterns.bus.SynchronousBus;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
