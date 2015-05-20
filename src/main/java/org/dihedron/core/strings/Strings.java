@@ -55,6 +55,35 @@ public final class Strings {
 	public static final String NULL = "<null>";
 
 	/**
+	 * Returns the given object as a string, if not null, otherwise
+	 * returns null.
+	 * 
+	 * @param object
+	 *   the object to be safely converted to a string.
+	 * @return
+	 *   the string representation of the object, or null.
+	 */
+	public static String asString(Object object) {
+		return asString(object, null);
+	}
+	
+	/**
+	 * Returns the given object as a string, if not null, otherwise
+	 * returns null.
+	 * 
+	 * @param object
+	 *   the object to be safely converted to a string.
+	 * @param otherwise
+	 *   if the object is null, return this value instead.
+	 * @return
+	 *   the string representation of the object if not null, the default
+	 *   value passed in otherwise.
+	 */
+	public static String asString(Object object, String otherwise) {
+		return object != null ? object.toString() : otherwise;
+	}	
+	
+	/**
 	 * Checks whether the given string is neither null nor blank.
 	 * 
 	 * @param string
