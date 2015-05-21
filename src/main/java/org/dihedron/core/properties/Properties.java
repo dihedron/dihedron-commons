@@ -214,10 +214,10 @@ public class Properties {
 					String key = line.substring(0, index).trim();
 					String value = line.substring(index + separator.length()).trim();
 					if("@".equals(key)) {
-						logger.debug("including and overriding values defined so far with file '{}'", value);
+						logger.trace("including and overriding values defined so far with file '{}'", value);
 						load(value, separator);
 					} else {
-						logger.debug("adding '{}' => '{}'", key, value);
+						logger.trace("adding '{}' => '{}'", key, value);
 						this.put(key.trim(), value.trim());
 					}
 				}
