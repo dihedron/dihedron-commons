@@ -47,7 +47,16 @@ public class Regex {
 	/** 
 	 * The regular expression pattern, as a per-thread object. 
 	 */
-	private ThreadLocal<Pattern> pattern = new ThreadLocal<Pattern>() { };
+	private ThreadLocal<Pattern> pattern = new ThreadLocal<Pattern>() { 
+		@Override
+		public Pattern initialValue() {
+			if(regex != null) {
+				logger.trace("setting the initial value using '{}'", regex);
+				return Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE));
+			}
+			return null;
+		}
+	};
 	//private Pattern pattern = null;
 	
 	/** 
