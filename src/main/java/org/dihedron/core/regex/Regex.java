@@ -91,8 +91,10 @@ public class Regex {
 	 */
 	public Regex(String regex, boolean caseSensitive) {
 		this.regex = regex;
-		this.caseSensitive = caseSensitive;		
-		this.pattern.set(Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE)));
+		this.caseSensitive = caseSensitive;
+		// automatically initialise the pattern for the current thread 
+		this.pattern.get();
+		//this.pattern.set(Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE)));
 		//this.pattern = Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE));
 		logger.trace("checking regular expression /{}/, case {}", regex, (caseSensitive ? "sensitive" : "insensitive"));			 		
 	}
@@ -107,15 +109,15 @@ public class Regex {
 		return regex;
 	}
 	
-	/**
-	 * Sets the new value for the actual regular expression.
-	 * 
-	 * @param regex
-	 *   the new value for the actual regular expression.
-	 */	
-	protected void setRegex(String regex) {
-		this.regex = regex;
-	}
+//	/**
+//	 * Sets the new value for the actual regular expression.
+//	 * 
+//	 * @param regex
+//	 *   the new value for the actual regular expression.
+//	 */	
+//	protected void setRegex(String regex) {
+//		this.regex = regex;
+//	}
 	
 	/**
 	 * Returns whether the regular expression is case sensitive.
