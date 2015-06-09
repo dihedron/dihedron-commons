@@ -11,13 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dihedron.core.License;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * A class implementing a regular expression as an object; this class is thread-safe
- * thanks to some thread-local storage magic; moreover tests show that the thread-safe
- * version is consistently (circa 50%) faster than its non-thread-safe counterpart.
+ * A class implementing a regular expression as an object; this class is thread-safe.
  * 
  * @author Andrea Funto'
  */
@@ -33,37 +29,18 @@ public class Regex {
 	 * A regular expression pattern that matches all. 
 	 */
 	public static final String MATCH_ALL = ".*";
-	
+			
 	/** 
-	 * The logger. 
+	 * The regular expression pattern; subclasses may store their pattern in
+	 * a different place, e.g the thread-local storage. 
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(Regex.class);
-	
-	/** 
-	 * The actual regular expression. 
-	 */
-	private String regex;
-	
-	/** 
-	 * The regular expression pattern, as a per-thread object. 
-	 */
-	private ThreadLocal<Pattern> pattern = new ThreadLocal<Pattern>() { 
-		@Override
-		public Pattern initialValue() {
-			if(regex != null) {
-				logger.trace("setting the initial value using '{}'", regex);
-				return Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE));
-			}
-			return null;
-		}
-	};
-	//private Pattern pattern = null;
-	
+	private Pattern pattern = null;
+
 	/** 
 	 * Whether the regular expression is case sensitive. 
 	 */
 	private boolean caseSensitive = DEFAULT_CASE_SENSITIVITY;
-
+		
 	/**
 	 * Constructor.
 	 */
@@ -90,34 +67,19 @@ public class Regex {
 	 *   whether the regular expression should be regarded as case insensitive.
 	 */
 	public Regex(String regex, boolean caseSensitive) {
-		this.regex = regex;
 		this.caseSensitive = caseSensitive;
-		// automatically initialise the pattern for the current thread 
-		this.pattern.get();
-		//this.pattern.set(Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE)));
-		//this.pattern = Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE));
-		logger.trace("checking regular expression /{}/, case {}", regex, (caseSensitive ? "sensitive" : "insensitive"));			 		
+		pattern = Pattern.compile(regex, (caseSensitive ? 0 : Pattern.CASE_INSENSITIVE));			 		
 	}
 	
 	/**
-	 * Returns the actual regular expression.
+	 * Returns the string representation of the regular expression.
 	 * 
 	 * @return
-	 *   the actual regular expression.
+	 *   the actual regular expression as a string.
 	 */
 	public String getRegex() {
-		return regex;
+		return pattern.pattern();
 	}
-	
-//	/**
-//	 * Sets the new value for the actual regular expression.
-//	 * 
-//	 * @param regex
-//	 *   the new value for the actual regular expression.
-//	 */	
-//	protected void setRegex(String regex) {
-//		this.regex = regex;
-//	}
 	
 	/**
 	 * Returns whether the regular expression is case sensitive.
@@ -148,9 +110,8 @@ public class Regex {
 	 *   <code>true</code> if the string matches the regular expression, 
 	 *   <code>false</code> otherwise.
 	 */
-	public boolean matches(String string) {
-		Matcher matcher = pattern.get().matcher(string);
-		//Matcher matcher = pattern.matcher(string);
+	public boolean matches(String string) {		
+		Matcher matcher = pattern.matcher(string);
 		boolean result = matcher.matches();
 		return result;		
 	}
@@ -166,8 +127,7 @@ public class Regex {
 	 *   matched in the input string.
 	 */
 	public List<String[]> getAllMatches(String string) {
-		Matcher matcher = pattern.get().matcher(string);
-		//Matcher matcher = pattern.matcher(string);
+		Matcher matcher = pattern.matcher(string);
 		List<String[]> matched = new ArrayList<String[]>();
 		while(matcher.find()) {
 			int count = matcher.groupCount();
@@ -186,7 +146,7 @@ public class Regex {
 	 */
 	@Override
 	public String toString() {
-		return regex;
+		return getRegex();
 	}
 
 	/**
@@ -196,7 +156,7 @@ public class Regex {
 	 */
 	@Override
 	public boolean equals(Object other) {
-		return (other != null && other instanceof Regex && ((Regex)other).regex != null && ((Regex)other).regex.equals(regex)); 
+		return (other != null && other instanceof Regex && ((Regex)other).getRegex() != null && ((Regex)other).getRegex().equals(getRegex())); 
 	}
 	
 	/**
@@ -206,6 +166,6 @@ public class Regex {
 	 */
 	@Override
 	public int hashCode() {
-		return ("regex: " + regex).hashCode();
-	}
+		return ("regex: " + getRegex()).hashCode();
+	}	
 }

@@ -21,20 +21,38 @@ import static org.junit.Assert.assertFalse;
 @License
 public class RegexTest {
 	
+	private interface RegexFactory {
+		public Regex makeRegex(String pattern);
+	}
+	
 //	private static final Logger logger = LoggerFactory.getLogger(RegexTest.class);
 
 	@Before
 	public void setUp() throws Exception {
 		BasicConfigurator.configure();
 	}
-
+	
+	
 	@Test
-	public void testRegex() throws InterruptedException {		
+	public void testRegex() throws InterruptedException {
+		System.out.println("---------------------------------------------------------");
+		long start = System.currentTimeMillis();
+		runTest(new RegexFactory() {
+			@Override
+			public Regex makeRegex(String pattern) {
+				return new Regex(pattern);
+			}			
+		});
+		System.out.println("test took " + (System.currentTimeMillis() - start) + " ms");
+	}	
+	
+	private void runTest(final RegexFactory factory) throws InterruptedException {		
 		
 		// prepare tasks
 		List<Callable<Void>> tasks = new ArrayList<>();
-		System.out.println("there are " + Runtime.getRuntime().availableProcessors()  + " cores");
-		for(int i = 0; i < Runtime.getRuntime().availableProcessors(); ++i) {
+		int cores = Runtime.getRuntime().availableProcessors();
+		System.out.println("running test on " + cores + " available (logical) cores");
+		for(int i = 0; i < cores; ++i) {
 			tasks.add(new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
@@ -42,7 +60,7 @@ public class RegexTest {
 					System.out.println("thread: " + Thread.currentThread().getId());
 					
 					for(int i = 0; i < 1000; ++i) {
-						Regex regex1 = new Regex("^pipp\\d*\\.pdf");
+						Regex regex1 = factory.makeRegex("^pipp\\d*\\.pdf");
 						assertFalse(regex1.matches("pippo1.pdf"));
 						assertTrue(regex1.matches("pipp1.pdf"));
 						assertFalse(regex1.matches("pipp1.pdff"));
@@ -50,7 +68,7 @@ public class RegexTest {
 						assertTrue(regex1.matches("pipp.pdf"));
 						assertFalse(regex1.matches("pluto.pdf"));
 						
-						Regex regex2 = new Regex("^pipp\\d*\\.pdf");
+						Regex regex2 = factory.makeRegex("^pipp\\d*\\.pdf");
 						assertFalse(regex2.matches("pippo1.pdf"));
 						assertTrue(regex2.matches("pipp1.pdf"));
 						assertFalse(regex2.matches("pipp1.pdff"));
@@ -58,7 +76,7 @@ public class RegexTest {
 						assertTrue(regex2.matches("pipp.pdf"));
 						assertFalse(regex2.matches("pluto.pdf"));
 						
-						Regex regex3 = new Regex("([a-z]*)\\:=([a-zA-Z0-9]*)");
+						Regex regex3 = factory.makeRegex("([a-z]*)\\:=([a-zA-Z0-9]*)");
 						List<String[]> matches = regex3.getAllMatches("var:=valueNumber0,val:=valueNumber1");
 						assertTrue(matches.get(0)[0].equals("var"));
 						assertTrue(matches.get(0)[1].equals("valueNumber0"));
@@ -70,19 +88,9 @@ public class RegexTest {
 			});
 		}
 		
-		final ExecutorService pool = Executors.newFixedThreadPool(100);
+		final ExecutorService pool = Executors.newFixedThreadPool(cores);
 		pool.invokeAll(tasks);
 		pool.shutdown();
 		pool.awaitTermination(120, TimeUnit.SECONDS);
-		
-		System.out.println("there are " + Runtime.getRuntime().availableProcessors()  + " cores");
-		
-//		int i = 0;
-//		for(String[] match : matches) {
-//			logger.trace("match number {}", i++);
-//			for(String string : match) {
-//				logger.trace("... match: '{}'", string);
-//			}
-//		}
 	}	
 }
