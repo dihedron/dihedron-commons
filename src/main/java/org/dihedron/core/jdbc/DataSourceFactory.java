@@ -9,7 +9,10 @@ import java.net.MalformedURLException;
 import java.util.Properties;
 
 import org.dihedron.core.License;
+import org.dihedron.core.strings.Strings;
 import org.dihedron.core.url.URLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Funto'
@@ -17,18 +20,51 @@ import org.dihedron.core.url.URLFactory;
 @License
 public class DataSourceFactory {
 	
+	/**
+	 * The name of the system property or environment variable holding the 
+	 * drivers configuration.
+	 */
+	public final static String DRIVERS_CONFIGURATION = "drivers.configuration";
+
+	/**
+	 * The name of the system property or environment variable holding the 
+	 * datasources configuration.
+	 */
+	public final static String DATASOURCES_CONFIGURATION = "datasources.configuration";
+	
+	/**
+	 * The logger.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DataSourceFactory.class);
+	
 	private static Properties drivers = new Properties();
 	private static Properties datasources = new Properties();
-	static {		
-		try(InputStream f1 = URLFactory.makeURL("classpath:org/dihedron/core/jdbc/drivers.configuration").openStream();
-			InputStream f2 = URLFactory.makeURL("classpath:org/dihedron/core/jdbc/datasources.configuration").openStream()) {
+	static {
+		// check if "drivers.configuration" and "datasources.configuration" system 
+		// properties or environment variables are available and if so use them, 
+		// otherwise fall back to default, built in configuration files
+		
+		String driversConfiguration = System.getProperty(DRIVERS_CONFIGURATION, System.getenv(DRIVERS_CONFIGURATION));
+		if(!Strings.isValid(driversConfiguration)) {
+			driversConfiguration = "classpath:org/dihedron/core/jdbc/drivers.configuration";
+		}
+		logger.info("loading drivers configuration from {}", driversConfiguration);
+		
+		String datasourcesConfiguration = System.getProperty(DATASOURCES_CONFIGURATION, System.getenv(DATASOURCES_CONFIGURATION));
+		if(!Strings.isValid(datasourcesConfiguration)) {
+			datasourcesConfiguration = "classpath:org/dihedron/core/jdbc/datasources.configuration";
+		}
+		logger.info("loading datasources configuration from {}", datasourcesConfiguration);
+		
+		
+		try(InputStream f1 = URLFactory.makeURL(driversConfiguration).openStream();
+			InputStream f2 = URLFactory.makeURL(datasourcesConfiguration).openStream()) {
 			drivers.load(f1);
 			datasources.load(f2);
-
 		} catch (MalformedURLException e) {			
-			e.printStackTrace();
+			logger.error("invalid URL for driver or datasource configuration", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("error reading driver or datasource configuration", e);
 		}
 	}
 	

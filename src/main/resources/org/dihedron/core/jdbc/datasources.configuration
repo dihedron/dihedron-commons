@@ -15,8 +15,8 @@ hp2.instance=hp2
 
 local.type=mysql
 local.host=localhost
-local.port=0
-local.instance=ripresa_dati
+local.port=3306
+local.instance=sonar
 
 db2t.type=db2zos
 db2t.host=db2gw03

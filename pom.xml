@@ -35,7 +35,7 @@
 	
 	<licenses>
 		<license>
-			<comments>Copyright (C) Andrea Funtò 2012-2014 - All rights reserved</comments>
+			<comments>Copyright (C) Andrea Funtò 2012-2015 - All rights reserved</comments>
 			<name>GNU Lesser General Public License ver. 3 or later</name>
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
@@ -62,7 +62,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.3</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<source>${java.version}</source>

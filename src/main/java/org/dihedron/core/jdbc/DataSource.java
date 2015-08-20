@@ -15,13 +15,16 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Funto'
  */
 @License
-public class DataSource {
+public class DataSource implements AutoCloseable {
 	
 	/**
 	 * The logger.
 	 */
 	private static Logger logger = LoggerFactory.getLogger(DataSource.class);
 	
+	/**
+	 * The name of the server hosting the database.
+	 */
 	private String host;	
 	private String port;
 	private String instance;
@@ -43,7 +46,7 @@ public class DataSource {
 
 	public Connection getConnection(String username, String password) {
 		Connection connection = null;
-		logger.debug("trying to get connection to database using " + driver);
+		logger.debug("trying to get connection to database using '{}'", driver);
 		try {
 			Class.forName(driver); // or any other driver
 			logger.debug("driver loaded");
@@ -52,15 +55,20 @@ public class DataSource {
 					.replaceAll("\\$\\{host\\}", host)
 					.replaceAll("\\$\\{port\\}", port)
 					.replaceAll("\\$\\{instance\\}", instance);
-			logger.debug("connection using " + url);
+			logger.debug("connecting to '{}'", url);
 			if(username == null && password == null) {
 				connection = DriverManager.getConnection(url);
 			} else {
 				connection = DriverManager.getConnection(url, username, password);
 			}
 		} catch(Exception e){
-			logger.error("unable to load the driver class", e);
+			logger.error("unable to open the connection to the database", e);
 		}		
 		return connection;
+	}
+
+
+	@Override
+	public void close() {
 	}
 }

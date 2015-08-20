@@ -10,8 +10,6 @@ package org.dihedron.core;
 @License
 public class Credentials {
 	
-	public static final String NO_PASSWORD = "********";
-			
 	/**
 	 * The username to use for authentication.
 	 */
@@ -20,7 +18,7 @@ public class Credentials {
 	/**
 	 * The password to use for authentication.
 	 */
-	private String password = NO_PASSWORD;
+	private String password;
 	
 	/**
 	 * The domain to use for authentication.
@@ -59,7 +57,7 @@ public class Credentials {
 	 */
 	public Credentials setPassword(String password) {
 		this.password = password;
-		if(password.equals(NO_PASSWORD)) {
+		if(password == null) {
 			throw new IllegalArgumentException("You must set the password before proceeding!!!");
 		}
 		return this;
