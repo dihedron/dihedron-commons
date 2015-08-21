@@ -34,8 +34,13 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Funto'
  */
 @License
-public class Properties {
+public class Properties extends LinkedHashMap<String, String>{
 		
+	/**
+	 * Serial version id.
+	 */
+	private static final long serialVersionUID = -1286708636833164372L;
+
 	/**
 	 * The logger.
 	 */
@@ -45,22 +50,32 @@ public class Properties {
 	 * The default character using for telling key and value apart.
 	 */	
 	public static final String DEFAULT_SEPARATOR = "=";
+		
+	/**
+	 * The default comment start character sequence.
+	 */
+	public final static String LINE_COMMENT_START = "#";
 	
+	/**
+	 * The character(s) indicating that a property is stored on 
+	 * multiple lines, and that it continues on the following line.
+	 */
+	public final static String CONTINUE_ON_NEW_LINE = "\\"; 	
 	/**
 	 * A constant indicating whether the properties can be modified.
 	 */
 	private boolean locked = false;
 	
-	/**
-	 * The map that actually implements the properties dictionary.
-	 */
-	private Map<String, String> map;
+//	/**
+//	 * The map that actually implements the properties dictionary.
+//	 */
+//	private Map<String, String> map;
 	
 	/**
 	 * Constructor.
 	 */
 	public Properties() {
-		map = new LinkedHashMap<String, String>();
+		super();
 	}
 	
 	/**
@@ -70,7 +85,7 @@ public class Properties {
 	 *   a map of initial values.
 	 */
 	public Properties(Map<String, String> values) {
-		this.map = new LinkedHashMap<String, String>(values);
+		super(values);
 	}
 	
 	/**
@@ -193,12 +208,12 @@ public class Properties {
 			String line;
 			StringBuilder buffer = new StringBuilder();
 			while ((line = br.readLine()) != null)   {
-				if(Strings.trimRight(line).startsWith("#")) {
+				if(Strings.trimRight(line).startsWith(LINE_COMMENT_START)) {
 					// comment line, skip!
 					continue;
 				} else {					
 					// now check if multi-line property
-					if(line.endsWith("\\")) {
+					if(line.endsWith(CONTINUE_ON_NEW_LINE)) {
 						// middle line in multi-line, add and skip parsing
 						buffer.append(line.replaceFirst("\\\\$", ""));
 						continue;
@@ -256,21 +271,9 @@ public class Properties {
 	 *   whether the properties map contains the given key.
 	 */
 	public boolean hasKey(String key) {
-		return map.containsKey(key);
+		return containsKey(key);
 	}
-	
-	/**
-	 * Retrieve the value for the given key.
-	 * 
-	 * @param key
-	 *   the key of the property.
-	 * @return
-	 *   the corresponding value.
-	 */
-	public String get(String key) {
-		return map.get(key);
-	}	
-	
+
 	/**
 	 * Puts a new value into the properties map.
 	 * 
@@ -282,13 +285,14 @@ public class Properties {
 	 *   the previous value associated with the key, or null if no such value
 	 *   was present in the map.
 	 * @throws PropertiesException
-	 *   if the map is in read-only mode.
+	 *   if the map is in read-only mode (note: it's a runtime exception).
 	 */
+	@Override
 	public String put(String key, String value) throws PropertiesException {
 		if(isLocked()) {
 			throw new PropertiesException("properties map is locked, its contents cannot be altered.");
 		}		
-		return map.put(key, value);
+		return super.put(key, value);
 	}
 	
 	/**
@@ -298,26 +302,6 @@ public class Properties {
 	 *   the keys in the configuration file.
 	 */
 	public Set<String> getKeys() {
-		return map.keySet();
-	}
-	
-	/**
-	 * Returns the set of keys in the map.
-	 * 
-	 * @return
-	 *   the set of keys in the map.
-	 */
-	public Set<String> keySet() {
-		return map.keySet();
-	}
-	
-	/**
-	 * Returns the set of entries in the map.
-	 * 
-	 * @return
-	 *   the set of entries in the map.
-	 */
-	public Set<Entry<String, String>> entrySet() {
-		return map.entrySet();
+		return keySet();
 	}
 }

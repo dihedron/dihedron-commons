@@ -13,7 +13,7 @@ import org.dihedron.core.License;
  * @author Andrea Funto'
  */
 @License
-public class PropertiesException extends Exception {
+public class PropertiesException extends RuntimeException {
 
 	/**
 	 * Serial version id. 
